@@ -1,3 +1,5 @@
+const BASE_API = 'http://localhost:8888'
+
 const path = 6,
     safe = 5,
     red = {
@@ -294,6 +296,7 @@ const Constants = {
     end_cell_obj,
     generateTranslate,
     xy,
+    BASE_API,
 }
 
 export default Constants

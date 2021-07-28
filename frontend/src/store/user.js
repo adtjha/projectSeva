@@ -1,10 +1,26 @@
 const initialState = {
-    color: 'red',
-    id: '3b94f841-6825-41dd-9f74-355e682dd26e',
-    name: 'aditya',
-    chance: true,
+    color: '',
+    id: '',
+    name: '',
+    chance: false,
     pieceOut: false,
 }
+// const initialState = {
+//     color: 'red',
+//     id: '3b94f841-6825-41dd-9f74-355e682dd26e',
+//     name: 'aditya',
+//     chance: true,
+//     pieceOut: false,
+// }
+
+/**
+ * reducer for user state, which includes,
+ * - color => color of player's home square
+ * - id => id of the player
+ * - name => name of the player
+ * - chance => boolean if it is player's chance
+ * - pieceOut => boolean for if player's piece is out
+ */
 
 export function usersReducer(state = initialState, action) {
     switch (action.type) {
@@ -19,6 +35,7 @@ export function usersReducer(state = initialState, action) {
 
 // selectors
 export const getColor = (state) => state.user.color
+export const getName = (state) => state.user.name
 export const getChance = (state) => state.user.chance
 export const getPieceOut = (state) => state.user.pieceOut
 
