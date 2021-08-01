@@ -1,8 +1,8 @@
 const initialState = {
-    color: '',
+    color: 'red',
     id: '',
     name: '',
-    chance: false,
+    chance: true,
     pieceOut: false,
 }
 // const initialState = {

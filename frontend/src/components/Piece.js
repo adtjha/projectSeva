@@ -58,13 +58,21 @@ function Piece(props) {
     }
 
     const updatePosition = () => {
+        let pos = {}
         if (!isPieceOut) {
             dispatch(set_piece_out(true))
+            pos = {
+                isPieceOut: [set_piece_out, true],
+            }
         }
         setTimeout(() => {
             dispatch(move_piece(num - 1, color, dice))
             dispatch(set_rolled(false))
         }, 100)
+        pos = {
+            move: [[move_piece, num-1, color, dice], [set_rolled, false]] 
+        }
+        console.log(pos)
     }
 
     const handleClick = (e) => {
@@ -75,18 +83,19 @@ function Piece(props) {
                 if (dice === 6) {
                     animate(e)
                     updatePosition()
-                    dispatch(set_chance(true))
+                    // dispatch(set_chance(true))
                 } else {
                     // chance finished
-                    dispatch(set_chance(false))
+                    // dispatch(set_chance(false))
                 }
             } else if (props.name !== position) {
                 animate(e)
                 updatePosition()
-                dispatch(set_chance(true))
+                // dispatch(set_chance(true))
             }
         } else {
             console.log('NOT ALLOWED')
+            dispatch(set_rolled(false))
         }
     }
 

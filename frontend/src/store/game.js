@@ -1,5 +1,3 @@
-import Constants from '../components/Constants'
-
 const initialState = {
     data: {
         id: '',
