@@ -1,26 +1,15 @@
 const initialState = {
-    color: 'red',
+    color: '',
     id: '',
     name: '',
     chance: true,
     pieceOut: false,
+    data: {
+        id: '',
+        current: '',
+    },
+    ended: false,
 }
-// const initialState = {
-//     color: 'red',
-//     id: '3b94f841-6825-41dd-9f74-355e682dd26e',
-//     name: 'aditya',
-//     chance: true,
-//     pieceOut: false,
-// }
-
-/**
- * reducer for user state, which includes,
- * - color => color of player's home square
- * - id => id of the player
- * - name => name of the player
- * - chance => boolean if it is player's chance
- * - pieceOut => boolean for if player's piece is out
- */
 
 export function usersReducer(state = initialState, action) {
     switch (action.type) {
@@ -28,6 +17,15 @@ export function usersReducer(state = initialState, action) {
             return { ...state, pieceOut: action.payload }
         case CHANCE:
             return { ...state, chance: action.payload }
+        case NAME:
+            return {
+                ...state,
+                name: action.payload.name,
+                id: action.payload.id,
+                color: action.payload.color,
+            }
+        case DATASET:
+            return { ...state, data: action.payload }
         default:
             return state
     }
@@ -38,10 +36,14 @@ export const getColor = (state) => state.user.color
 export const getName = (state) => state.user.name
 export const getChance = (state) => state.user.chance
 export const getPieceOut = (state) => state.user.pieceOut
+export const getGameId = (state) => state.user.data.id
+export const getGameStatus = (state) => state.user.ended
 
 // action types
 export const PIECE = 'piece'
 export const CHANCE = 'chance'
+export const NAME = 'name'
+export const DATASET = 'data'
 
 // action creators
 export const set_piece_out = (state) => ({
@@ -51,4 +53,19 @@ export const set_piece_out = (state) => ({
 export const set_chance = (state) => ({
     type: CHANCE,
     payload: state,
+})
+export const set_name = ({ id, name, color }) => ({
+    type: NAME,
+    payload: {
+        id: id,
+        name: name,
+        color: color,
+    },
+})
+export const set_data = ({ id, current }) => ({
+    type: DATASET,
+    payload: {
+        id: id,
+        current: current,
+    },
 })

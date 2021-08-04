@@ -1,4 +1,4 @@
-import Constants from "../Constants";
+import Constants from "../../Constants";
 import replaceCell from "./placeCell";
 import { placePiece } from "./placePiece";
 import _ from "lodash";

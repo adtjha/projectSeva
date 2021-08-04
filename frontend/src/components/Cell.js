@@ -1,6 +1,6 @@
 import React from 'react'
 import Piece from './Piece'
-import Constant from './Constants'
+import Constant from '../Constants'
 
 const Cell = (props) => {
     let styles, piece

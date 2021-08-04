@@ -1,7 +1,7 @@
 import _ from "lodash";
 
 export default function extractObject(fen) {
-  const [pattern, currentPlayer, dice] = fen.split(" ");
+  const [pattern, currentPlayer, ] = fen.split(" ");
   var [red, green, yellow, blue] = pattern.split("/");
   red = red.split("r");
   green = green.split("g");

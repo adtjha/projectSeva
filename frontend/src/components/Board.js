@@ -1,12 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux'
 import Cell from './Cell'
 import create2Darray from './functions/create2Darray'
-import { videoChat } from './videoChat'
+import { VideoChat } from './videoChat'
 import Dice from './Dice'
 import React, { useContext } from 'react'
 import { getBlue, getGreen, getRed, getYellow } from '../store/move'
 import { getDice } from '../store/dice'
-import { getGameId, getGameStatus, set_data } from '../store/game'
+import { getGameId, getGameStatus, set_data, set_name } from '../store/user'
 import { SocketContext } from '../connect/socket'
 // import { useGeolocation } from "react-use";
 
@@ -24,10 +24,17 @@ const Board = (props) => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        socket.emit('new_game', e.target[0].value)
-        socket.on('data', (data) => {
+        socket.emit('join_game', e.target[0].value)
+        socket.on('config_data', (data) => {
             console.log(e.target[0].value, socket)
-            dispatch(set_data(data))
+            dispatch(set_data({ id: data.id, current: data.current }))
+            dispatch(
+                set_name({
+                    id: data.user.id,
+                    name: e.target[0].value,
+                    color: data.user.color,
+                })
+            )
         })
     }
 
@@ -43,7 +50,7 @@ const Board = (props) => {
                     {pos.map((cell) => (
                         <Cell key={cell.id} data={cell} />
                     ))}
-                    {videoChat}
+                    <VideoChat />
                 </div>
             </div>
             <Dice num={data.dice} />

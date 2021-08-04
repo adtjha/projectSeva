@@ -5,7 +5,7 @@ import yellow from '../images/yellow.svg'
 import blue from '../images/blue.svg'
 import _ from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
-import Constants from './Constants'
+import Constants from '../Constants'
 import { move_piece } from '../store/move'
 import {
     getColor,
