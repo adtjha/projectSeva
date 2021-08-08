@@ -36,6 +36,7 @@ export const getColor = (state) => state.user.color
 export const getName = (state) => state.user.name
 export const getChance = (state) => state.user.chance
 export const getPieceOut = (state) => state.user.pieceOut
+export const getUserId = (state) => state.user.id
 export const getGameId = (state) => state.user.data.id
 export const getGameStatus = (state) => state.user.ended
 

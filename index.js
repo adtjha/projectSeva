@@ -1,9 +1,18 @@
 const express = require("express");
 const app = express();
 const { Server } = require("socket.io");
-const port = 8888;
 const cors = require("cors");
 const { v4: uuidv4 } = require("uuid");
+const webrtc = require("wrtc");
+const process = require("process");
+
+const port = 8888;
+
+const consoleSpacing = () => {
+  console.log(" ");
+  console.log("-----------------------");
+  console.log(" ");
+};
 
 const rooms = [
   {
@@ -23,12 +32,19 @@ const io = new Server(server);
 
 io.on("connection", (socket) => {
   console.log("a user connected");
+  consoleSpacing();
 
   // join a game,
   socket.on("join_game", () => {
     // if room empty -> fit user in room array -> send room id
     let empty = { id: "", state: "", color: "" },
+      senderStream = "",
       config = { id: "", user: { id: "", color: "" } };
+
+    const handletrack = (e, peer) => {
+      console.log("adding tracks");
+      senderStream = e.streams[0];
+    };
 
     rooms.every((r) => {
       r.players.every((p) => {
@@ -82,14 +98,79 @@ io.on("connection", (socket) => {
     }
 
     socket.emit("config_data", config);
-    console.group("Room Data");
-    console.log(JSON.stringify(rooms));
-    console.groupEnd();
+
+    socket.on("broadcast", async (body) => {
+      console.log("in broadcast");
+      const peer = new webrtc.RTCPeerConnection({
+        iceServers: [
+          {
+            urls: "stun:stun.stunprotocol.org",
+          },
+        ],
+      });
+
+      console.log("peer");
+
+      peer.ontrack = (e) => handletrack(e, peer);
+
+      const desc = new webrtc.RTCSessionDescription(body.sdp);
+
+      console.log("set remote description");
+      await peer.setRemoteDescription(desc);
+
+      console.log("creating answer");
+      const answer = await peer.createAnswer();
+
+      console.log("in setLocalDescription");
+      await peer.setLocalDescription(answer);
+
+      console.log("broadcast_res");
+      socket.emit("broadcast_res", {
+        sdp: peer.localDescription,
+      });
+
+      consoleSpacing();
+    });
+
+    socket.on("consumer", async (body) => {
+      console.log("in consumer");
+      const peer = new webrtc.RTCPeerConnection({
+        iceServers: [
+          {
+            urls: "stun:stun.stunprotocol.org",
+          },
+        ],
+      });
+
+      const desc = new webrtc.RTCSessionDescription(body.sdp);
+
+      console.log("set remote description");
+      await peer.setRemoteDescription(desc);
+
+      senderStream &&
+        senderStream.getTracks().forEach((track) => {
+          console.log("sending tracks");
+          peer.addTrack(track, senderStream);
+        });
+
+      console.log("creating answer");
+      const answer = await peer.createAnswer();
+
+      console.log("in setLocalDescription");
+      await peer.setLocalDescription(answer);
+
+      console.log("consumer_res");
+      socket.emit("consumer_res", {
+        sdp: peer.localDescription,
+      });
+
+      consoleSpacing();
+    });
   });
 
   socket.on("disconnect", () => {
     console.log("user disconnected");
-    
+    consoleSpacing();
   });
 });
 
@@ -100,4 +181,13 @@ app.get("/", (req, res) => {
 app.get("/game", (req, res) => {
   console.log("HERE");
   res.json();
+});
+
+process.once("SIGUSR2", function () {
+  process.kill(process.pid, "SIGUSR2");
+});
+
+process.on("SIGINT", function () {
+  // this is only called on ctrl+c, not restart
+  process.kill(process.pid, "SIGINT");
 });
