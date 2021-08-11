@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false cd frontend && yarn add . && yarn run build",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false cd frontend && npm install && npm run build",
     "dev-start": "concurrently \"nodemon --delay 500ms node index.js\" \"cd frontend && npm start\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
