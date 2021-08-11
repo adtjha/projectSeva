@@ -53,9 +53,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const server = app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-});
+const server = app.listen(process.env.PORT || port);
 
 const io = new Server(server, {
   cors: {
@@ -280,6 +278,3 @@ app.post("/consumer", async ({ body }, res) => {
     consoleSpacing();
   }
 });
-
-
-
