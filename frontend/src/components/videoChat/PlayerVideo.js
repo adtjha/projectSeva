@@ -1,78 +1,99 @@
-import { SocketContext } from 'connect/socket'
-import React, { useEffect, useRef, useContext } from 'react'
+import React, { useRef } from 'react'
+import axios from 'axios'
+import Constants from 'Constants'
+import { useSelector } from 'react-redux'
+import { getGameId, getUserId } from 'store/user'
+import { useEffectOnce } from 'react-use'
 
 export const PlayerVideo = (props) => {
     const thisVideo = useRef(null)
-    const socket = useContext(SocketContext)
-
-    const handleNegotiationNeededEvent = async (peer) => {
-        console.log(peer.current, 'offer')
-        const offer = await peer.current.createOffer()
-
-        console.log(peer.current, 'local description')
-        await peer.current.setLocalDescription(offer)
-
-        socket.emit('broadcast', {
-            sdp: peer.current.localDescription,
-        })
+    const peer = useRef(null)
+    const user = {
+        id: useSelector(getUserId),
+        color: props.color,
+        game_id: useSelector(getGameId),
     }
 
-    const peer = useRef(
-        new RTCPeerConnection({
+    const createPeer = () => {
+        const peer = new RTCPeerConnection({
             iceServers: [
                 {
                     urls: 'stun:stun.stunprotocol.org',
                 },
             ],
         })
-    )
 
-    navigator.getUserMedia =
-        navigator.getUserMedia ||
-        navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia
+        console.log(peer, 'negotiation')
+        peer.onnegotiationneeded = () => handleNegotiationNeededEvent(peer)
 
-    useEffect(() => {
-        if (navigator.getUserMedia) {
-            navigator.getUserMedia(
-                { audio: false, video: { width: 480, height: 480 } },
-                (stream) => {
+        return peer
+    }
+
+    const handleNegotiationNeededEvent = async (peer) => {
+        console.log(peer, 'offer')
+        const offer = await peer.createOffer()
+
+        console.log(peer, 'local description')
+        await peer.setLocalDescription(offer)
+
+        const { data } = await axios.post(Constants.BASE_API + '/broadcast', {
+            sdp: peer.localDescription,
+            user: user,
+        })
+
+        console.log('broadcast_res', data, props)
+        const desc = new RTCSessionDescription(data.sdp)
+        peer.setRemoteDescription(desc)
+            .then()
+            .catch((e) => console.error(e))
+    }
+
+    useEffectOnce(() => {
+        if (props.thisPlayerColor === props.color) {
+            navigator.mediaDevices
+                .getUserMedia({
+                    audio: false,
+                    video: {
+                        width:
+                            props.color === 'red' || props.color === 'blue'
+                                ? 940
+                                : 740,
+                        height:
+                            props.color === 'red' || props.color === 'blue'
+                                ? 740
+                                : 940,
+                        facingMode: 'user',
+                    },
+                })
+                .then((stream) => {
                     thisVideo.current.srcObject = stream
 
-                    console.log(peer.current, 'negotiation')
-                    peer.current.onnegotiationneeded = () =>
-                        handleNegotiationNeededEvent(peer)
+                    peer.current = createPeer()
 
                     stream
                         .getTracks()
                         .forEach((track) =>
                             peer.current.addTrack(track, stream)
                         )
-
-                    socket.on('broadcast_res', (data) => {
-                        console.log('broadcast_res', data)
-                        const desc = new RTCSessionDescription(data.sdp)
-                        peer.current
-                            .setRemoteDescription(desc)
-                            .then()
-                            .catch((e) => console.error(e))
-                    })
-                },
-                (err) => {
+                })
+                .catch((err) => {
                     console.log('The following error occurred: ' + err.name)
-                }
-            )
-        } else {
-            console.log('getUserMedia not supported')
+                })
         }
     })
 
     return (
         <video
             ref={thisVideo}
-            className="min-w-full min-h-full"
+            className="min-w-full min-h-full transform scale-110"
             autoPlay
             muted
         />
     )
 }
+
+
+/**
+ * red, blue : 188 * 148,
+ * green, yellow : 148 * 188
+ */
