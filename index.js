@@ -8,7 +8,7 @@ const process = require("process");
 const bodyParser = require("body-parser");
 const path = require("path");
 
-const port = 8888;
+const port = process.env.PORT || 8888;
 
 const consoleSpacing = () => {
   console.log(" ");
@@ -50,11 +50,14 @@ const rooms = [
 ];
 
 app.use(cors());
+app.use(express.static("frontend/build"));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const server = app.listen(process.env.PORT || port);
+const server = app.listen(port, () => {
+  console.log(`Server started at ${port}.`);
+});
 
 const io = new Server(server, {
   cors: {
@@ -161,11 +164,6 @@ io.on("connection", (socket) => {
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
-});
-
-app.get("/game", (req, res) => {
-  console.log("HERE");
-  res.json();
 });
 
 const handletrack = (e, peer, auth) => {
@@ -280,10 +278,8 @@ app.post("/consumer", async ({ body }, res) => {
   }
 });
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("frontend/build"));
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
-  });
-}
+app.get("/*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
+});
+
