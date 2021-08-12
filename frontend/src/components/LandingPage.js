@@ -25,13 +25,14 @@ const LandingPage = () => {
                                     >
                                         <div className="flex items-center flex-grow flex-shrink-0 lg:flex-grow-0">
                                             <div className="flex items-center justify-between w-full md:w-auto">
-                                                <a href="#">
+                                                <a href="/workflow">
                                                     <span className="sr-only">
                                                         Workflow
                                                     </span>
                                                     <img
                                                         className="h-8 w-auto sm:h-10"
                                                         src={logo}
+                                                        alt="logo"
                                                     />
                                                 </a>
                                                 <div className="-mr-2 flex items-center md:hidden">
@@ -58,7 +59,7 @@ const LandingPage = () => {
                                                 </a>
                                             ))}
                                             <a
-                                                href="#"
+                                                href="/"
                                                 className="font-medium text-blueGray-600 hover:text-blueGray-500"
                                             >
                                                 Log in
@@ -115,7 +116,7 @@ const LandingPage = () => {
                                                 ))}
                                             </div>
                                             <a
-                                                href="#"
+                                                href="/"
                                                 className="block w-full px-5 py-3 text-center font-medium text-blueGray-600 bg-blueGray-50 hover:bg-blueGray-100"
                                             >
                                                 Log in

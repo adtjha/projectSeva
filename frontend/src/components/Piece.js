@@ -12,7 +12,6 @@ import {
     getChance,
     getPieceOut,
     set_piece_out,
-    set_chance,
 } from '../store/user'
 import { getDice, rolled, set_rolled } from '../store/dice'
 

@@ -52,11 +52,13 @@ const rooms = [
   },
 ];
 
+const players = ["red", "green", "yellow", "blue"];
+
 // const ice_servers = require("./servers.json");
 const ice_servers = [{ urls: "stun:stun.stunprotocol.org" }];
 
 app.use(cors());
-app.use(express.static("frontend/build"));
+// app.use(express.static("frontend/build"));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -64,7 +66,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const server = app.listen(port, () => {
   console.log(`Server started at ${port}.`);
 });
-
 
 const io = new Server(server);
 
@@ -99,12 +100,16 @@ io.on("connection", (socket) => {
           r.players.forEach((p) => {
             if (p.color === empty.color) {
               let uid = uuidv4();
+
               p.id = uid;
+              p.socket_id = socket.id;
+
+              socket.join(empty.id);
+
               config.id = empty.id;
               config.user.id = uid;
               config.user.color = empty.color;
               config.current = empty.current;
-              p.socket_id = socket.id;
             }
           });
         }
@@ -140,6 +145,8 @@ io.on("connection", (socket) => {
         currentPlayer: "red",
       });
 
+      socket.join(roomId);
+
       config.id = roomId;
       config.user.id = playerId;
       config.user.color = "red";
@@ -147,7 +154,25 @@ io.on("connection", (socket) => {
     }
 
     socket.emit("config_data", config);
+    consoleSpacing();
+    console.log(JSON.stringify(rooms));
+    consoleSpacing();
   });
+
+  socket.on("roll_dice", ({ game_id }) => {
+    const face = Math.ceil(Math.random() * 6);
+    console.log("here", face);
+    console.log(socket.rooms);
+    socket.emit("dice_roll", face);
+  });
+
+  // socket.on("change_player", ({ game_id }) => {
+  //   rooms.forEach((r) => {
+  //     if (r.id === game_id) {
+
+  //     };
+  //   });
+  // });
 
   socket.on("disconnect", () => {
     console.log("user disconnected");
@@ -157,9 +182,13 @@ io.on("connection", (socket) => {
           p.socket_id = "";
           p.id = "";
           p.stream = "";
+          socket.leave(r.id);
         }
       });
     });
+
+    consoleSpacing();
+    console.log(JSON.stringify(rooms));
     consoleSpacing();
   });
 });
@@ -272,6 +301,6 @@ app.post("/consumer", async ({ body }, res) => {
   }
 });
 
-app.get("/*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
-});
+// app.get("/*", (req, res) => {
+//   res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
+// });

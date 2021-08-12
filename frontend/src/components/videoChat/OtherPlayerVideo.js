@@ -22,25 +22,25 @@ export const OtherPlayerVideo = (props) => {
             ],
         })
 
-        console.log(peer, 'adding track')
+        // console.log(peer, 'adding track')
         peer.ontrack = handleTrackEvent
 
-        console.log(peer, 'negotiation')
+        // console.log(peer, 'negotiation')
         peer.onnegotiationneeded = handleNegotiationNeededEvent(peer)
 
         return peer
     }
 
     const handleTrackEvent = (e) => {
-        console.log(peer, e, 'ontrack')
+        // console.log(peer, e, 'ontrack')
         thisVideo.current.srcObject = e.streams[0]
     }
 
     const handleNegotiationNeededEvent = async (peer) => {
-        console.log(peer, 'offer')
+        // console.log(peer, 'offer')
         const offer = await peer.createOffer()
 
-        console.log(peer, 'local description')
+        // console.log(peer, 'local description')
         await peer.setLocalDescription(offer)
 
         const { data } = await axios.post(Constants.BASE_API + '/consumer', {
@@ -48,7 +48,7 @@ export const OtherPlayerVideo = (props) => {
             user: user,
         })
 
-        console.log('consumer_res', data, props)
+        // console.log('consumer_res', data, props)
         const desc = new RTCSessionDescription(data.sdp)
         peer.setRemoteDescription(desc).catch((e) => console.error(e))
     }
@@ -59,7 +59,7 @@ export const OtherPlayerVideo = (props) => {
             props.thisPlayerColor !== props.color
         ) {
             peer.current = createPeer()
-            console.log('peer created', peer.current)
+            // console.log('peer created', peer.current)
             peer.current.addTransceiver('video', { direction: 'recvonly' })
         }
     })

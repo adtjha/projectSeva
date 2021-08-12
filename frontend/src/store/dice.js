@@ -2,12 +2,12 @@ const initialState = {
     face: 1,
     rolled: false,
     showing: true,
+    otherPlayerRoll: false,
 }
 
 export function diceReducer(state = initialState, action) {
     switch (action.type) {
         case ROLL:
-            console.log('here', state, action.payload )
             return { ...state, face: action.payload }
         case ROLLED:
             return { ...state, rolled: action.payload }
@@ -29,9 +29,9 @@ export const ROLLED = 'rolled'
 export const SHOWING = 'showing'
 
 // action creators
-export const set_dice = () => ({
+export const set_dice = (n) => ({
     type: ROLL,
-    payload: Math.ceil(Math.random() * 6),
+    payload: n,
 })
 export const set_rolled = (state) => ({
     type: ROLLED,
