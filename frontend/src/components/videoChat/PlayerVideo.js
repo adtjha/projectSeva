@@ -23,17 +23,17 @@ export const PlayerVideo = (props) => {
             ],
         })
 
-        console.log(peer, 'negotiation')
+        // console.log(peer, 'negotiation')
         peer.onnegotiationneeded = () => handleNegotiationNeededEvent(peer)
 
         return peer
     }
 
     const handleNegotiationNeededEvent = async (peer) => {
-        console.log(peer, 'offer')
+        // console.log(peer, 'offer')
         const offer = await peer.createOffer()
 
-        console.log(peer, 'local description')
+        // console.log(peer, 'local description')
         await peer.setLocalDescription(offer)
 
         const { data } = await axios.post(Constants.BASE_API + '/broadcast', {
@@ -41,7 +41,7 @@ export const PlayerVideo = (props) => {
             user: user,
         })
 
-        console.log('broadcast_res', data, props)
+        // console.log('broadcast_res', data, props)
         const desc = new RTCSessionDescription(data.sdp)
         peer.setRemoteDescription(desc)
             .then()
@@ -91,9 +91,3 @@ export const PlayerVideo = (props) => {
         />
     )
 }
-
-
-/**
- * red, blue : 188 * 148,
- * green, yellow : 148 * 188
- */

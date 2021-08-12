@@ -1,10 +1,3 @@
-import {
-    AnnotationIcon,
-    GlobeAltIcon,
-    LightningBoltIcon,
-    ScaleIcon
-} from '@heroicons/react/outline';
-
 const features = [
     {
         name: 'Gobal Donation',

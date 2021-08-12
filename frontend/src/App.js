@@ -4,7 +4,6 @@ import Board from './components/Board'
 import LandingPage from './components/LandingPage'
 import { About } from './features'
 import { SocketContext, socket } from './connect/socket'
-import { Socket } from 'socket.io'
 
 function App() {
     return (

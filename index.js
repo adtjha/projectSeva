@@ -7,6 +7,9 @@ const webrtc = require("wrtc");
 const process = require("process");
 const bodyParser = require("body-parser");
 const path = require("path");
+const fs = require("fs");
+const os = require("os");
+const readline = require("readline");
 
 const port = process.env.PORT || 8888;
 
@@ -49,6 +52,9 @@ const rooms = [
   },
 ];
 
+// const ice_servers = require("./servers.json");
+const ice_servers = [{ urls: "stun:stun.stunprotocol.org" }];
+
 app.use(cors());
 app.use(express.static("frontend/build"));
 
@@ -59,12 +65,8 @@ const server = app.listen(port, () => {
   console.log(`Server started at ${port}.`);
 });
 
-const io = new Server(server, {
-  cors: {
-    origin: "http://192.168.0.38:8888",
-    methods: ["GET", "POST"],
-  },
-});
+
+const io = new Server(server);
 
 io.on("connection", (socket) => {
   console.log("a user connected");
@@ -195,11 +197,7 @@ const authenticate = (body) => {
 app.post("/broadcast", async ({ body }, res) => {
   console.log("in broadcast");
   const peer = new webrtc.RTCPeerConnection({
-    iceServers: [
-      {
-        urls: "stun:stun.stunprotocol.org",
-      },
-    ],
+    iceServers: ice_servers,
   });
 
   const auth = authenticate(body);
@@ -234,11 +232,7 @@ app.post("/broadcast", async ({ body }, res) => {
 app.post("/consumer", async ({ body }, res) => {
   console.log("in consumer");
   const peer = new webrtc.RTCPeerConnection({
-    iceServers: [
-      {
-        urls: "stun:stun.stunprotocol.org",
-      },
-    ],
+    iceServers: ice_servers,
   });
   const auth = authenticate(body);
 
@@ -278,8 +272,6 @@ app.post("/consumer", async ({ body }, res) => {
   }
 });
 
-
 app.get("/*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
 });
-
