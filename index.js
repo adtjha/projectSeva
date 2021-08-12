@@ -6,6 +6,7 @@ const { v4: uuidv4 } = require("uuid");
 const webrtc = require("wrtc");
 const process = require("process");
 const bodyParser = require("body-parser");
+const path = require("path");
 
 const port = 8888;
 
@@ -278,3 +279,11 @@ app.post("/consumer", async ({ body }, res) => {
     consoleSpacing();
   }
 });
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("frontend/build"));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
+  });
+}
