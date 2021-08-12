@@ -1,4 +1,4 @@
-const BASE_API = 'https://morning-plains-74021.herokuapp.com/'
+const BASE_API = 'https://morning-plains-74021.herokuapp.com'
 
 const path = 6,
     safe = 5,
