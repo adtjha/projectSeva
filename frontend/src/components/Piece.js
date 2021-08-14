@@ -84,6 +84,7 @@ function Piece(props) {
         // socket.on pos -> update pos
         socket.on('piece_moved', ({ toMove, color, pieceID }) => {
             if (pieceID === name) {
+                console.log(toMove)
                 updatePos(toMove)
             }
         })
@@ -102,7 +103,7 @@ function Piece(props) {
                     updatePos(1)
                     // socket.emit pos
                     socket.emit('move_piece', {
-                        toMove: isNaN(position) ? 1 : position + 1,
+                        toMove: 1,
                         color,
                         name,
                     })
@@ -113,8 +114,9 @@ function Piece(props) {
             } else if (props.name !== position) {
                 dispatch(set_rolled(false))
                 dispatch(set_chance(true))
-                updatePos(dice)
+                updatePos(position + dice)
                 // socket.emit pos
+                console.log(position, position+dice)
                 socket.emit('move_piece', {
                     toMove: position + dice,
                     color,
