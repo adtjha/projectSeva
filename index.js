@@ -58,7 +58,7 @@ const players = ["red", "green", "yellow", "blue"];
 const ice_servers = [{ urls: "stun:stun.stunprotocol.org" }];
 
 app.use(cors());
-// app.use(express.static("frontend/build"));
+app.use(express.static("frontend/build"));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -160,10 +160,11 @@ io.on("connection", (socket) => {
   });
 
   socket.on("roll_dice", ({ game_id }) => {
-    const face = Math.ceil(Math.random() * 6);
-    console.log("here", face);
-    console.log(socket.rooms);
-    socket.emit("dice_roll", face);
+    // const face = Math.ceil(Math.random() * 6);
+    const face = 6;
+    console.log(socket.rooms, socket.rooms.size);
+    socket.emit("dice_rolled", face);
+    socket.broadcast.emit("dice_rolled", face);
   });
 
   // socket.on("change_player", ({ game_id }) => {
@@ -173,6 +174,17 @@ io.on("connection", (socket) => {
   //     };
   //   });
   // });
+
+  socket.on("move_piece", ({ toMove, color, dice, name }) => {
+    console.log({ toMove, color, dice, pieceID :name });
+    // socket.emit("piece_moved", { toMove, color, dice, pieceID: name });
+    socket.broadcast.emit("piece_moved", {
+      toMove,
+      color,
+      dice,
+      pieceID: name,
+    });
+  });
 
   socket.on("disconnect", () => {
     console.log("user disconnected");
@@ -301,6 +313,6 @@ app.post("/consumer", async ({ body }, res) => {
   }
 });
 
-// app.get("/*", (req, res) => {
-//   res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
-// });
+app.get("/*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
+});

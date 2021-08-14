@@ -38,6 +38,10 @@ const Board = (props) => {
         })
     }
 
+    socket.on('moved_piece', (data) => {
+        console.log(data)
+    })
+
     const gameId = useSelector(getGameId)
     const hasGameEnded = useSelector(getGameStatus)
 

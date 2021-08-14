@@ -32,12 +32,19 @@ const Dice = (props) => {
         if (!hasRolled) {
             console.log('dice clicked')
             socket.emit('roll_dice', { gameId })
-            dispatch(set_showing(false))
+            dispatch(set_rolled(true))
         } else {
             console.log('PLAY MOVE, DICE ROLLED ONCE', hasRolled)
         }
     }, [hasRolled, socket, gameId, dispatch])
-
+    
+    socket.on('dice_rolled', (face) => {
+        dispatch(set_showing(false))
+        setTimeout(() => {
+            dispatch(set_dice(face))
+            dispatch(set_showing(true))
+        }, 500)
+    })
 
     return (
         <div className="flex flex-col items-center py-8">

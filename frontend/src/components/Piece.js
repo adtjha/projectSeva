@@ -1,4 +1,11 @@
-import React from 'react'
+import React, {
+    useCallback,
+    useContext,
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useState,
+} from 'react'
 import red from '../images/red.svg'
 import green from '../images/green.svg'
 import yellow from '../images/yellow.svg'
@@ -12,15 +19,20 @@ import {
     getChance,
     getPieceOut,
     set_piece_out,
+    set_chance,
 } from '../store/user'
 import { getDice, rolled, set_rolled } from '../store/dice'
+import { SocketContext } from 'connect/socket'
 
 function Piece(props) {
-    const letter = props.name
-    const color = Constants.colorNames[letter.split('')[0]]
+    const name = props.name
+    const letter = props.name.split('')[0]
     const num = props.name.split('')[1]
+
+    const color = Constants.colorNames[letter]
     const patharr = Constants[color.toUpperCase() + '_PATH']
-    var className, piece, newPos
+
+    var className, piece
 
     const position = useSelector((state) => state.move[color][num - 1])
     const dice = useSelector(getDice)
@@ -28,6 +40,8 @@ function Piece(props) {
     const isChance = useSelector(getChance)
     const hasRolled = useSelector(rolled)
     const isPieceOut = useSelector(getPieceOut)
+
+    const socket = useContext(SocketContext)
 
     const dispatch = useDispatch()
 
@@ -49,48 +63,52 @@ function Piece(props) {
         className = 'w-1 h-1 lg:w-2 lg:h-2'
     }
 
-    const animate = (e) => {
-        newPos = position === letter ? 1 : parseInt(position) + parseInt(dice)
-        const start = Constants.xy(patharr, position),
-            end = Constants.xy(patharr, newPos)
-        e.currentTarget.className += Constants.generateTranslate(start, end)
-    }
+    const updatePos = useCallback(
+        (toMove) => {
+            // animate
+            const start = Constants.xy(patharr, position),
+                end = Constants.xy(patharr, parseInt(toMove))
+            className += Constants.generateTranslate(start, end)
+            setTimeout(() => {
+                dispatch(move_piece(toMove, color, num - 1))
+                console.log('dispatched')
+            }, 500)
+        },
+        [color, dispatch, num, patharr, position, className]
+    )
 
-    const updatePosition = () => {
-        let pos = {}
-        if (!isPieceOut) {
-            dispatch(set_piece_out(true))
-            pos = {
-                isPieceOut: [set_piece_out, true],
+    useLayoutEffect(() => {
+        // socket.on pos -> update pos
+        socket.on('piece_moved', ({ toMove, color, pieceID }) => {
+            if (pieceID === name) {
+                updatePos(toMove)
             }
-        }
-        setTimeout(() => {
-            dispatch(move_piece(num - 1, color, dice))
-            dispatch(set_rolled(false))
-        }, 100)
-        pos = {
-            move: [[move_piece, num-1, color, dice], [set_rolled, false]] 
-        }
-        console.log(pos)
-    }
+        })
+    }, [socket, name, updatePos])
 
     const handleClick = (e) => {
+        e.preventDefault()
         if (color === userColor && isChance && hasRolled) {
-            console.log(props, position)
+            // console.log(props, position, pieceRef.current.className)
             if (props.name === position) {
-                // start move, only if six
-                if (dice === 6) {
-                    animate(e)
-                    updatePosition()
-                    // dispatch(set_chance(true))
+                // logic -> move only if pieceOut else move only if dice is 6
+                if (dice === 6 && !isPieceOut) {
+                    dispatch(set_piece_out(true))
+                    dispatch(set_rolled(false))
+                    dispatch(set_chance(true))
+                    updatePos(1)
+                    // socket.emit pos
+                    socket.emit('move_piece', { toMove: 1, color, name })
                 } else {
                     // chance finished
-                    // dispatch(set_chance(false))
+                    dispatch(set_chance(false))
                 }
             } else if (props.name !== position) {
-                animate(e)
-                updatePosition()
-                // dispatch(set_chance(true))
+                dispatch(set_rolled(false))
+                dispatch(set_chance(true))
+                updatePos(dice)
+                // socket.emit pos
+                socket.emit('move_piece', { toMove: dice, color, name })
             }
         } else {
             console.log('NOT ALLOWED')

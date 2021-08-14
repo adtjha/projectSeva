@@ -19,12 +19,8 @@ export function movesReducer(state = initialState, action) {
                     (p, i) =>
                         i === action.payload.num
                             ? isNaN(p)
-                                ? action.payload.dice === 6
-                                    ? 1
-                                    : p
-                                : (p =
-                                      parseInt(p) +
-                                      parseInt(action.payload.dice))
+                                ? 1
+                                : parseInt(p) + parseInt(action.payload.toMove)
                             : p
                 ),
             }
@@ -55,12 +51,12 @@ export const MOVE = 'move'
 export const RESET = 'reset'
 
 // action creators
-export const move_piece = (num, color, dice) => ({
+export const move_piece = (toMove, color, num) => ({
     type: MOVE,
     payload: {
-        num,
+        toMove,
         color,
-        dice,
+        num,
     },
 })
 export const reset_piece = (num, color) => ({
