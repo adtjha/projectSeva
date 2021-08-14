@@ -64,13 +64,16 @@ function Piece(props) {
     }
 
     const updatePos = useCallback(
-        (toMove) => {
+        (pos) => {
             // animate
             const start = Constants.xy(patharr, position),
-                end = Constants.xy(patharr, parseInt(toMove))
+                end = Constants.xy(
+                    patharr,
+                    parseInt(isNaN(pos) ? 1 : position - pos)
+                )
             className += Constants.generateTranslate(start, end)
             setTimeout(() => {
-                dispatch(move_piece(toMove, color, num - 1))
+                dispatch(move_piece(pos, color, num - 1))
                 console.log('dispatched')
             }, 500)
         },
@@ -98,7 +101,11 @@ function Piece(props) {
                     dispatch(set_chance(true))
                     updatePos(1)
                     // socket.emit pos
-                    socket.emit('move_piece', { toMove: 1, color, name })
+                    socket.emit('move_piece', {
+                        toMove: isNaN(position) ? 1 : position + 1,
+                        color,
+                        name,
+                    })
                 } else {
                     // chance finished
                     dispatch(set_chance(false))
@@ -108,7 +115,11 @@ function Piece(props) {
                 dispatch(set_chance(true))
                 updatePos(dice)
                 // socket.emit pos
-                socket.emit('move_piece', { toMove: dice, color, name })
+                socket.emit('move_piece', {
+                    toMove: position + dice,
+                    color,
+                    name,
+                })
             }
         } else {
             console.log('NOT ALLOWED')

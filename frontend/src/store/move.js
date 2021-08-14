@@ -18,9 +18,7 @@ export function movesReducer(state = initialState, action) {
                 [action.payload.color]: state[action.payload.color].map(
                     (p, i) =>
                         i === action.payload.num
-                            ? isNaN(p)
-                                ? 1
-                                : parseInt(p) + parseInt(action.payload.toMove)
+                            ? parseInt(action.payload.pos)
                             : p
                 ),
             }
@@ -51,10 +49,10 @@ export const MOVE = 'move'
 export const RESET = 'reset'
 
 // action creators
-export const move_piece = (toMove, color, num) => ({
+export const move_piece = (pos, color, num) => ({
     type: MOVE,
     payload: {
-        toMove,
+        pos,
         color,
         num,
     },
