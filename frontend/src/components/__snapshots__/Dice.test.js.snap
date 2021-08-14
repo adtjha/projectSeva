@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Dice /> matches snapshot 1`] = `
+<div>
+  <div
+    class="flex flex-col items-center py-8"
+  >
+    <div
+      class="w-32 h-32"
+    >
+      <div
+        class="w-16 font-mono text-4xl m-auto text-center p-0 text-gray-400 transform transition duration-300 opacity-0 -rotate-180 scale-50"
+      >
+        <img
+          alt="1"
+          src="1.svg"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Dice matches snapshot 1`] = `
+<div>
+  <div
+    class="flex flex-col items-center py-8"
+  >
+    <div
+      class="w-32 h-32"
+    >
+      <div
+        class="w-16 font-mono text-4xl m-auto text-center p-0 text-gray-400 transform transition duration-300 opacity-0 -rotate-180 scale-50"
+      >
+        <img
+          alt="1"
+          src="1.svg"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
