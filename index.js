@@ -58,7 +58,7 @@ const players = ["red", "green", "yellow", "blue"];
 const ice_servers = [{ urls: "stun:stun.stunprotocol.org" }];
 
 app.use(cors());
-// app.use(express.static("frontend/build"));
+app.use(express.static("frontend/build"));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -312,6 +312,6 @@ app.post("/consumer", async ({ body }, res) => {
   }
 });
 
-// app.get("/*", (req, res) => {
-//   res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
-// });
+app.get("/*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
+});
