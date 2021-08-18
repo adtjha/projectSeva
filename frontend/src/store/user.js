@@ -39,6 +39,7 @@ export const getPieceOut = (state) => state.user.pieceOut
 export const getUserId = (state) => state.user.id
 export const getGameId = (state) => state.user.data.id
 export const getGameStatus = (state) => state.user.ended
+export const getGameCurrentPlayer = (state) => state.user.data.current
 
 // action types
 export const PIECE = 'piece'

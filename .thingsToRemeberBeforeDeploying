@@ -1,5 +1,0 @@
-- index.js
-Uncomment app.use(express)
-
-- ./Frontend/Constants.js
-Uncomment BASE_API

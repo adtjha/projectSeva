@@ -1,5 +1,5 @@
 import { Transition } from '@headlessui/react'
-import { Fragment, useCallback, useContext } from 'react'
+import { Fragment, useCallback, useContext, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import one from '../images/dice/1.svg'
 import two from '../images/dice/2.svg'
@@ -37,13 +37,17 @@ const Dice = (props) => {
             console.log('PLAY MOVE, DICE ROLLED ONCE', hasRolled)
         }
     }, [hasRolled, socket, gameId, dispatch])
-    
-    socket.on('dice_rolled', (face) => {
-        dispatch(set_showing(false))
-        setTimeout(() => {
-            dispatch(set_dice(face))
-            dispatch(set_showing(true))
-        }, 500)
+
+    useEffect(() => {
+        socket.on('dice_rolled', (face) => {
+            dispatch(set_showing(false))
+            setTimeout(() => {
+                dispatch(set_dice(face))
+                dispatch(set_showing(true))
+            }, 500)
+        })
+
+        return () => {}
     })
 
     return (

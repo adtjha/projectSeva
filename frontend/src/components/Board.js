@@ -3,7 +3,7 @@ import Cell from './Cell'
 import create2Darray from './functions/create2Darray'
 import { VideoChat } from './videoChat'
 import Dice from './Dice'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { getBlue, getGreen, getRed, getYellow } from '../store/move'
 import { getDice } from '../store/dice'
 import { getGameId, getGameStatus, set_data, set_name } from '../store/user'
@@ -38,10 +38,6 @@ const Board = (props) => {
         })
     }
 
-    socket.on('moved_piece', (data) => {
-        console.log(data)
-    })
-
     const gameId = useSelector(getGameId)
     const hasGameEnded = useSelector(getGameStatus)
 
@@ -49,6 +45,9 @@ const Board = (props) => {
 
     return !hasGameEnded && gameId ? (
         <React.Fragment>
+            <div className="w-max p-2 text-2xl font-semibold text-black">
+                Room UID : {gameId}
+            </div>
             <div className="board block lg:w-max lg:h-max lg:max-w-full  lg:p-4 m-auto p-1 border-2 border-solid rounded-2xl shadow-md">
                 <div className="relative z-20 lg:w-max lg:max-w-full grid grid-cols-sm13 lg:grid-cols-13 grid-rows-sm13 lg:grid-rows-13 md:gap-1 lg:gap-2 justify-items-stretch">
                     {pos.map((cell) => (
@@ -65,7 +64,13 @@ const Board = (props) => {
                 <div className="w-max h-max m-auto p-4 border-2 border-gray-400 flex flex-col">
                     <h1 className="font-semibold m-auto py-4">USER NAME</h1>
                     <form className="flex flex-col" onSubmit={handleSubmit}>
-                        <input className="p-2 text-center"></input>
+                        <input
+                            className="p-2 text-center"
+                            value={(() =>
+                                (Math.random() + 1)
+                                    .toString(36)
+                                    .substring(7))()}
+                        />
                         <button
                             type="submit"
                             className="my-4 mx-auto w-36 h-12 bg-blueGray-800 text-blueGray-200 py-2 px-2 rounded"

@@ -1,11 +1,4 @@
-import React, {
-    useCallback,
-    useContext,
-    useEffect,
-    useLayoutEffect,
-    useRef,
-    useState,
-} from 'react'
+import React, { useCallback, useContext, useLayoutEffect } from 'react'
 import red from '../images/red.svg'
 import green from '../images/green.svg'
 import yellow from '../images/yellow.svg'
@@ -20,6 +13,8 @@ import {
     getPieceOut,
     set_piece_out,
     set_chance,
+    set_data,
+    getGameId,
 } from '../store/user'
 import { getDice, rolled, set_rolled } from '../store/dice'
 import { SocketContext } from 'connect/socket'
@@ -40,6 +35,7 @@ function Piece(props) {
     const isChance = useSelector(getChance)
     const hasRolled = useSelector(rolled)
     const isPieceOut = useSelector(getPieceOut)
+    const gameId = useSelector(getGameId)
 
     const socket = useContext(SocketContext)
 
@@ -88,8 +84,13 @@ function Piece(props) {
                 updatePos(toMove)
             }
         })
-    }, [socket, name, updatePos])
-
+    }, [socket, name, updatePos, dispatch, gameId])
+    
+    socket.on('update_current', (player) => {
+        console.log('recieved', player)
+        dispatch(set_data({ id: gameId, current: player }))
+    })
+    
     const handleClick = (e) => {
         e.preventDefault()
         if (color === userColor && isChance && hasRolled) {
@@ -107,16 +108,19 @@ function Piece(props) {
                         color,
                         name,
                     })
+                    socket.emit('change', { game_id: gameId })
                 } else {
                     // chance finished
+                    dispatch(set_rolled(false))
                     dispatch(set_chance(false))
+                    socket.emit('change', { game_id: gameId })
                 }
             } else if (props.name !== position) {
                 dispatch(set_rolled(false))
                 dispatch(set_chance(true))
                 updatePos(position + dice)
                 // socket.emit pos
-                console.log(position, position+dice)
+                console.log(position, position + dice)
                 socket.emit('move_piece', {
                     toMove: position + dice,
                     color,
