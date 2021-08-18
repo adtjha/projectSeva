@@ -51,26 +51,24 @@ const Dice = (props) => {
     })
 
     return (
-        <div className="flex flex-col items-center py-8">
-            <div className="w-32 h-32">
-                <Transition
-                    as={Fragment}
-                    show={isShowing}
-                    enter="transform transition duration-300"
-                    enterFrom="opacity-0 -rotate-180 scale-50"
-                    enterTo="opacity-100 rotate-0 scale-100"
-                    leave="transform duration-200 transition ease-in-out"
-                    leaveFrom="opacity-100 rotate-0 scale-100 "
-                    leaveTo="opacity-0 scale-95 "
+        <div className="w-min mx-auto my-8 p-2">
+            <Transition
+                as={Fragment}
+                show={isShowing}
+                enter="transform transition duration-300"
+                enterFrom="opacity-0 -rotate-180 scale-50"
+                enterTo="opacity-100 rotate-0 scale-100"
+                leave="transform duration-200 transition ease-in-out"
+                leaveFrom="opacity-100 rotate-0 scale-100 "
+                leaveTo="opacity-0 scale-95 "
+            >
+                <div
+                    className="w-16 font-mono text-4xl m-auto text-center p-0 text-gray-400"
+                    onClick={handleClick}
                 >
-                    <div
-                        className="w-16 font-mono text-4xl m-auto text-center p-0 text-gray-400"
-                        onClick={handleClick}
-                    >
-                        <img src={srcList[props.num - 1]} alt={props.num}></img>
-                    </div>
-                </Transition>
-            </div>
+                    <img src={srcList[props.num - 1]} alt={props.num}></img>
+                </div>
+            </Transition>
         </div>
     )
 }

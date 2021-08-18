@@ -9,7 +9,8 @@ module.exports = {
         black: "1px solid black",
       },
       spacing: {
-        110: "28rem",
+        4.5: "1.125rem",
+        9: "2.25rem",
         18: "4.5rem",
         27: "6.75rem",
         45: "11.25rem",
@@ -19,7 +20,8 @@ module.exports = {
         90: "22.5rem",
         99: "24.75rem",
         108: "27rem",
-        117: "29.25",
+        110: "28rem",
+        117: "29.25rem",
       },
       gridTemplateColumns: {
         13: "repeat(13, minmax(0, 2rem))",

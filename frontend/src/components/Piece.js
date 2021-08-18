@@ -6,6 +6,7 @@ import React, {
     useRef,
     useState,
 } from 'react'
+import { useMedia } from 'react-use'
 import red from '../images/red.svg'
 import green from '../images/green.svg'
 import yellow from '../images/yellow.svg'
@@ -22,6 +23,7 @@ import {
     set_chance,
     set_data,
     getGameId,
+    getUserId,
 } from '../store/user'
 import { getDice, rolled, set_rolled } from '../store/dice'
 import { SocketContext } from 'connect/socket'
@@ -34,12 +36,14 @@ function Piece(props) {
     const color = Constants.colorNames[letter]
     const patharr = Constants[color.toUpperCase() + '_PATH']
     const animate = useRef()
+    const isLg = useMedia('(min-width: 1024px)')
 
     var className, piece
 
     const position = useSelector((state) => state.move[color][num - 1])
     const dice = useSelector(getDice)
     const userColor = useSelector(getColor)
+    const userId = useSelector(getUserId)
     const isChance = useSelector(getChance)
     const hasRolled = useSelector(rolled)
     const isPieceOut = useSelector(getPieceOut)
@@ -72,14 +76,14 @@ function Piece(props) {
             // animate
             const start = Constants.xy(patharr, position),
                 end = Constants.xy(patharr, pos)
-            animate.current = Constants.generateTranslate(start, end)
-            console.log({ animate, start, end, position, pos })
+            animate.current = Constants.generateTranslate(start, end, isLg)
+            console.log(animate.current, { start, end, position, pos })
             setTimeout(() => {
                 dispatch(move_piece(pos, color, num - 1))
                 console.log('dispatched')
             }, 500)
         },
-        [color, dispatch, num, patharr, position, animate]
+        [color, dispatch, num, patharr, position, animate, isLg]
     )
 
     useLayoutEffect(() => {
@@ -90,11 +94,11 @@ function Piece(props) {
                 updatePos(toMove)
             }
         })
-
         socket.current.on('update_current', (player) => {
             console.log('recieved', player)
             dispatch(set_data({ id: gameId, current: player }))
         })
+
         return () => {
             animate.current = ''
         }
@@ -116,6 +120,11 @@ function Piece(props) {
                         toMove: 1,
                         color,
                         name,
+                        dice,
+                        position,
+                        gameId,
+                        userId,
+                        safe_cell: props.cell_data.safe,
                     })
                     socket.current.emit('change', { game_id: gameId })
                 } else {
@@ -134,6 +143,11 @@ function Piece(props) {
                     toMove: position + dice,
                     color,
                     name,
+                    dice,
+                    position,
+                    gameId,
+                    userId,
+                    safe_cell: props.cell_data.safe,
                 })
             }
         } else {

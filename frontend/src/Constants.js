@@ -243,28 +243,32 @@ const end_cell_obj = {
     pos: {},
 }
 
-const generateTranslate = (start, end) => {
+const generateTranslate = (start, end, lg) => {
     const x = end[0] - start[0],
         y = end[1] - start[1]
 
-    let x_m = x * 9,
-        y_m = y * 9,
+    let space = lg ? 9 : 4.5
+
+    console.log(lg, space)
+
+    let x_m = x * space,
+        y_m = y * space,
         x_s,
         y_s
 
-    if (x_m >= 0) {
-        x_s = x_s === 0 ? '' : ' translate-x-' + x_m
+    if (x >= 0) {
+        x_s = x === 0 ? '' : ' translate-x-' + x_m
     } else {
         x_s = ' -translate-x-' + -1 * x_m
     }
 
-    if (y_m >= 0) {
-        y_s = y_s === 0 ? '' : ' translate-y-' + y_m
+    if (y >= 0) {
+        y_s = y === 0 ? '' : ' translate-y-' + y_m
     } else {
         y_s = ' -translate-y-' + -1 * y_m
     }
 
-    return ' transition-transform duration-300 transform ' + x_s + y_s
+    return ' transition-transform duration-300 transform' + x_s + y_s
 }
 
 const xy = (arr, e) => {
