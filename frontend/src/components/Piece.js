@@ -1,4 +1,11 @@
-import React, { useCallback, useContext, useLayoutEffect } from 'react'
+import React, {
+    useCallback,
+    useContext,
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useState,
+} from 'react'
 import red from '../images/red.svg'
 import green from '../images/green.svg'
 import yellow from '../images/yellow.svg'
@@ -26,6 +33,7 @@ function Piece(props) {
 
     const color = Constants.colorNames[letter]
     const patharr = Constants[color.toUpperCase() + '_PATH']
+    const animate = useRef()
 
     var className, piece
 
@@ -37,7 +45,7 @@ function Piece(props) {
     const isPieceOut = useSelector(getPieceOut)
     const gameId = useSelector(getGameId)
 
-    const socket = useContext(SocketContext)
+    const socket = useRef(useContext(SocketContext))
 
     const dispatch = useDispatch()
 
@@ -63,34 +71,35 @@ function Piece(props) {
         (pos) => {
             // animate
             const start = Constants.xy(patharr, position),
-                end = Constants.xy(
-                    patharr,
-                    parseInt(isNaN(pos) ? 1 : position - pos)
-                )
-            className += Constants.generateTranslate(start, end)
+                end = Constants.xy(patharr, pos)
+            animate.current = Constants.generateTranslate(start, end)
+            console.log({ animate, start, end, position, pos })
             setTimeout(() => {
                 dispatch(move_piece(pos, color, num - 1))
                 console.log('dispatched')
             }, 500)
         },
-        [color, dispatch, num, patharr, position, className]
+        [color, dispatch, num, patharr, position, animate]
     )
 
     useLayoutEffect(() => {
         // socket.on pos -> update pos
-        socket.on('piece_moved', ({ toMove, color, pieceID }) => {
+        socket.current.on('piece_moved', ({ toMove, color, pieceID }) => {
             if (pieceID === name) {
                 console.log(toMove)
                 updatePos(toMove)
             }
         })
-    }, [socket, name, updatePos, dispatch, gameId])
-    
-    socket.on('update_current', (player) => {
-        console.log('recieved', player)
-        dispatch(set_data({ id: gameId, current: player }))
-    })
-    
+
+        socket.current.on('update_current', (player) => {
+            console.log('recieved', player)
+            dispatch(set_data({ id: gameId, current: player }))
+        })
+        return () => {
+            animate.current = ''
+        }
+    }, [dispatch, gameId, name, updatePos])
+
     const handleClick = (e) => {
         e.preventDefault()
         if (color === userColor && isChance && hasRolled) {
@@ -103,17 +112,17 @@ function Piece(props) {
                     dispatch(set_chance(true))
                     updatePos(1)
                     // socket.emit pos
-                    socket.emit('move_piece', {
+                    socket.current.emit('move_piece', {
                         toMove: 1,
                         color,
                         name,
                     })
-                    socket.emit('change', { game_id: gameId })
+                    socket.current.emit('change', { game_id: gameId })
                 } else {
                     // chance finished
                     dispatch(set_rolled(false))
                     dispatch(set_chance(false))
-                    socket.emit('change', { game_id: gameId })
+                    socket.current.emit('change', { game_id: gameId })
                 }
             } else if (props.name !== position) {
                 dispatch(set_rolled(false))
@@ -121,7 +130,7 @@ function Piece(props) {
                 updatePos(position + dice)
                 // socket.emit pos
                 console.log(position, position + dice)
-                socket.emit('move_piece', {
+                socket.current.emit('move_piece', {
                     toMove: position + dice,
                     color,
                     name,
@@ -136,7 +145,7 @@ function Piece(props) {
     return (
         <React.Fragment>
             <img
-                className={className}
+                className={className + ' ' + animate.current}
                 data={props.name}
                 src={piece || color}
                 alt={props.name}

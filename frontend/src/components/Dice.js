@@ -1,5 +1,5 @@
 import { Transition } from '@headlessui/react'
-import { Fragment, useCallback, useContext, useEffect } from 'react'
+import { Fragment, useCallback, useContext, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import one from '../images/dice/1.svg'
 import two from '../images/dice/2.svg'
@@ -21,7 +21,7 @@ const Dice = (props) => {
     let isShowing = useSelector(getShowing)
     let hasRolled = useSelector(rolled)
 
-    const socket = useContext(SocketContext)
+    const socket = useRef(useContext(SocketContext))
     const gameId = useSelector(getGameId)
 
     const srcList = [one, two, three, four, five, six]
@@ -31,7 +31,7 @@ const Dice = (props) => {
     const handleClick = useCallback(() => {
         if (!hasRolled) {
             console.log('dice clicked')
-            socket.emit('roll_dice', { gameId })
+            socket.current.emit('roll_dice', { gameId })
             dispatch(set_rolled(true))
         } else {
             console.log('PLAY MOVE, DICE ROLLED ONCE', hasRolled)
@@ -39,7 +39,7 @@ const Dice = (props) => {
     }, [hasRolled, socket, gameId, dispatch])
 
     useEffect(() => {
-        socket.on('dice_rolled', (face) => {
+        socket.current.on('dice_rolled', (face) => {
             dispatch(set_showing(false))
             setTimeout(() => {
                 dispatch(set_dice(face))

@@ -45,7 +45,7 @@ const Board = (props) => {
 
     return !hasGameEnded && gameId ? (
         <React.Fragment>
-            <div className="w-max p-2 text-2xl font-semibold text-black">
+            <div className="w-max p-2 text-2xl font-semibold text-black mx-auto my-4">
                 Room UID : {gameId}
             </div>
             <div className="board block lg:w-max lg:h-max lg:max-w-full  lg:p-4 m-auto p-1 border-2 border-solid rounded-2xl shadow-md">
@@ -70,6 +70,10 @@ const Board = (props) => {
                                 (Math.random() + 1)
                                     .toString(36)
                                     .substring(7))()}
+                            onChange={(e) => {
+                                e.preventDefault()
+                                console.log(e.target[0].value)
+                            }}
                         />
                         <button
                             type="submit"
