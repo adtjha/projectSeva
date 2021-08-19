@@ -153,6 +153,7 @@ function Piece(props) {
                     userId,
                     safe_cell: props.cell_data.safe,
                 })
+                socket.current.emit('change', { game_id: gameId })
             }
         } else {
             console.log('NOT ALLOWED')

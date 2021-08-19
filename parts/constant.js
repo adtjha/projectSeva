@@ -5,59 +5,66 @@ const consoleSpacing = () => {
   console.log("-----------------------");
   console.log(" ");
 };
+
 const redPlayer = {
   color: "red",
   pos: ["r1", "r2", "r3", "r4"],
   stream: "",
 };
+
 const greenPlayer = {
   color: "green",
   pos: ["g1", "g2", "g3", "g4"],
   stream: "",
 };
+
 const yellowPlayer = {
   color: "yellow",
   pos: ["y1", "y2", "y3", "y4"],
   stream: "",
 };
+
 const bluePlayer = {
   color: "blue",
   pos: ["b1", "b2", "b3", "b4"],
   stream: "",
 };
+
 const roomDefault = {
-  players: {},
-  currentPlayer: "",
+  players: new Map(),
+  current: "",
 };
-const rooms = {};
+
+const rooms = new Map();
 
 const hasEmpty = (empty) => {
   let playerColors = [...players];
 
-  if (rooms !== null) {
-    for (const [id, room] of Object.entries(rooms)) {
-      if (Object.keys(room.players).length === 4) {
-        // room full
-        empty.state = false
-      } else {
+  if (rooms.size !== 0) {
+    // check if loop run for first time.
+    for (const [id, room] of rooms) {
+      if (room.players.size < 4) {
         // room empty
         empty.id = id;
-        empty.current = room.currentPlayer;
+        empty.current = room.current;
+
         // remove colors already taken from playerColor
-        Object.values(room.players).forEach((player) => {
+        room.players.forEach((player, id, map) => {
           playerColors = playerColors.filter((color) => color !== player.color);
         });
-        if (playerColors.length > 0) {
-          empty.state = true;
-          empty.color = playerColors[0];
-        } else {
-          empty.state = false;
-        }
+
+        empty.state = true;
+        empty.color = playerColors[0];
+        return empty;
+      } else {
+        // room full
+        empty.state = false;
       }
     }
   } else {
     empty.state = false;
   }
+  
   return empty;
 };
 

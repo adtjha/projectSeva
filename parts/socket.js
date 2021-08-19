@@ -24,10 +24,11 @@ module.exports = (io) => {
       let config = { id: "", user: { id: "", color: "" } };
       const empty = hasEmpty({ id: "", state: "", color: "" });
 
-      if (empty.state) {
-        let player,
-          uid = uuidv4();
+      console.log("before empty", rooms);
 
+      if (empty.state) {
+        let player;
+        console.log("is empty", rooms);
         switch (empty.color) {
           case "red":
             player = { ...redPlayer };
@@ -42,72 +43,77 @@ module.exports = (io) => {
             player = { ...bluePlayer };
             break;
         }
+        rooms.get(empty.id).players.set(socket.id, { ...player });
 
-        rooms[empty.id].players[uid] = { ...player };
-
-        rooms[empty.id].players[uid].socket_id = socket.id;
-
+        socket.leave(socket.id);
         socket.join(empty.id);
 
         config.id = empty.id;
-        config.user.id = uid;
+        config.user.id = socket.id;
         config.user.color = empty.color;
-        config.current = rooms[empty.id].current;
+        config.current = rooms.get(empty.id).current;
+        console.log("exit is empty", rooms);
       } else {
-        // create a room of 4 -> Push into room into rooms array -> send room id
-        let room = { ...roomDefault };
+        // create a room of 4
+        let room = {
+          players: new Map(),
+          current: "",
+        };
         const room_id = uuidv4();
-        const player_id = uuidv4();
-        room.currentPlayer = "red";
+        room.current = "red";
 
-        rooms[room_id] = room;
-        rooms[room_id].players[player_id] = { ...redPlayer };
+        console.log("is not empty", rooms, room, room_id, roomDefault);
+        // -> Push into room into rooms array
+        rooms.set(room_id, { ...room });
+        rooms.get(room_id).players.set(socket.id, { ...redPlayer });
+        console.log("exit is not empty", rooms, room, room_id, roomDefault);
 
+        socket.leave(socket.id);
         socket.join(room_id);
 
+        // -> send room id
         config.id = room_id;
-        config.user.id = player_id;
+        config.user.id = socket.id;
         config.user.color = "red";
         config.current = "red";
       }
 
+      console.log("exit join", rooms);
+      consoleSpacing();
       socket.emit("config_data", config);
-      console.log(JSON.stringify(rooms));
-      console.log(io.sockets.adapter.rooms);
     });
 
     socket.on("roll_dice", ({ gameId }) => {
       // const face = Math.ceil(Math.random() * 6);
       const face = 6;
       socket.emit("dice_rolled", face);
-      // socket.broadcast.emit("dice_rolled", face);
       io.to(gameId).emit("dice_rolled", face);
     });
 
     socket.on("change", ({ game_id }) => {
-      const index = players.findIndex(
-        (p) => p === rooms[game_id].currentPlayer
-      );
+      const index = players.findIndex((p) => p === rooms.get(game_id).current);
+      console.log(rooms.get(game_id).current);
+
       let newIndex = index === 3 ? 0 : index + 1;
 
-      rooms[game_id].currentPlayer = players[newIndex];
+      rooms.get(game_id).current = players[newIndex];
+      console.log(rooms.get(game_id).current);
 
-      socket.emit("update_current", rooms[game_id].currentPlayer);
-      // socket.broadcast.emit("update_current", rooms[gameId].currentPlayer);
-      io.to(game_id).emit("update_current", rooms[game_id].currentPlayer);
+      socket.emit("update_current", rooms.get(game_id).current);
+      io.to(game_id).emit("update_current", rooms.get(game_id).current);
     });
 
     socket.on(
       "move_piece",
       ({ toMove, color, name, dice, position, gameId, userId, safe_cell }) => {
         // no piece out,
-        if (noPieceOut(rooms[gameId].players[userId].pos)) {
+        if (noPieceOut(rooms.get(gameId).players.get(userId).pos)) {
           if (dice === 6) {
             // -> update arr
-            rooms[gameId].players[userId].pos = newArr(
+            rooms.get(gameId).players.get(userId).pos = newArr(
               dice,
               position,
-              rooms[gameId].players[userId].pos
+              rooms.get(gameId).players.get(userId).pos
             );
             // -> emit moved_piece
             socket.emit("piece_moved", {
@@ -132,10 +138,10 @@ module.exports = (io) => {
         } else {
           // is piece out
           // -> update arr
-          rooms[gameId].players[userId].pos = newArr(
+          rooms.get(gameId).players.get(userId).pos = newArr(
             dice,
             position,
-            rooms[gameId].players[userId].pos
+            rooms.get(gameId).players.get(userId).pos
           );
           // -> emit moved_piece
           socket.emit("piece_moved", {
@@ -162,13 +168,11 @@ module.exports = (io) => {
     socket.on("disconnect", () => {
       console.log("user disconnected");
 
-      if (Object.entries(rooms).length !== 0 && rooms.constructor === Object) {
-        console.log(JSON.stringify(rooms));
-        let toDelete = {};
-        for (const [id, room] of Object.entries(rooms)) {
-          for (const [id, player] of Object.entries(room.players)) {
+      if (rooms.size !== 0) {
+        for (const [rid, room] of rooms) {
+          for (const [pid, player] of room.players) {
             if (player.socket_id === socket.id) {
-              delete rooms[toDelete.room].players[id];
+              rooms.get(rid).players.delete(pid);
             }
           }
         }
