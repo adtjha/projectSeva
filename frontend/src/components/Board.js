@@ -24,6 +24,7 @@ const Board = (props) => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        console.log(socket, 'here')
         socket.emit('join_game', e.target[0].value)
         socket.on('config_data', (data) => {
             console.log(e.target[0].value, socket)

@@ -33,6 +33,7 @@ const Dice = (props) => {
             console.log('dice clicked')
             socket.current.emit('roll_dice', { gameId })
             dispatch(set_rolled(true))
+            console.log(gameId)
         } else {
             console.log('PLAY MOVE, DICE ROLLED ONCE', hasRolled)
         }

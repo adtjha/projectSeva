@@ -81,7 +81,7 @@ function Piece(props) {
             setTimeout(() => {
                 dispatch(move_piece(pos, color, num - 1))
                 console.log('dispatched')
-            }, 500)
+            }, 150)
         },
         [color, dispatch, num, patharr, position, animate, isLg]
     )
@@ -97,6 +97,10 @@ function Piece(props) {
         socket.current.on('update_current', (player) => {
             console.log('recieved', player)
             dispatch(set_data({ id: gameId, current: player }))
+        })
+
+        socket.current.on('moved_piece_err', ({ message }) => {
+            alert(message)
         })
 
         return () => {

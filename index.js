@@ -12,10 +12,11 @@ const server = app.listen(port, () => {
 });
 
 const io = new Server(server);
-exports.io = io;
+
+require("./parts/socket")(io);
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  console.log("Hello World!");
 });
 
 // app.get("/*", (req, res) => {
