@@ -18,7 +18,7 @@ export default function replaceCell(color, board) {
 
 function placeCellObjects(cellid, i, color) {
   let cellObject,
-    j = i % 13;
+    j = i % 15;
   // find cell_obj according to cell id,
   // clone cell_obj
   if (cellid.length > 1) {
@@ -52,7 +52,7 @@ function placeCellObjects(cellid, i, color) {
   }
 
   // fill req. data in cell_obj
-  cellObject.pos.x = Math.floor(i / 13);
+  cellObject.pos.x = Math.floor(i / 15);
   cellObject.pos.y = j;
 
   cellObject.style += " col-start-" + (j + 1) + " col-end-" + (j + 2);

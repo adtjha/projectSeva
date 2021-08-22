@@ -12,7 +12,6 @@ const server = app.listen(port, () => {
 });
 
 const io = new Server(server);
-
 require("./parts/socket")(io);
 
 app.get("/", (req, res) => {
@@ -22,3 +21,4 @@ app.get("/", (req, res) => {
 // app.get("/*", (req, res) => {
 //   res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
 // });
+

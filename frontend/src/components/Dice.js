@@ -15,7 +15,13 @@ import {
     set_showing,
 } from '../store/dice'
 import { SocketContext } from '../connect/socket'
-import { getGameId } from 'store/user'
+import {
+    getColor,
+    getGameCurrentPlayer,
+    getGameId,
+    getPieceOut,
+    set_chance,
+} from 'store/user'
 
 const Dice = (props) => {
     let isShowing = useSelector(getShowing)
@@ -23,6 +29,9 @@ const Dice = (props) => {
 
     const socket = useRef(useContext(SocketContext))
     const gameId = useSelector(getGameId)
+    const userColor = useSelector(getColor)
+    const currentColor = useSelector(getGameCurrentPlayer)
+    const isPieceOut = useSelector(getPieceOut)
 
     const srcList = [one, two, three, four, five, six]
 
@@ -45,11 +54,17 @@ const Dice = (props) => {
             setTimeout(() => {
                 dispatch(set_dice(face))
                 dispatch(set_showing(true))
+                if (userColor === currentColor && !isPieceOut) {
+                    socket.current.emit('change', { game_id: gameId })
+                }
+                // chance finished
+                dispatch(set_rolled(false))
+                dispatch(set_chance(false))
             }, 500)
         })
 
         return () => {}
-    })
+    }, [currentColor, dispatch, gameId, isPieceOut, userColor])
 
     return (
         <div className="w-min mx-auto my-8 p-2">

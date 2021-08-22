@@ -1,11 +1,4 @@
-import React, {
-    useCallback,
-    useContext,
-    useEffect,
-    useLayoutEffect,
-    useRef,
-    useState,
-} from 'react'
+import React, { useCallback, useContext, useLayoutEffect, useRef } from 'react'
 import { useMedia } from 'react-use'
 import red from '../images/red.svg'
 import green from '../images/green.svg'
@@ -111,7 +104,6 @@ function Piece(props) {
     const handleClick = (e) => {
         e.preventDefault()
         if (color === userColor && isChance && hasRolled) {
-            // console.log(props, position, pieceRef.current.className)
             if (props.name === position) {
                 // logic -> move only if pieceOut else move only if dice is 6
                 if (dice === 6 && !isPieceOut) {
@@ -132,10 +124,6 @@ function Piece(props) {
                     })
                     socket.current.emit('change', { game_id: gameId })
                 } else {
-                    // chance finished
-                    dispatch(set_rolled(false))
-                    dispatch(set_chance(false))
-                    socket.current.emit('change', { game_id: gameId })
                 }
             } else if (props.name !== position) {
                 dispatch(set_rolled(false))
@@ -156,8 +144,7 @@ function Piece(props) {
                 socket.current.emit('change', { game_id: gameId })
             }
         } else {
-            console.log('NOT ALLOWED')
-            dispatch(set_rolled(false))
+            console.log('NOT ALLOWED', userColor, isChance, hasRolled)
         }
     }
 

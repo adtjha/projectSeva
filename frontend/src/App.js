@@ -9,7 +9,7 @@ function App() {
     return (
         <SocketContext.Provider value={socket}>
             <Router>
-                <div className="App m-auto lg:p-8 ">
+                <div className="App m-auto">
                     <Switch>
                         <Route path="/game">
                             <Board key={1} socket={socket} />

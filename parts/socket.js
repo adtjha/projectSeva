@@ -84,19 +84,52 @@ module.exports = (io) => {
     });
 
     socket.on("roll_dice", ({ gameId }) => {
-      // const face = Math.ceil(Math.random() * 6);
-      const face = 6;
+      const face = Math.ceil(Math.random() * 6);
+      // const face = 6;
       socket.emit("dice_rolled", face);
       io.to(gameId).emit("dice_rolled", face);
     });
 
     socket.on("change", ({ game_id }) => {
-      const index = players.findIndex((p) => p === rooms.get(game_id).current);
-      console.log(rooms.get(game_id).current);
+      const currentColor = rooms.get(game_id).players.get(socket.id).color;
+      let availableColors = [],
+        nextColor;
 
-      let newIndex = index === 3 ? 0 : index + 1;
+      rooms.get(game_id).players.forEach((player, id, map) => {
+        availableColors.push(player.color);
+      });
 
-      rooms.get(game_id).current = players[newIndex];
+      switch (availableColors.length) {
+        case 1:
+          nextColor = currentColor;
+          break;
+        case 2:
+          nextColor =
+            currentColor === availableColors[0]
+              ? availableColors[1]
+              : availableColors[0];
+          break;
+        case 3:
+          nextColor =
+            currentColor === availableColors[0]
+              ? availableColors[1]
+              : currentColor === availableColors[1]
+              ? availableColors[2]
+              : availableColors[0];
+          break;
+        case 4:
+          nextColor =
+            currentColor === availableColors[0]
+              ? availableColors[1]
+              : currentColor === availableColors[1]
+              ? availableColors[2]
+              : currentColor === availableColors[2]
+              ? availableColors[3]
+              : availableColors[0];
+          break;
+      }
+
+      rooms.get(game_id).current = nextColor;
       console.log(rooms.get(game_id).current);
 
       socket.emit("update_current", rooms.get(game_id).current);
