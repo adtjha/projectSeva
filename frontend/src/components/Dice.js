@@ -15,56 +15,60 @@ import {
     set_showing,
 } from '../store/dice'
 import { SocketContext } from '../connect/socket'
-import {
-    getColor,
-    getGameCurrentPlayer,
-    getGameId,
-    getPieceOut,
-    set_chance,
-} from 'store/user'
+import { getColor, getGameCurrentPlayer, getGameId } from 'store/user'
+import { useLogger } from 'react-use'
 
 const Dice = (props) => {
     let isShowing = useSelector(getShowing)
     let hasRolled = useSelector(rolled)
+    const mounted = useRef(true)
 
     const socket = useRef(useContext(SocketContext))
     const gameId = useSelector(getGameId)
     const userColor = useSelector(getColor)
     const currentColor = useSelector(getGameCurrentPlayer)
-    const isPieceOut = useSelector(getPieceOut)
+    const isChance = userColor === currentColor
 
     const srcList = [one, two, three, four, five, six]
 
     const dispatch = useDispatch()
 
     const handleClick = useCallback(() => {
-        if (!hasRolled) {
-            console.log('dice clicked')
+        if (!hasRolled && isChance) {
             socket.current.emit('roll_dice', { gameId })
             dispatch(set_rolled(true))
-            console.log(gameId)
         } else {
-            console.log('PLAY MOVE, DICE ROLLED ONCE', hasRolled)
+            console.log(
+                'PLAY MOVE, DICE ROLLED ONCE',
+                { hasRolled },
+                { isChance }
+            )
         }
-    }, [hasRolled, socket, gameId, dispatch])
+    }, [hasRolled, socket, gameId, dispatch, isChance])
 
     useEffect(() => {
-        socket.current.on('dice_rolled', (face) => {
-            dispatch(set_showing(false))
-            setTimeout(() => {
-                dispatch(set_dice(face))
-                dispatch(set_showing(true))
-                if (userColor === currentColor && !isPieceOut) {
+        socket.current.on('dice_rolled', ({ face, noPieceOut }) => {
+            if (mounted.current) {
+                dispatch(set_showing(false))
+                console.log('------------------------YAY-------------------')
+                if (noPieceOut && face !== 6) {
+                    dispatch(set_rolled(false))
                     socket.current.emit('change', { game_id: gameId })
                 }
-                // chance finished
-                dispatch(set_rolled(false))
-                dispatch(set_chance(false))
-            }, 500)
+                setTimeout(() => {
+                    dispatch(set_dice(face))
+                    dispatch(set_showing(true))
+                }, 500)
+            }
         })
 
-        return () => {}
-    }, [currentColor, dispatch, gameId, isPieceOut, userColor])
+        return () => {
+            mounted.current = false
+            console.log('why here')
+        }
+    }, [dispatch, gameId])
+
+    useLogger('Dice', props, mounted)
 
     return (
         <div className="w-min mx-auto my-8 p-2">

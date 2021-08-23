@@ -37,10 +37,28 @@ const roomDefault = {
 
 const rooms = new Map();
 
-const hasEmpty = (empty) => {
+const hasEmpty = (empty, room_id) => {
   let playerColors = [...players];
 
   if (rooms.size !== 0) {
+    // check if room exsists, if yes, return empty room details
+    if (room_id && rooms.has(room_id)) {
+      if (rooms.get(room_id).players.size < 4) {
+        empty.id = room_id;
+        empty.current = rooms.get(room_id).current;
+
+        rooms.get(room_id).players.forEach((player, id, map) => {
+          playerColors = playerColors.filter((color) => color !== player.color);
+        });
+
+        empty.state = true;
+        empty.color = playerColors[0];
+      } else {
+        // room full
+        empty.state = false;
+      }
+    }
+
     // check if loop run for first time.
     for (const [id, room] of rooms) {
       if (room.players.size < 4) {
@@ -88,8 +106,8 @@ const newPos = (dice, pos) => {
   }
 };
 
-const newArr = (dice, pos, arr) => {
-  return arr.map((x) => (x === pos ? newPos(dice, pos) : x));
+const newArr = (new_pos, pos, arr) => {
+  return arr.map((x) => (x === pos ? new_pos : x));
 };
 
 const noPieceOut = (arr) => {
@@ -168,6 +186,7 @@ exports.redPlayer = redPlayer;
 exports.players = players;
 exports.noPieceOut = noPieceOut;
 exports.newArr = newArr;
+exports.newPos = newPos;
 exports.hasEmpty = hasEmpty;
 exports.bluePlayer = bluePlayer;
 exports.yellowPlayer = yellowPlayer;

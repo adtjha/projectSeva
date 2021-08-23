@@ -10,25 +10,23 @@ const {
   yellowPlayer,
   bluePlayer,
   newArr,
+  newPos,
   noPieceOut,
+  hasRoom,
 } = require("./constant");
 
 module.exports = (io) => {
   io.on("connection", (socket) => {
-    console.log("a user connected");
     // consoleSpacing();
 
     // join a game,
-    socket.on("join_game", () => {
+    socket.on("join_game", (room_id) => {
       // if room empty -> fit user in room array -> send room id
       let config = { id: "", user: { id: "", color: "" } };
-      const empty = hasEmpty({ id: "", state: "", color: "" });
-
-      console.log("before empty", rooms);
+      const empty = hasEmpty({ id: "", state: "", color: "" }, room_id);
 
       if (empty.state) {
         let player;
-        console.log("is empty", rooms);
         switch (empty.color) {
           case "red":
             player = { ...redPlayer };
@@ -52,7 +50,6 @@ module.exports = (io) => {
         config.user.id = socket.id;
         config.user.color = empty.color;
         config.current = rooms.get(empty.id).current;
-        console.log("exit is empty", rooms);
       } else {
         // create a room of 4
         let room = {
@@ -78,16 +75,21 @@ module.exports = (io) => {
         config.current = "red";
       }
 
-      console.log("exit join", rooms);
       consoleSpacing();
       socket.emit("config_data", config);
     });
 
     socket.on("roll_dice", ({ gameId }) => {
       const face = Math.ceil(Math.random() * 6);
-      // const face = 6;
-      socket.emit("dice_rolled", face);
-      io.to(gameId).emit("dice_rolled", face);
+      const pieceOut = noPieceOut(rooms.get(gameId).players.get(socket.id).pos);
+      socket.emit("dice_rolled", {
+        face,
+        noPieceOut: pieceOut,
+      });
+      io.to(gameId).emit("dice_rolled", {
+        face,
+        noPieceOut: pieceOut,
+      });
     });
 
     socket.on("change", ({ game_id }) => {
@@ -136,60 +138,56 @@ module.exports = (io) => {
       io.to(game_id).emit("update_current", rooms.get(game_id).current);
     });
 
-    socket.on(
-      "move_piece",
-      ({ toMove, color, name, dice, position, gameId, userId, safe_cell }) => {
-        // no piece out,
-        if (noPieceOut(rooms.get(gameId).players.get(userId).pos)) {
-          if (dice === 6) {
-            // -> update arr
-            rooms.get(gameId).players.get(userId).pos = newArr(
-              dice,
-              position,
-              rooms.get(gameId).players.get(userId).pos
-            );
-            // -> emit moved_piece
-            socket.emit("piece_moved", {
-              toMove,
-              color,
-              pieceID: name,
-            });
-            io.to(gameId).emit("piece_moved", {
-              toMove,
-              color,
-              pieceID: name,
-            });
-          } else {
-            // dice is not 6 -> emit err
-            socket.emit("move_error", {
-              message: "Cannot move any piece.",
-            });
-            io.to(gameId).emit("move_error", {
-              message: "Cannot move any piece.",
-            });
-          }
-        } else {
-          // is piece out
+    socket.on("move_piece", ({ name, dice, position, gameId, safe_cell }) => {
+      const userId = socket.id;
+      // no piece out,
+      if (noPieceOut(rooms.get(gameId).players.get(userId).pos)) {
+        if (dice === 6) {
           // -> update arr
+          const new_pos = newPos(dice, position);
+
           rooms.get(gameId).players.get(userId).pos = newArr(
-            dice,
+            new_pos,
             position,
             rooms.get(gameId).players.get(userId).pos
           );
+
           // -> emit moved_piece
           socket.emit("piece_moved", {
-            toMove,
-            color,
+            posArr: rooms.get(gameId).players.get(userId).pos,
+            new_pos,
             pieceID: name,
           });
           io.to(gameId).emit("piece_moved", {
-            toMove,
-            color,
+            posArr: rooms.get(gameId).players.get(userId).pos,
+            new_pos,
             pieceID: name,
           });
         }
+        // dice is not 6 -> auto switch player
+      } else {
+        // is piece out
+        // -> update arr
+        const new_pos = newPos(dice, position);
+
+        rooms.get(gameId).players.get(userId).pos = newArr(
+          new_pos,
+          position,
+          rooms.get(gameId).players.get(userId).pos
+        );
+        // -> emit moved_piece
+        socket.emit("piece_moved", {
+          posArr: rooms.get(gameId).players.get(userId).pos,
+          new_pos,
+          pieceID: name,
+        });
+        io.to(gameId).emit("piece_moved", {
+          posArr: rooms.get(gameId).players.get(userId).pos,
+          new_pos,
+          pieceID: name,
+        });
       }
-    );
+    });
 
     socket.on("reset_piece", () => {
       // if (!isSafe(newPos(dice, position)) && !safe_cell) {

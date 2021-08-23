@@ -3,15 +3,19 @@ import Cell from './Cell'
 import create2Darray from './functions/create2Darray'
 import { VideoChat } from './videoChat'
 import Dice from './Dice'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 import { getBlue, getGreen, getRed, getYellow } from '../store/move'
 import { getDice } from '../store/dice'
-import { getGameId, getGameStatus, set_data, set_name } from '../store/user'
+import { getGameId, set_data } from '../store/user'
 import { SocketContext } from '../connect/socket'
 import { Notification } from './Notification'
+import { useLogger } from 'react-use'
 // import { useGeolocation } from "react-use";
 
 const Board = (props) => {
+    const mounted = useRef(true)
+    const dispatch = useDispatch()
+
     const data = {
         red: useSelector(getRed),
         green: useSelector(getGreen),
@@ -19,33 +23,25 @@ const Board = (props) => {
         blue: useSelector(getBlue),
         dice: useSelector(getDice),
     }
-
-    const dispatch = useDispatch()
-    const socket = useContext(SocketContext)
-
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        console.log(socket, 'here')
-        socket.emit('join_game', e.target[0].value)
-        socket.on('config_data', (data) => {
-            console.log(e.target[0].value, socket)
-            dispatch(set_data({ id: data.id, current: data.current }))
-            dispatch(
-                set_name({
-                    id: data.user.id,
-                    name: e.target[0].value,
-                    color: data.user.color,
-                })
-            )
-        })
-    }
-
-    const gameId = useSelector(getGameId)
-    const hasGameEnded = useSelector(getGameStatus)
-
+    const socket = useRef(useContext(SocketContext))
     const pos = [...create2Darray(data)]
+    const gameId = useSelector(getGameId)
+    
+    useLogger('Board', mounted)
+    useEffect(() => {
+        socket.current.on('update_current', (player) => {
+            if (mounted.current) {
+                console.log('recieved', player, mounted)
+                dispatch(set_data({ id: gameId, current: player }))
+            }
+        })
 
-    return !hasGameEnded && gameId ? (
+        return () => {
+            mounted.current = false
+        }
+    }, [dispatch, gameId, mounted])
+
+    return (
         <React.Fragment>
             <Notification message="Game Started." />
             <div className="w-max p-2 text-2xl font-semibold text-black mx-auto my-4">
@@ -60,33 +56,6 @@ const Board = (props) => {
                 </div>
             </div>
             <Dice num={data.dice} />
-        </React.Fragment>
-    ) : (
-        <React.Fragment>
-            <div className="w-full h-96 flex">
-                <div className="w-max h-max m-auto p-4 border-2 border-gray-400 flex flex-col">
-                    <h1 className="font-semibold m-auto py-4">USER NAME</h1>
-                    <form className="flex flex-col" onSubmit={handleSubmit}>
-                        <input
-                            className="p-2 text-center"
-                            value={(() =>
-                                (Math.random() + 1)
-                                    .toString(36)
-                                    .substring(7))()}
-                            onChange={(e) => {
-                                e.preventDefault()
-                                console.log(e.target[0].value)
-                            }}
-                        />
-                        <button
-                            type="submit"
-                            className="my-4 mx-auto w-36 h-12 bg-blueGray-800 text-blueGray-200 py-2 px-2 rounded"
-                        >
-                            Play
-                        </button>
-                    </form>
-                </div>
-            </div>
         </React.Fragment>
     )
 }
