@@ -27,11 +27,9 @@ const Board = (props) => {
     const pos = [...create2Darray(data)]
     const gameId = useSelector(getGameId)
     
-    useLogger('Board', mounted)
     useEffect(() => {
         socket.current.on('update_current', (player) => {
             if (mounted.current) {
-                console.log('recieved', player, mounted)
                 dispatch(set_data({ id: gameId, current: player }))
             }
         })

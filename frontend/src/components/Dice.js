@@ -1,5 +1,10 @@
 import { Transition } from '@headlessui/react'
-import { Fragment, useCallback, useContext, useEffect, useRef } from 'react'
+import {
+    Fragment,
+    useContext,
+    useEffect,
+    useRef,
+} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import one from '../images/dice/1.svg'
 import two from '../images/dice/2.svg'
@@ -16,12 +21,14 @@ import {
 } from '../store/dice'
 import { SocketContext } from '../connect/socket'
 import { getColor, getGameCurrentPlayer, getGameId } from 'store/user'
-import { useLogger } from 'react-use'
+import { useLogger, useRendersCount } from 'react-use'
 
 const Dice = (props) => {
     let isShowing = useSelector(getShowing)
     let hasRolled = useSelector(rolled)
     const mounted = useRef(true)
+
+    const rendersCount = useRendersCount()
 
     const socket = useRef(useContext(SocketContext))
     const gameId = useSelector(getGameId)
@@ -33,42 +40,52 @@ const Dice = (props) => {
 
     const dispatch = useDispatch()
 
-    const handleClick = useCallback(() => {
+    const handleClick = () => {
         if (!hasRolled && isChance) {
-            socket.current.emit('roll_dice', { gameId })
+            socket.current.emit('roll_dice', { gameId, userColor })
             dispatch(set_rolled(true))
-        } else {
+            dispatch(set_showing(false))
+        } else if (isChance) {
             console.log(
                 'PLAY MOVE, DICE ROLLED ONCE',
                 { hasRolled },
                 { isChance }
             )
+        } else {
+            console.log('Not Your Chance', { isChance })
         }
-    }, [hasRolled, socket, gameId, dispatch, isChance])
+    }
+
+    const AutoMove = ({ face, noPieceOut }) => {
+        if (noPieceOut === 0 && face !== 6) {
+            console.log('No Piece Out and not a Six, switching player')
+            dispatch(set_rolled(false))
+            socket.current.emit('change', { game_id: gameId })
+        } else if (noPieceOut === 1) {
+            console.log('Single Piece Out, Auto Moving')
+            socket.current.emit('auto_move', { gameId, face })
+            dispatch(set_rolled(false))
+        }
+    }
+
+    const handleDiceRolled = ({ face, noPieceOut }) => {
+        if (mounted.current) {
+            console.log('dice rolled')
+            dispatch(set_dice(face))
+            dispatch(set_showing(true))
+            AutoMove({ face, noPieceOut })
+        }
+    }
+
+    socket.current.off('dice_rolled').on('dice_rolled', handleDiceRolled)
+
+    useLogger('Dice', rendersCount)
 
     useEffect(() => {
-        socket.current.on('dice_rolled', ({ face, noPieceOut }) => {
-            if (mounted.current) {
-                dispatch(set_showing(false))
-                console.log('------------------------YAY-------------------')
-                if (noPieceOut && face !== 6) {
-                    dispatch(set_rolled(false))
-                    socket.current.emit('change', { game_id: gameId })
-                }
-                setTimeout(() => {
-                    dispatch(set_dice(face))
-                    dispatch(set_showing(true))
-                }, 500)
-            }
-        })
-
         return () => {
             mounted.current = false
-            console.log('why here')
         }
-    }, [dispatch, gameId])
-
-    useLogger('Dice', props, mounted)
+    })
 
     return (
         <div className="w-min mx-auto my-8 p-2">

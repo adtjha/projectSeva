@@ -106,12 +106,17 @@ const newPos = (dice, pos) => {
   }
 };
 
-const newArr = (new_pos, pos, arr) => {
-  return arr.map((x) => (x === pos ? new_pos : x));
+const newArr = (new_pos, arr, index) => {
+  console.log(new_pos)
+  return arr.map((x, i) => (i === index ? new_pos : x));
 };
 
 const noPieceOut = (arr) => {
   return arr.every((x) => isNaN(x));
+};
+
+const piecesOut = (arr) => {
+  return arr.filter((i) => !isNaN(i) && i < 57 && i >= 1).length;
 };
 
 const cell_types = {
@@ -185,6 +190,7 @@ exports.greenPlayer = greenPlayer;
 exports.redPlayer = redPlayer;
 exports.players = players;
 exports.noPieceOut = noPieceOut;
+exports.piecesOut = piecesOut;
 exports.newArr = newArr;
 exports.newPos = newPos;
 exports.hasEmpty = hasEmpty;

@@ -8,12 +8,7 @@ import _ from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
 import Constants from '../Constants'
 import { update_arr } from '../store/move'
-import {
-    getColor,
-    getGameId,
-    getUserId,
-    getGameCurrentPlayer,
-} from '../store/user'
+import { getColor, getGameId, getGameCurrentPlayer } from '../store/user'
 import { getDice, rolled, set_rolled } from '../store/dice'
 import { SocketContext } from 'connect/socket'
 
@@ -33,7 +28,6 @@ function Piece(props) {
     const position = useSelector((state) => state.move[color][num - 1])
     const dice = useSelector(getDice)
     const userColor = useSelector(getColor)
-    const userId = useSelector(getUserId)
     const currentColor = useSelector(getGameCurrentPlayer)
     const hasRolled = useSelector(rolled)
     const gameId = useSelector(getGameId)
@@ -67,7 +61,6 @@ function Piece(props) {
             const start = Constants.xy(patharr, position),
                 end = Constants.xy(patharr, pos)
             animate.current = Constants.generateTranslate(start, end, isLg)
-            console.log(animate.current, { start, end, position, pos })
             setTimeout(() => {
                 dispatch(update_arr(color, posArr))
                 console.log('dispatched')
@@ -75,20 +68,20 @@ function Piece(props) {
         },
         [color, dispatch, patharr, position, animate, isLg]
     )
+    
+    // socket.on pos -> update pos
+    socket.current.off('piece_moved').on('piece_moved', ({ posArr, new_pos, pieceID }) => {
+        if (pieceID === name && mounted.current) {
+            const pos = new_pos
+            updatePos(posArr, pos)
+        }
+    })
 
+    socket.current.off('moved_piece_err').on('moved_piece_err', ({ message }) => {
+        alert(message)
+    })
+    
     useLayoutEffect(() => {
-        // socket.on pos -> update pos
-        socket.current.on('piece_moved', ({ posArr, new_pos, pieceID }) => {
-            if (pieceID === name && mounted.current) {
-                console.log(posArr)
-                const pos = new_pos
-                updatePos(posArr, pos)
-            }
-        })
-
-        socket.current.on('moved_piece_err', ({ message }) => {
-            alert(message)
-        })
 
         return () => {
             animate.current = ''
@@ -106,6 +99,7 @@ function Piece(props) {
                 position,
                 gameId,
                 safe_cell: props.cell_data.safe,
+                index: num - 1,
             })
             if (dice !== 6) {
                 socket.current.emit('change', { game_id: gameId })

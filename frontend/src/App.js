@@ -7,23 +7,23 @@ import { Game } from 'components/Game'
 
 function App() {
     return (
-        <SocketContext.Provider value={socket}>
-            <Router>
-                <div className="App m-auto">
-                    <Switch>
-                        <Route path="/game">
+        <Router>
+            <div className="App m-auto">
+                <Switch>
+                    <Route path="/game">
+                        <SocketContext.Provider value={socket}>
                             <Game key={1} />
-                        </Route>
-                        <Route path="/about">
-                            <About />
-                        </Route>
-                        <Route path="/">
-                            <LandingPage />
-                        </Route>
-                    </Switch>
-                </div>
-            </Router>
-        </SocketContext.Provider>
+                        </SocketContext.Provider>
+                    </Route>
+                    <Route path="/about">
+                        <About />
+                    </Route>
+                    <Route path="/">
+                        <LandingPage />
+                    </Route>
+                </Switch>
+            </div>
+        </Router>
     )
 }
 
