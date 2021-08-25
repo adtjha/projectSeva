@@ -42,6 +42,7 @@ export const getBlue = (state) => state.move.blue
 // action types
 export const ARRAY = 'array'
 export const RESET = 'reset'
+export const MOVE = 'move'
 
 // action creators
 export const update_arr = (color, posArr) => ({
@@ -51,4 +52,7 @@ export const update_arr = (color, posArr) => ({
 export const reset_piece = (num, color) => ({
     type: RESET,
     payload: { color, num },
+})
+export const move_piece = () => ({
+    type: MOVE,
 })

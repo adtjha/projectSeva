@@ -33,12 +33,14 @@ export const getGameId = (state) => state.user.data.id
 export const getGameStatus = (state) => state.user.ended
 export const getGameCurrentPlayer = (state) => state.user.data.current
 
-
 // action types
 export const PIECE = 'piece'
 export const CHANCE = 'chance'
 export const NAME = 'name'
 export const DATASET = 'data'
+export const CONNECT = 'connect'
+export const CONFIG = 'config'
+export const NEXT = 'next'
 
 // action creators
 export const set_piece_out = (state) => ({
@@ -59,4 +61,14 @@ export const set_data = ({ id, current }) => ({
         id: id,
         current: current,
     },
+})
+export const connect_socket = (room) => ({
+    type: CONNECT,
+    payload: room,
+})
+export const set_config = () => ({
+    type: CONFIG,
+})
+export const next_player = () => ({
+    type: NEXT,
 })

@@ -10,7 +10,7 @@ import Constants from '../Constants'
 import { update_arr } from '../store/move'
 import { getColor, getGameId, getGameCurrentPlayer } from '../store/user'
 import { getDice, rolled, set_rolled } from '../store/dice'
-import { SocketContext } from 'connect/socket'
+// import { SocketContext } from 'connect/socket'
 
 function Piece(props) {
     const mounted = useRef(true)
@@ -26,13 +26,13 @@ function Piece(props) {
     var className, piece
 
     const position = useSelector((state) => state.move[color][num - 1])
-    const dice = useSelector(getDice)
+    // const dice = useSelector(getDice)
     const userColor = useSelector(getColor)
     const currentColor = useSelector(getGameCurrentPlayer)
     const hasRolled = useSelector(rolled)
     const gameId = useSelector(getGameId)
 
-    const socket = useRef(useContext(SocketContext))
+    // const socket = useRef(useContext(SocketContext))
 
     const dispatch = useDispatch()
     const isChance = userColor === currentColor
@@ -69,17 +69,17 @@ function Piece(props) {
         [color, dispatch, patharr, position, animate, isLg]
     )
     
-    // socket.on pos -> update pos
-    socket.current.off('piece_moved').on('piece_moved', ({ posArr, new_pos, pieceID }) => {
-        if (pieceID === name && mounted.current) {
-            const pos = new_pos
-            updatePos(posArr, pos)
-        }
-    })
+    // // socket.on pos -> update pos
+    // socket.current.off('piece_moved').on('piece_moved', ({ posArr, new_pos, pieceID }) => {
+    //     if (pieceID === name && mounted.current) {
+    //         const pos = new_pos
+    //         updatePos(posArr, pos)
+    //     }
+    // })
 
-    socket.current.off('moved_piece_err').on('moved_piece_err', ({ message }) => {
-        alert(message)
-    })
+    // socket.current.off('moved_piece_err').on('moved_piece_err', ({ message }) => {
+    //     alert(message)
+    // })
     
     useLayoutEffect(() => {
 
@@ -93,17 +93,17 @@ function Piece(props) {
         e.preventDefault()
         if (color === userColor && isChance && hasRolled) {
             dispatch(set_rolled(false))
-            socket.current.emit('move_piece', {
-                name,
-                dice,
-                position,
-                gameId,
-                safe_cell: props.cell_data.safe,
-                index: num - 1,
-            })
-            if (dice !== 6) {
-                socket.current.emit('change', { game_id: gameId })
-            }
+            // socket.current.emit('move_piece', {
+            //     name,
+            //     dice,
+            //     position,
+            //     gameId,
+            //     safe_cell: props.cell_data.safe,
+            //     index: num - 1,
+            // })
+            // if (dice !== 6) {
+            //     socket.current.emit('change', { game_id: gameId })
+            // }
         } else {
             console.log('NOT ALLOWED', userColor, isChance, hasRolled)
         }

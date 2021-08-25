@@ -82,9 +82,14 @@ module.exports = (io) => {
     });
 
     socket.on("roll_dice", ({ gameId, userColor }) => {
+      console.log("roll dice on server");
       const face = Math.ceil(Math.random() * 6);
-      const pieceOut = noPieceOut(rooms.get(gameId).players.get(socket.id).pos);
+      const pieceOut = piecesOut(rooms.get(gameId).players.get(socket.id).pos);
       socket.emit("dice_rolled", {
+        face,
+        noPieceOut: pieceOut,
+      });
+      console.log("emiting", {
         face,
         noPieceOut: pieceOut,
       });

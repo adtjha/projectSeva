@@ -1,10 +1,5 @@
 import { Transition } from '@headlessui/react'
-import {
-    Fragment,
-    useContext,
-    useEffect,
-    useRef,
-} from 'react'
+import { Fragment, useContext, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import one from '../images/dice/1.svg'
 import two from '../images/dice/2.svg'
@@ -13,9 +8,10 @@ import four from '../images/dice/4.svg'
 import five from '../images/dice/5.svg'
 import six from '../images/dice/6.svg'
 import {
+    fetch_dice,
     getShowing,
     rolled,
-    set_dice,
+    // set_dice,
     set_rolled,
     set_showing,
 } from '../store/dice'
@@ -45,6 +41,7 @@ const Dice = (props) => {
             socket.current.emit('roll_dice', { gameId, userColor })
             dispatch(set_rolled(true))
             dispatch(set_showing(false))
+            dispatch(fetch_dice())
         } else if (isChance) {
             console.log(
                 'PLAY MOVE, DICE ROLLED ONCE',
@@ -56,28 +53,20 @@ const Dice = (props) => {
         }
     }
 
-    const AutoMove = ({ face, noPieceOut }) => {
-        if (noPieceOut === 0 && face !== 6) {
-            console.log('No Piece Out and not a Six, switching player')
-            dispatch(set_rolled(false))
-            socket.current.emit('change', { game_id: gameId })
-        } else if (noPieceOut === 1) {
-            console.log('Single Piece Out, Auto Moving')
-            socket.current.emit('auto_move', { gameId, face })
-            dispatch(set_rolled(false))
-        }
-    }
-
-    const handleDiceRolled = ({ face, noPieceOut }) => {
-        if (mounted.current) {
-            console.log('dice rolled')
-            dispatch(set_dice(face))
-            dispatch(set_showing(true))
-            AutoMove({ face, noPieceOut })
-        }
-    }
-
-    socket.current.off('dice_rolled').on('dice_rolled', handleDiceRolled)
+    // socket.current.on('dice_rolled', ({ face, noPieceOut }) => {
+    //     console.log('dice rolled')
+    //     dispatch(set_dice(face))
+    //     dispatch(set_showing(true))
+    //     if (noPieceOut === 0 && face !== 6) {
+    //         console.log('No Piece Out and not a Six, switching player')
+    //         dispatch(set_rolled(false))
+    //         socket.current.emit('change', { game_id: gameId })
+    //     } else if (noPieceOut === 1) {
+    //         console.log('Single Piece Out, Auto Moving')
+    //         socket.current.emit('auto_move', { gameId, face })
+    //         dispatch(set_rolled(false))
+    //     }
+    // })
 
     useLogger('Dice', rendersCount)
 

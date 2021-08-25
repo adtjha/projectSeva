@@ -27,6 +27,7 @@ export const getShowing = (state) => state.dice.showing
 export const ROLL = 'roll'
 export const ROLLED = 'rolled'
 export const SHOWING = 'showing'
+export const FETCH_DICE = 'fetch_dice'
 
 // action creators
 export const set_dice = (n) => ({
@@ -40,4 +41,7 @@ export const set_rolled = (state) => ({
 export const set_showing = (state) => ({
     type: SHOWING,
     payload: state,
+})
+export const fetch_dice = () => ({
+    type: FETCH_DICE,
 })
