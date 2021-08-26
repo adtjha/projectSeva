@@ -8,7 +8,12 @@ const initialState = {
 export function diceReducer(state = initialState, action) {
     switch (action.type) {
         case ROLL:
-            return { ...state, face: action.payload, showing: true }
+            return {
+                ...state,
+                face: action.payload,
+                showing: true,
+                rolled: false,
+            }
         case ROLLED:
             return { ...state, rolled: action.payload }
         case SHOWING:

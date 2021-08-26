@@ -1,12 +1,4 @@
-import {
-    call,
-    put,
-    take,
-    all,
-    fork,
-    takeLatest,
-    cancel,
-} from 'redux-saga/effects'
+import { call, put, take, fork, cancel } from 'redux-saga/effects'
 import { eventChannel, END } from 'redux-saga'
 import {
     CONNECT,
@@ -58,7 +50,7 @@ function* read(socket) {
     }
 }
 
-const onRollDice = function* (socket, action) {
+const onRollDice = function* (socket) {
     while (true) {
         const { payload } = yield take(FETCH_DICE)
         socket.emit('roll_dice', payload)
@@ -66,7 +58,7 @@ const onRollDice = function* (socket, action) {
 }
 
 // Worker
-const socketWorker = function* (socket, action) {
+const socketWorker = function* (socket) {
     yield fork(read, socket)
     yield fork(onRollDice, socket)
 }
@@ -84,7 +76,6 @@ const socketFlow = function* (socket) {
         yield cancel(task)
     }
 }
-
 
 export default function* rootSaga() {
     yield fork(socketFlow)
