@@ -1,14 +1,27 @@
-import { call, put, take, all, fork } from 'redux-saga/effects'
+import { call, put, take, all, fork, takeLatest } from 'redux-saga/effects'
 import { eventChannel, END } from 'redux-saga'
-import { connect_socket, set_data, set_name } from 'store/user'
-import { GUID } from 'components/functions/randomUid'
+import { CONNECT, set_config } from 'store/user'
 import { connect } from './connect'
+import { FETCH_DICE, set_dice, set_showing } from 'store/dice'
 
 const suscribe = (socket) => {
     return eventChannel((emit) => {
         socket.on('config_data', (data) => {
-            emit(data)
+            emit(
+                set_config({
+                    id: data.user.id,
+                    game_id: data.id,
+                    current: data.current,
+                    color: data.user.color,
+                })
+            )
         })
+
+        socket.on('dice_rolled', ({ face }) => {
+            emit(set_dice(face))
+        })
+
+        socket.on('disconnect', () => emit(END))
 
         return () => {
             emit(END)
@@ -16,33 +29,40 @@ const suscribe = (socket) => {
     })
 }
 
-// Worker
-const connectSocket = function* (payload) {
-    const socket = yield connect()
-    yield socket.emit('join_game', payload)
+function* read(socket) {
     const channel = yield call(suscribe, socket)
     while (true) {
         const data = yield take(channel)
-        yield put(set_data({ id: data.id, current: data.current }))
-        const name = yield GUID()
-        yield put(
-            set_name({
-                id: data.user.id,
-                name,
-                color: data.user.color,
-            })
-        )
+        yield put(data)
     }
 }
 
+// Worker
+const connectSocket = function* (socket, action) {
+    yield socket.emit('join_game', action.payload)
+    yield fork(read, socket)
+}
+
+const onRollDice = function* (socket, action) {
+    yield socket.emit('roll_dice', action.payload)
+    yield fork(read, socket)
+}
+
 // Watcher
-const connectSocketWatcher = function* () {
-    const { payload } = yield take(connect_socket)
-    yield fork(connectSocket, payload)
+const connectSocketWatcher = function* (socket) {
+    yield takeLatest(CONNECT, connectSocket, socket)
+}
+
+const onRollDiceWatcher = function* (socket) {
+    yield takeLatest(FETCH_DICE, onRollDice, socket)
 }
 
 export default function* rootSaga() {
-    yield all([connectSocketWatcher()])
+    const socket = yield connect()
+    yield all([
+        fork(connectSocketWatcher, socket),
+        fork(onRollDiceWatcher, socket),
+    ])
 }
 
 /**

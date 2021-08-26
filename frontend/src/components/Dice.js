@@ -38,10 +38,9 @@ const Dice = (props) => {
 
     const handleClick = () => {
         if (!hasRolled && isChance) {
-            socket.current.emit('roll_dice', { gameId, userColor })
             dispatch(set_rolled(true))
             dispatch(set_showing(false))
-            dispatch(fetch_dice())
+            dispatch(fetch_dice({ gameId, userColor }))
         } else if (isChance) {
             console.log(
                 'PLAY MOVE, DICE ROLLED ONCE',
