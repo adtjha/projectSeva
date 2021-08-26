@@ -1,8 +1,22 @@
-import { call, put, take, all, fork, takeLatest } from 'redux-saga/effects'
+import {
+    call,
+    put,
+    take,
+    all,
+    fork,
+    takeLatest,
+    cancel,
+} from 'redux-saga/effects'
 import { eventChannel, END } from 'redux-saga'
-import { CONNECT, set_config } from 'store/user'
+import {
+    CONNECT,
+    DISCONNECT,
+    disconnect_socket,
+    set_config,
+    update_current,
+} from 'store/user'
 import { connect } from './connect'
-import { FETCH_DICE, set_dice, set_showing } from 'store/dice'
+import { FETCH_DICE, set_dice } from 'store/dice'
 
 const suscribe = (socket) => {
     return eventChannel((emit) => {
@@ -18,10 +32,17 @@ const suscribe = (socket) => {
         })
 
         socket.on('dice_rolled', ({ face }) => {
+            console.log('why logging here')
             emit(set_dice(face))
         })
 
-        socket.on('disconnect', () => emit(END))
+        socket.on('update_current', (player) => {
+            emit(update_current(player))
+        })
+
+        socket.on('disconnect', () => {
+            emit(disconnect_socket())
+        })
 
         return () => {
             emit(END)
@@ -37,32 +58,36 @@ function* read(socket) {
     }
 }
 
-// Worker
-const connectSocket = function* (socket, action) {
-    yield socket.emit('join_game', action.payload)
-    yield fork(read, socket)
+const onRollDice = function* (socket, action) {
+    while (true) {
+        const { payload } = yield take(FETCH_DICE)
+        socket.emit('roll_dice', payload)
+    }
 }
 
-const onRollDice = function* (socket, action) {
-    yield socket.emit('roll_dice', action.payload)
+// Worker
+const socketWorker = function* (socket, action) {
     yield fork(read, socket)
+    yield fork(onRollDice, socket)
 }
 
 // Watcher
-const connectSocketWatcher = function* (socket) {
-    yield takeLatest(CONNECT, connectSocket, socket)
+const socketFlow = function* (socket) {
+    while (true) {
+        const { payload } = yield take(CONNECT)
+        const socket = yield connect()
+        socket.emit('join_game', payload)
+
+        const task = yield fork(socketWorker, socket)
+
+        let action = yield take(DISCONNECT)
+        yield cancel(task)
+    }
 }
 
-const onRollDiceWatcher = function* (socket) {
-    yield takeLatest(FETCH_DICE, onRollDice, socket)
-}
 
 export default function* rootSaga() {
-    const socket = yield connect()
-    yield all([
-        fork(connectSocketWatcher, socket),
-        fork(onRollDiceWatcher, socket),
-    ])
+    yield fork(socketFlow)
 }
 
 /**

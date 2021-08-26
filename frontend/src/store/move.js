@@ -53,6 +53,7 @@ export const reset_piece = (num, color) => ({
     type: RESET,
     payload: { color, num },
 })
-export const move_piece = () => ({
+export const move_piece = ({ name, dice, position, gameId, index }) => ({
     type: MOVE,
+    payload: { name, dice, position, gameId, index },
 })

@@ -92,13 +92,12 @@ function Piece(props) {
     const handleClick = (e) => {
         e.preventDefault()
         if (color === userColor && isChance && hasRolled) {
-            dispatch(set_rolled(false))
+            // dispatch(set_rolled(false))
             // socket.current.emit('move_piece', {
             //     name,
             //     dice,
             //     position,
             //     gameId,
-            //     safe_cell: props.cell_data.safe,
             //     index: num - 1,
             // })
             // if (dice !== 6) {

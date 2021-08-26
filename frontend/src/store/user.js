@@ -16,8 +16,8 @@ export function usersReducer(state = initialState, action) {
                 game_id: action.payload.game_id,
                 current: action.payload.current,
             }
-        case DATASET:
-            return { ...state, data: action.payload }
+        case UPDATE:
+            return { ...state, current: action.payload }
         default:
             return state
     }
@@ -34,8 +34,9 @@ export const getGameCurrentPlayer = (state) => state.user.current
 export const PIECE = 'piece'
 export const CHANCE = 'chance'
 export const SET_CONFIG = 'set config'
-export const DATASET = 'data'
+export const UPDATE = 'update'
 export const CONNECT = 'connect'
+export const DISCONNECT = 'disconnect'
 export const CONFIG = 'config'
 export const NEXT = 'next'
 
@@ -53,16 +54,16 @@ export const set_config = ({ id, color, game_id, current }) => ({
         current,
     },
 })
-export const set_data = ({ id, current }) => ({
-    type: DATASET,
-    payload: {
-        id: id,
-        current: current,
-    },
+export const update_current = (current) => ({
+    type: UPDATE,
+    payload: current,
 })
 export const connect_socket = (room) => ({
     type: CONNECT,
     payload: room,
+})
+export const disconnect_socket = () => ({
+    type: DISCONNECT,
 })
 export const set_config_request = () => ({
     type: CONFIG,

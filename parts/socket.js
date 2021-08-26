@@ -81,151 +81,36 @@ module.exports = (io) => {
       socket.emit("config_data", config);
     });
 
-    socket.on("roll_dice", ({ gameId, userColor }) => {
+    socket.on("roll_dice", ({ gameId }) => {
       console.log("roll dice on server");
       const face = Math.ceil(Math.random() * 6);
       const pieceOut = piecesOut(rooms.get(gameId).players.get(socket.id).pos);
+
+      if (pieceOut === 0 && face !== 6) {
+        console.log("No Piece Out and not a Six, switching player");
+        changeCurrentPlayer(socket, io)({ game_id: gameId });
+      } else if (pieceOut === 1) {
+        console.log("Single Piece Out, Auto Moving");
+        autoMovePlayerPiece(socket, io)({ gameId, face });
+      }
+
       socket.emit("dice_rolled", {
         face,
-        noPieceOut: pieceOut,
-      });
-      console.log("emiting", {
-        face,
-        noPieceOut: pieceOut,
       });
       io.to(gameId).emit("dice_rolled", {
         face,
-        noPieceOut: pieceOut,
       });
     });
 
-    socket.on("auto_move", ({ gameId, face }) => {
-      const pieces_out = piecesOut(
-        rooms.get(gameId).players.get(socket.id).pos
-      );
+    socket.on("auto_move", autoMovePlayerPiece(socket, io));
 
-      if (pieces_out === 1) {
-        // auto move
-        let position = 0;
-        let index = 0;
-        const userId = socket.id;
+    socket.on("change", changeCurrentPlayer(socket, io));
 
-        rooms
-          .get(gameId)
-          .players.get(userId)
-          .pos.forEach((i, e) => {
-            if (!isNaN(i) && i < 57 && i >= 1) {
-              index = e;
-              position = i;
-            }
-          });
-
-        const new_pos = newPos(face, position);
-        const name =
-          rooms.get(gameId).players.get(userId).color[0] + (index + 1);
-
-        rooms.get(gameId).players.get(userId).pos = newArr(
-          new_pos,
-          rooms.get(gameId).players.get(userId).pos,
-          index
-        );
-
-        // -> emit moved_piece
-        socket.emit("piece_moved", {
-          posArr: rooms.get(gameId).players.get(userId).pos,
-          new_pos,
-          pieceID: name,
-        });
-        console.log("Automatic Movement", {
-          posArr: rooms.get(gameId).players.get(userId).pos,
-          new_pos,
-          pieceID: name,
-        });
-        io.to(gameId).emit("piece_moved", {
-          posArr: rooms.get(gameId).players.get(userId).pos,
-          new_pos,
-          pieceID: name,
-        });
-      }
-    });
-
-    socket.on("change", ({ game_id }) => {
-      const currentColor = rooms.get(game_id).players.get(socket.id).color;
-      let availableColors = [],
-        nextColor;
-
-      rooms.get(game_id).players.forEach((player, id, map) => {
-        availableColors.push(player.color);
-      });
-
-      switch (availableColors.length) {
-        case 1:
-          nextColor = currentColor;
-          break;
-        case 2:
-          nextColor =
-            currentColor === availableColors[0]
-              ? availableColors[1]
-              : availableColors[0];
-          break;
-        case 3:
-          nextColor =
-            currentColor === availableColors[0]
-              ? availableColors[1]
-              : currentColor === availableColors[1]
-              ? availableColors[2]
-              : availableColors[0];
-          break;
-        case 4:
-          nextColor =
-            currentColor === availableColors[0]
-              ? availableColors[1]
-              : currentColor === availableColors[1]
-              ? availableColors[2]
-              : currentColor === availableColors[2]
-              ? availableColors[3]
-              : availableColors[0];
-          break;
-      }
-
-      rooms.get(game_id).current = nextColor;
-      console.log(rooms.get(game_id).current, ++i);
-
-      socket.emit("update_current", rooms.get(game_id).current);
-      io.to(game_id).emit("update_current", rooms.get(game_id).current);
-    });
-
-    socket.on(
-      "move_piece",
-      ({ name, dice, position, gameId, safe_cell, index }) => {
-        const userId = socket.id;
-        // no piece out,
-        if (noPieceOut(rooms.get(gameId).players.get(userId).pos)) {
-          if (dice === 6) {
-            // -> update arr
-            const new_pos = newPos(dice, position);
-
-            rooms.get(gameId).players.get(userId).pos = newArr(
-              new_pos,
-              rooms.get(gameId).players.get(userId).pos,
-              index
-            );
-
-            // -> emit moved_piece
-            socket.emit("piece_moved", {
-              posArr: rooms.get(gameId).players.get(userId).pos,
-              new_pos,
-              pieceID: name,
-            });
-            io.to(gameId).emit("piece_moved", {
-              posArr: rooms.get(gameId).players.get(userId).pos,
-              new_pos,
-              pieceID: name,
-            });
-          }
-          // dice is not 6 -> auto switch player
-        } else {
-          // is piece out
+    socket.on("move_piece", ({ name, dice, position, gameId, index }) => {
+      const userId = socket.id;
+      // no piece out,
+      if (noPieceOut(rooms.get(gameId).players.get(userId).pos)) {
+        if (dice === 6) {
           // -> update arr
           const new_pos = newPos(dice, position);
 
@@ -234,6 +119,7 @@ module.exports = (io) => {
             rooms.get(gameId).players.get(userId).pos,
             index
           );
+
           // -> emit moved_piece
           socket.emit("piece_moved", {
             posArr: rooms.get(gameId).players.get(userId).pos,
@@ -246,8 +132,30 @@ module.exports = (io) => {
             pieceID: name,
           });
         }
+        // dice is not 6 -> auto switch player
+      } else {
+        // is piece out
+        // -> update arr
+        const new_pos = newPos(dice, position);
+
+        rooms.get(gameId).players.get(userId).pos = newArr(
+          new_pos,
+          rooms.get(gameId).players.get(userId).pos,
+          index
+        );
+        // -> emit moved_piece
+        socket.emit("piece_moved", {
+          posArr: rooms.get(gameId).players.get(userId).pos,
+          new_pos,
+          pieceID: name,
+        });
+        io.to(gameId).emit("piece_moved", {
+          posArr: rooms.get(gameId).players.get(userId).pos,
+          new_pos,
+          pieceID: name,
+        });
       }
-    );
+    });
 
     socket.on("reset_piece", () => {
       // if (!isSafe(newPos(dice, position)) && !safe_cell) {
@@ -270,4 +178,101 @@ module.exports = (io) => {
       }
     });
   });
+};
+
+const changeCurrentPlayer = (socket, io) => {
+  return ({ game_id }) => {
+    const currentColor = rooms.get(game_id).players.get(socket.id).color;
+    let availableColors = [],
+      nextColor;
+
+    rooms.get(game_id).players.forEach((player, id, map) => {
+      availableColors.push(player.color);
+    });
+
+    switch (availableColors.length) {
+      case 1:
+        nextColor = currentColor;
+        break;
+      case 2:
+        nextColor =
+          currentColor === availableColors[0]
+            ? availableColors[1]
+            : availableColors[0];
+        break;
+      case 3:
+        nextColor =
+          currentColor === availableColors[0]
+            ? availableColors[1]
+            : currentColor === availableColors[1]
+            ? availableColors[2]
+            : availableColors[0];
+        break;
+      case 4:
+        nextColor =
+          currentColor === availableColors[0]
+            ? availableColors[1]
+            : currentColor === availableColors[1]
+            ? availableColors[2]
+            : currentColor === availableColors[2]
+            ? availableColors[3]
+            : availableColors[0];
+        break;
+    }
+
+    rooms.get(game_id).current = nextColor;
+    console.log(rooms.get(game_id).current, ++i);
+
+    socket.emit("update_current", rooms.get(game_id).current);
+    io.to(game_id).emit("update_current", rooms.get(game_id).current);
+  };
+};
+
+const autoMovePlayerPiece = (socket, io) => {
+  return ({ gameId, face }) => {
+    const pieces_out = piecesOut(rooms.get(gameId).players.get(socket.id).pos);
+
+    if (pieces_out === 1) {
+      // auto move
+      let position = 0;
+      let index = 0;
+      const userId = socket.id;
+
+      rooms
+        .get(gameId)
+        .players.get(userId)
+        .pos.forEach((i, e) => {
+          if (!isNaN(i) && i < 57 && i >= 1) {
+            index = e;
+            position = i;
+          }
+        });
+
+      const new_pos = newPos(face, position);
+      const name = rooms.get(gameId).players.get(userId).color[0] + (index + 1);
+
+      rooms.get(gameId).players.get(userId).pos = newArr(
+        new_pos,
+        rooms.get(gameId).players.get(userId).pos,
+        index
+      );
+
+      // -> emit moved_piece
+      socket.emit("piece_moved", {
+        posArr: rooms.get(gameId).players.get(userId).pos,
+        new_pos,
+        pieceID: name,
+      });
+      console.log("Automatic Movement", {
+        posArr: rooms.get(gameId).players.get(userId).pos,
+        new_pos,
+        pieceID: name,
+      });
+      io.to(gameId).emit("piece_moved", {
+        posArr: rooms.get(gameId).players.get(userId).pos,
+        new_pos,
+        pieceID: name,
+      });
+    }
+  };
 };
