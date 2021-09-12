@@ -17,7 +17,7 @@ export function usersReducer(state = initialState, action) {
                 current: action.payload.current,
             }
         case UPDATE:
-            return { ...state, current: action.payload }
+            return { ...state, current: action.payload.current }
         default:
             return state
     }
@@ -54,9 +54,9 @@ export const set_config = ({ id, color, game_id, current }) => ({
         current,
     },
 })
-export const update_current = (current) => ({
+export const update_current = ({ current }) => ({
     type: UPDATE,
-    payload: current,
+    payload: { current },
 })
 export const connect_socket = (room) => ({
     type: CONNECT,

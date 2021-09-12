@@ -4,7 +4,6 @@ import Constant from '../Constants'
 
 const Cell = (props) => {
     let styles, piece
-
     styles = props.data.style
     if (props.data.has) {
         if (props.data.has.length > 1) {

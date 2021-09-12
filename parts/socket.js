@@ -19,10 +19,10 @@ var i = 0;
 
 module.exports = (io) => {
   io.on("connection", (socket) => {
-    // consoleSpacing();
+    consoleSpacing("user connected");
 
     // join a game,
-    socket.on("join_game", (room_id) => {
+    socket.on("join_game", ({room_id}) => {
       // if room empty -> fit user in room array -> send room id
       let config = { id: "", user: { id: "", color: "" } };
       const empty = hasEmpty({ id: "", state: "", color: "" }, room_id);
@@ -77,61 +77,75 @@ module.exports = (io) => {
         config.current = "red";
       }
 
-      consoleSpacing();
       socket.emit("config_data", config);
     });
 
     socket.on("roll_dice", ({ gameId }) => {
       console.log("roll dice on server");
-      const face = Math.ceil(Math.random() * 6);
+      // const face = Math.ceil(Math.random() * 6);
+      const face = 6;
+
+      // socket.emit("dice_rolled", { face });
+      io.in(gameId).emit("dice_rolled", {
+        face,
+      });
+
       const pieceOut = piecesOut(rooms.get(gameId).players.get(socket.id).pos);
 
       if (pieceOut === 0 && face !== 6) {
-        console.log("No Piece Out and not a Six, switching player");
+        console.log("No Piece Out and not a Six, switching player", face);
         changeCurrentPlayer(socket, io)({ game_id: gameId });
       } else if (pieceOut === 1) {
-        console.log("Single Piece Out, Auto Moving");
+        console.log("Single Piece Out, Auto Moving", face);
         autoMovePlayerPiece(socket, io)({ gameId, face });
       }
-
-      socket.emit("dice_rolled", {
-        face,
-      });
-      io.to(gameId).emit("dice_rolled", {
-        face,
-      });
     });
 
     socket.on("auto_move", autoMovePlayerPiece(socket, io));
 
     socket.on("change", changeCurrentPlayer(socket, io));
 
-    socket.on("move_piece", ({ name, dice, position, gameId, index }) => {
+    socket.on("move_piece", ({ dice, position, gameId, index, pieceId }) => {
       const userId = socket.id;
+      const color = rooms.get(gameId).players.get(userId).color;
       // no piece out,
-      if (noPieceOut(rooms.get(gameId).players.get(userId).pos)) {
-        if (dice === 6) {
-          // -> update arr
-          const new_pos = newPos(dice, position);
+      const pieceOut = piecesOut(rooms.get(gameId).players.get(socket.id).pos);
 
-          rooms.get(gameId).players.get(userId).pos = newArr(
-            new_pos,
-            rooms.get(gameId).players.get(userId).pos,
-            index
-          );
+      if (pieceOut === 0 && dice === 6) {
+        // -> update arr
+        const new_pos = newPos(dice, position);
 
-          // -> emit moved_piece
-          socket.emit("piece_moved", {
+        rooms.get(gameId).players.get(userId).pos = newArr(
+          new_pos,
+          rooms.get(gameId).players.get(userId).pos,
+          index
+        );
+
+        // -> emit moved_piece
+        consoleSpacing(
+          JSON.stringify({
             posArr: rooms.get(gameId).players.get(userId).pos,
+            color,
             new_pos,
-            pieceID: name,
-          });
-          io.to(gameId).emit("piece_moved", {
-            posArr: rooms.get(gameId).players.get(userId).pos,
-            new_pos,
-            pieceID: name,
-          });
-        }
+            index,
+            pieceId,
+          })
+        );
+
+        // socket.emit("piece_moved", {
+        //   posArr: rooms.get(gameId).players.get(userId).pos,
+        //   color,
+        //   new_pos,
+        //   pieceId,
+        // });
+
+        io.in(gameId).emit("piece_moved", {
+          posArr: rooms.get(gameId).players.get(userId).pos,
+          color,
+          new_pos,
+          index,
+          pieceId,
+        });
         // dice is not 6 -> auto switch player
       } else {
         // is piece out
@@ -144,15 +158,29 @@ module.exports = (io) => {
           index
         );
         // -> emit moved_piece
-        socket.emit("piece_moved", {
+        consoleSpacing(
+          JSON.stringify({
+            posArr: rooms.get(gameId).players.get(userId).pos,
+            color,
+            new_pos,
+            index,
+            pieceId,
+          })
+        );
+
+        // socket.emit("piece_moved", {
+        //   posArr: rooms.get(gameId).players.get(userId).pos,
+        //   color,
+        //   new_pos,
+        //   index,
+        //   pieceId,
+        // });
+        io.in(gameId).emit("piece_moved", {
           posArr: rooms.get(gameId).players.get(userId).pos,
+          color,
           new_pos,
-          pieceID: name,
-        });
-        io.to(gameId).emit("piece_moved", {
-          posArr: rooms.get(gameId).players.get(userId).pos,
-          new_pos,
-          pieceID: name,
+          index,
+          pieceId,
         });
       }
     });
@@ -165,7 +193,7 @@ module.exports = (io) => {
     });
 
     socket.on("disconnect", () => {
-      console.log("user disconnected");
+      consoleSpacing("user disconnected");
 
       if (rooms.size !== 0) {
         for (const [rid, room] of rooms) {
@@ -179,58 +207,11 @@ module.exports = (io) => {
     });
   });
 };
-
-const changeCurrentPlayer = (socket, io) => {
-  return ({ game_id }) => {
-    const currentColor = rooms.get(game_id).players.get(socket.id).color;
-    let availableColors = [],
-      nextColor;
-
-    rooms.get(game_id).players.forEach((player, id, map) => {
-      availableColors.push(player.color);
-    });
-
-    switch (availableColors.length) {
-      case 1:
-        nextColor = currentColor;
-        break;
-      case 2:
-        nextColor =
-          currentColor === availableColors[0]
-            ? availableColors[1]
-            : availableColors[0];
-        break;
-      case 3:
-        nextColor =
-          currentColor === availableColors[0]
-            ? availableColors[1]
-            : currentColor === availableColors[1]
-            ? availableColors[2]
-            : availableColors[0];
-        break;
-      case 4:
-        nextColor =
-          currentColor === availableColors[0]
-            ? availableColors[1]
-            : currentColor === availableColors[1]
-            ? availableColors[2]
-            : currentColor === availableColors[2]
-            ? availableColors[3]
-            : availableColors[0];
-        break;
-    }
-
-    rooms.get(game_id).current = nextColor;
-    console.log(rooms.get(game_id).current, ++i);
-
-    socket.emit("update_current", rooms.get(game_id).current);
-    io.to(game_id).emit("update_current", rooms.get(game_id).current);
-  };
-};
-
-const autoMovePlayerPiece = (socket, io) => {
+function autoMovePlayerPiece(socket, io) {
   return ({ gameId, face }) => {
-    const pieces_out = piecesOut(rooms.get(gameId).players.get(socket.id).pos);
+    const pieces_out = piecesOut(
+      rooms.get(gameId).players.get(socket.id).pos
+    );
 
     if (pieces_out === 1) {
       // auto move
@@ -258,21 +239,73 @@ const autoMovePlayerPiece = (socket, io) => {
       );
 
       // -> emit moved_piece
-      socket.emit("piece_moved", {
-        posArr: rooms.get(gameId).players.get(userId).pos,
-        new_pos,
-        pieceID: name,
-      });
       console.log("Automatic Movement", {
         posArr: rooms.get(gameId).players.get(userId).pos,
         new_pos,
         pieceID: name,
       });
-      io.to(gameId).emit("piece_moved", {
+
+      // socket.emit("piece_moved", {
+      //   posArr: rooms.get(gameId).players.get(userId).pos,
+      //   new_pos,
+      //   pieceID: name,
+      // });
+      io.in(gameId).emit("piece_moved", {
         posArr: rooms.get(gameId).players.get(userId).pos,
         new_pos,
         pieceID: name,
       });
     }
   };
-};
+}
+
+function changeCurrentPlayer(socket, io) {
+  return ({ game_id }) => {
+    consoleSpacing(`CHANGING PLAYER ${JSON.stringify(game_id)}`);
+    const currentColor = rooms.get(game_id).players.get(socket.id).color;
+    let availableColors = [], nextColor;
+
+    rooms.get(game_id).players.forEach((player, id, map) => {
+      availableColors.push(player.color);
+    });
+
+    switch (availableColors.length) {
+      case 1:
+        nextColor = currentColor;
+        break;
+      case 2:
+        nextColor =
+          currentColor === availableColors[0]
+            ? availableColors[1]
+            : availableColors[0];
+        break;
+      case 3:
+        nextColor =
+          currentColor === availableColors[0]
+            ? availableColors[1]
+            : currentColor === availableColors[1]
+              ? availableColors[2]
+              : availableColors[0];
+        break;
+      case 4:
+        nextColor =
+          currentColor === availableColors[0]
+            ? availableColors[1]
+            : currentColor === availableColors[1]
+              ? availableColors[2]
+              : currentColor === availableColors[2]
+                ? availableColors[3]
+                : availableColors[0];
+        break;
+    }
+
+    rooms.get(game_id).current = nextColor;
+    console.log(rooms.get(game_id).current, ++i);
+
+    // socket.emit("update_current", rooms.get(game_id).current);
+    io.in(game_id).emit("update_current", {
+      current: rooms.get(game_id).current,
+    });
+  };
+}
+

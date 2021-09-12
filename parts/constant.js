@@ -1,8 +1,8 @@
 const { v4: uuidv4 } = require("uuid");
 
-const consoleSpacing = () => {
+const consoleSpacing = (message) => {
   console.log(" ");
-  console.log("-----------------------");
+  console.log(`-----------------------${message}-----------------------`);
   console.log(" ");
 };
 
@@ -107,7 +107,7 @@ const newPos = (dice, pos) => {
 };
 
 const newArr = (new_pos, arr, index) => {
-  console.log(new_pos)
+  console.log(new_pos);
   return arr.map((x, i) => (i === index ? new_pos : x));
 };
 
