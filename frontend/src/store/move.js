@@ -27,7 +27,7 @@ export function movesReducer(state = initialState, action) {
                         action.payload.index + 1
                     ),
                 ]
-                console.log(newArr)
+                console.log(`Updating Array : ${newArr}`)
                 switch (action.payload.color) {
                     case 'red':
                         return {
