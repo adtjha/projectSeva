@@ -12,7 +12,6 @@ export function diceReducer(state = initialState, action) {
             return {
                 ...state,
                 face: action.payload,
-                showing: true,
             }
         case ROLLED:
             return { ...state, rolled: action.payload }

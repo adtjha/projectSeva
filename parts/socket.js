@@ -11,9 +11,9 @@ const {
   bluePlayer,
   newArr,
   newPos,
-  noPieceOut,
-  hasRoom,
   piecesOut,
+  otherPLayerPosArray,
+  isSafe,
 } = require("./constant");
 
 module.exports = (io) => {
@@ -79,8 +79,8 @@ module.exports = (io) => {
 
     socket.on("roll_dice", ({ gameId }) => {
       console.log("roll dice on server");
-      // const face = Math.ceil(Math.random() * 6);
-      const face = 6;
+      const face = Math.ceil(Math.random() * 6);
+      // const face = 6;
 
       // socket.emit("dice_rolled", { face });
       io.in(gameId).emit("dice_rolled", {
@@ -91,10 +91,16 @@ module.exports = (io) => {
 
       if (pieceOut === 0 && face !== 6) {
         console.log("No Piece Out and not a Six, switching player", face);
-        changeCurrentPlayer(socket, io)({ game_id: gameId });
+        setTimeout(
+          () => changeCurrentPlayer(socket, io)({ game_id: gameId }),
+          1700
+        );
       } else if (pieceOut === 1) {
         console.log("Single Piece Out, Auto Moving", face);
-        autoMovePlayerPiece(socket, io)({ gameId, face });
+        setTimeout(
+          () => autoMovePlayerPiece(socket, io)({ gameId, face }),
+          1700
+        );
       }
     });
 
@@ -102,98 +108,14 @@ module.exports = (io) => {
 
     socket.on("change", changeCurrentPlayer(socket, io));
 
-    socket.on("move_piece", ({ dice, position, gameId, index, pieceId }) => {
-      const userId = socket.id;
-      const color = rooms.get(gameId).players.get(userId).color;
-      // no piece out,
-      const pieceOut = piecesOut(rooms.get(gameId).players.get(socket.id).pos);
-      const new_pos = newPos(dice, position);
+    socket.on("move_piece", movePiece(socket, io));
 
-      if (pieceOut === 0 && dice === 6) {
-        // -> update arr
-
-        rooms.get(gameId).players.get(userId).pos = newArr(
-          new_pos,
-          rooms.get(gameId).players.get(userId).pos,
-          index
-        );
-
-        // -> emit moved_piece
-        consoleSpacing(
-          JSON.stringify({
-            posArr: rooms.get(gameId).players.get(userId).pos,
-            color,
-            new_pos,
-            index,
-            pieceId,
-          })
-        );
-
-        // socket.emit("piece_moved", {
-        //   posArr: rooms.get(gameId).players.get(userId).pos,
-        //   color,
-        //   new_pos,
-        //   pieceId,
-        // });
-
-        // dice is not 6 -> auto switch player
-      } else {
-        // is piece out
-        // -> update arr
-
-        rooms.get(gameId).players.get(userId).pos = newArr(
-          new_pos,
-          rooms.get(gameId).players.get(userId).pos,
-          index
-        );
-        // -> emit moved_piece
-        consoleSpacing(
-          JSON.stringify({
-            posArr: rooms.get(gameId).players.get(userId).pos,
-            color,
-            new_pos,
-            index,
-            pieceId,
-          })
-        );
-
-        // socket.emit("piece_moved", {
-        //   posArr: rooms.get(gameId).players.get(userId).pos,
-        //   color,
-        //   new_pos,
-        //   index,
-        //   pieceId,
-        // });
-      }
-
-      io.in(gameId).emit("piece_moved", {
-        posArr: rooms.get(gameId).players.get(userId).pos,
-        color,
-        new_pos,
-        index,
-        pieceId,
-      });
-
-      setTimeout(
-        () => changeCurrentPlayer(socket, io)({ game_id: gameId }),
-        100
-      );
-    });
-
-    socket.on("reset_piece", () => {
-      // if (!isSafe(newPos(dice, position)) && !safe_cell) {
-      //   // not ( safe or start or final ) cell type -> reset other piece present -> emit reset_piece
-      //   socket.emit("reset_piece", {});
-      // }
-    });
+    socket.on("reset_piece", resetPiece(socket, io));
 
     socket.on("disconnect", () => {
       if (rooms.size !== 0) {
-        // consoleSpacing("inside condition");
         for (const [rid, room] of rooms) {
-          // consoleSpacing(`searching for room ${JSON.stringify(room.players)}`);
           if (room.players.has(socket.id)) {
-            // consoleSpacing("found and deleting");
             consoleSpacing(` USER DISCONNECTED @ ${new Date().toISOString()}`);
             console.log(rooms.get(rid).players.get(socket.id));
             rooms.get(rid).players.delete(socket.id);
@@ -203,6 +125,113 @@ module.exports = (io) => {
     });
   });
 };
+
+function resetPiece(socket, io) {
+  return ({ new_pos, gameId }) => {
+    consoleSpacing("IN RESETING PIECE");
+    const userId = socket.id;
+    const color = rooms.get(gameId).players.get(userId).color;
+    // get other player pos
+    const otherPLayerPos = otherPLayerPosArray(new_pos, color);
+    let otherPLayerPresent = {};
+    // find other piece,
+    if (rooms.get(gameId).players.has(socket.id)) {
+      for (const [pid, player] of rooms.get(gameId).players) {
+        if (player.color !== color) {
+          const playerColor = player.color;
+          player.pos.forEach((p, i) => {
+            if (p === otherPLayerPosArray[playerColor]) {
+              otherPLayerPresent[playerColor].push({
+                index: i,
+                position: p,
+              });
+            }
+          });
+        }
+      }
+    }
+    console.log(isSafe(new_pos));
+    if (
+      !isSafe(new_pos) &&
+      otherPLayerPresent[Object.keys(otherPLayerPresent)[0]]
+    ) {
+      consoleSpacing();
+      console.log(
+        otherPLayerPresent,
+        otherPLayerPresent[Object.keys(otherPLayerPresent)[0]]
+      );
+      consoleSpacing();
+
+      const playerIndex =
+        otherPLayerPresent[Object.keys(otherPLayerPresent)[0]][
+          ~~(
+            otherPLayerPresent[Object.keys(otherPLayerPresent)[0]].length *
+            Math.random()
+          )
+        ];
+      const pos =
+        otherPLayerPresent[Object.keys(otherPLayerPresent)[0]][playerIndex].pos;
+      const i =
+        otherPLayerPresent[Object.keys(otherPLayerPresent)[0]][playerIndex]
+          .index;
+      const name =
+        otherPLayerPresent[Object.keys(otherPLayerPresent)[0]][
+          playerIndex
+        ].color.split("")[0] + "0";
+
+      movePiece(
+        socket,
+        io
+      )({
+        dice: name,
+        position: pos,
+        gameId,
+        index: playerIndex,
+        pieceId: name,
+      });
+    }
+  };
+}
+
+function movePiece(socket, io) {
+  return ({ dice, position, gameId, index, pieceId }) => {
+    const userId = socket.id;
+    const color = rooms.get(gameId).players.get(userId).color;
+    const new_pos = newPos(dice, position);
+
+    // -> update arr
+    if (new_pos !== -1) {
+      rooms.get(gameId).players.get(userId).pos = newArr(
+        new_pos,
+        rooms.get(gameId).players.get(userId).pos,
+        index
+      );
+
+      io.in(gameId).emit("piece_moved", {
+        posArr: rooms.get(gameId).players.get(userId).pos,
+        color,
+        new_pos,
+        index,
+        pieceId,
+      });
+
+      resetPiece(
+        socket,
+        io
+      )({
+        new_pos,
+        gameId,
+      });
+
+      if (dice !== 6) {
+        setTimeout(
+          () => changeCurrentPlayer(socket, io)({ game_id: gameId }),
+          1000
+        );
+      }
+    }
+  };
+}
 
 function autoMovePlayerPiece(socket, io) {
   return ({ gameId, face }) => {
@@ -226,32 +255,23 @@ function autoMovePlayerPiece(socket, io) {
           }
         });
 
-      const new_pos = newPos(face, position);
       const name = rooms.get(gameId).players.get(userId).color[0] + (index + 1);
 
-      rooms.get(gameId).players.get(userId).pos = newArr(
-        new_pos,
-        rooms.get(gameId).players.get(userId).pos,
-        index
-      );
-
       // -> emit moved_piece
-      console.log("Automatic Movement", {
-        color,
-        new_pos,
-        index,
-      });
+      console.log("Automatic Movement");
 
-      // socket.emit("piece_moved", {
-      //   posArr: rooms.get(gameId).players.get(userId).pos,
-      //   new_pos,
-      //   pieceID: name,
-      // });
-      io.in(gameId).emit("auto_move_resp", {
-        color,
-        new_pos,
-        index,
-      });
+      if (face !== 6) {
+        movePiece(
+          socket,
+          io
+        )({
+          dice: face,
+          position,
+          gameId,
+          index,
+          pieceId: name,
+        });
+      }
     }
   };
 }

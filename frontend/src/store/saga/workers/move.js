@@ -1,6 +1,6 @@
-import { put, take, select } from 'redux-saga/effects'
-import { next_player } from 'store/user'
+import { put, select } from 'redux-saga/effects'
 import { getUpdatePos, update_arr } from 'store/move'
+import { getDice, set_rolled } from 'store/dice'
 
 export const onMovePiece = function* () {
     try {
@@ -8,23 +8,16 @@ export const onMovePiece = function* () {
         console.log('Get updated variables')
         yield put(update_arr({ color, new_pos, index }))
         console.log('position updated')
+        yield put(set_rolled(false))
     } catch (e) {
         console.warn(e)
     }
 }
 
-export const autoMovePiece = function* () {
-    try {
-        const { color, new_pos, index } = yield select(getUpdatePos)
-        console.log('Get updated variables')
-        yield put(update_arr({ color, new_pos, index }))
-        console.log('position updated')
-    }
-    catch (e) {
-        console.error(e)
-    }
-}
-
 export const onMovePieceRequest = function* (socket, action) {
     yield socket.emit('move_piece', action.payload)
+    const dice = yield select(getDice)
+    if (dice === 6) {
+        yield put(set_rolled(false))
+    }
 }

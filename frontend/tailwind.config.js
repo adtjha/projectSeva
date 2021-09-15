@@ -79,8 +79,8 @@ module.exports = {
         "safe-cell": "url(./images/safe.svg)",
       }),
       rotate: {
-        "-360": "-360deg",
-        360: "360deg",
+        "-360": "-720deg",
+        360: "720deg",
       },
       colors: {
         blueGray: colors.blueGray,

@@ -54,10 +54,10 @@ const Dice = (props) => {
             <Transition
                 as={Fragment}
                 show={isShowing}
-                enter="transform transition duration-300"
-                enterFrom="opacity-0 -rotate-180 scale-50"
+                enter="transform transition duration-500"
+                enterFrom="opacity-0 -rotate-360 scale-50"
                 enterTo="opacity-100 rotate-0 scale-100"
-                leave="transform duration-200 transition ease-in-out"
+                leave="transform duration-500 transition ease-in-out"
                 leaveFrom="opacity-100 rotate-0 scale-100 "
                 leaveTo="opacity-0 scale-95 "
             >

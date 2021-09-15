@@ -4,6 +4,9 @@ const initialState = {
     game_id: '',
     current: '',
     ended: false,
+    alert: {
+        
+    }
 }
 
 export function usersReducer(state = initialState, action) {

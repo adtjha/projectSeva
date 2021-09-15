@@ -96,13 +96,13 @@ const arrDiff = (arr1, arr2) => {
 
 const newPos = (dice, pos) => {
   if (isNaN(pos)) {
-    return dice === 6 ? 1 : pos;
+    return dice === 6 ? 1 : -1;
   } else if (pos >= 1 && pos < 52) {
     return pos + dice;
   } else if (52 <= pos && pos < 57) {
-    return 57 - pos >= dice ? pos + dice : pos;
+    return 57 - pos >= dice ? pos + dice : -1;
   } else {
-    return pos;
+    return -1;
   }
 };
 
@@ -121,69 +121,95 @@ const piecesOut = (arr) => {
 
 const cell_types = {
   begin: [1],
+  safe: [9, 22, 35, 48],
   final: [52, 53, 54, 55, 56],
   end: [57],
 };
 
 const isSafe = (pos) => {
   return Object.keys(cell_types).every(
-    (type) => cell_types[type].findIndex(pos) === -1
+    (type) => cell_types[type].findIndex((i) => i === pos) !== -1
   );
 };
 
 const players = ["red", "green", "blue", "yellow"];
 
-// [red, green, yellow, blue]
+// [red, green, blue, yellow]
 // prettier-ignore
 const colliding = [
-  [9, 42, 20, 31],
-  [20, 9, 31, 42],
-  [42, 31, 9, 20],
-  [31, 20, 42, 9],
+  [09, 42, 31, 20],
+  [20, 09, 42, 31],
+  [42, 31, 20, 09],
+  [31, 20, 09, 42],
 
-  [10, 43, 21, 32],
-  [21, 10, 32, 43],
-  [43, 32, 10, 21],
-  [32, 21, 43, 10],
+  [10, 43, 32, 21],
+  [21, 10, 43, 32],
+  [43, 32, 21, 10],
+  [32, 21, 10, 43],
 
-  [8, 41, 19, 30],
-  [19, 8, 30, 41],
-  [41, 30, 8, 19],
-  [30, 19, 41, 8],
+  [08, 41, 30, 19],
+  [19, 08, 41, 30],
+  [41, 30, 19, 08],
+  [30, 19, 08, 41],
 
-  [13, 2, 24, 35],
-  [24, 13, 35, 2],
-  [2, 35, 13, 24],
-  [35, 24, 2, 13],
+  [13, 02, 35, 24],
+  [24, 13, 02, 35],
+  [02, 35, 24, 13],
+  [35, 24, 13, 02],
 
-  [6, 39, 17, 28],
-  [17, 6, 28, 39],
-  [39, 28, 6, 17],
-  [28, 17, 39, 6],
+  [06, 39, 28, 17],
+  [17, 06, 39, 28],
+  [39, 28, 17, 06],
+  [28, 17, 06, 39],
 
-  [14, 3, 25, 36],
-  [25, 14, 36, 3],
-  [3, 36, 14, 25],
-  [36, 25, 3, 14],
+  [14, 03, 36, 25],
+  [25, 14, 03, 36],
+  [03, 36, 25, 14],
+  [36, 25, 14, 03],
 
-  [5, 38, 16, 27],
-  [16, 5, 27, 38],
-  [38, 27, 5, 16],
-  [27, 16, 38, 5],
+  [05, 38, 27, 16],
+  [16, 05, 38, 27],
+  [38, 27, 16, 05],
+  [27, 16, 05, 38],
 
-  [15, 4, 26, 37],
-  [26, 15, 37, 4],
-  [4, 37, 15, 26],
-  [37, 26, 4, 15],
+  [15, 04, 37, 26],
+  [26, 15, 04, 37],
+  [04, 37, 26, 15],
+  [37, 26, 15, 04],
 ];
 
-// [12, 1, 23, 34], green-start
-// [7, 40, 18, 29], safe-cell
+/**
+ * red_colliding =  [1,2,3,4,5,6,8,9,10,13,14,15,16,17,19,20,21,24,25,26,27,28,30,31,32,33,34,36,37,38,39,41,42,43,44,45,46,47,49,50,51]
+ * [  r,  g,  b,  y ]
+ * [ 01, 40, 27, 14 ]
+ * [ 02, 41, 28, 15 ]
+ *
+ * [ 00, 39, 26, 13 ]
+ * pos + offset > 52 ? (pos + offset - 52) : (pos + offset)
+ * [ 14, 01, 40, 27]
+ */
+
+const offset = { red: 00, green: 39, blue: 26, yellow: 13 };
+
+const otherPLayerPosArray = (pos, color) => {
+  const OtherPlayers = players.map((e) => e !== color);
+  let otherPLayerPos = {};
+  Object.keys(offset).forEach((e) => {
+    if (e !== color) {
+      otherPLayerPos[e] =
+        pos + offset[e] > 52 ? pos + offset[e] - 52 : pos + offset[e];
+    }
+  });
+  return otherPLayerPos;
+};
+
 // [1, 34, 12, 23], red-start
-// [18, 7, 29, 40], safe-cell
-// [23, 12, 34, 1], blue-start
-// [29, 18, 40, 7], safe-cell
+// [12, 1, 23, 34], green-start
 // [34, 23, 1, 12], yellow-start
+// [23, 12, 34, 1], blue-start
+// [7, 40, 18, 29], safe-cell
+// [18, 7, 29, 40], safe-cell
+// [29, 18, 40, 7], safe-cell
 // [40, 29, 7, 18], safe-cell
 
 exports.greenPlayer = greenPlayer;
@@ -201,3 +227,4 @@ exports.roomDefault = roomDefault;
 exports.consoleSpacing = consoleSpacing;
 exports.isSafe = isSafe;
 exports.arrDiff = arrDiff;
+exports.otherPLayerPosArray = otherPLayerPosArray;
