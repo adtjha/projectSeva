@@ -107,7 +107,6 @@ const newPos = (dice, pos) => {
 };
 
 const newArr = (new_pos, arr, index) => {
-  console.log(new_pos);
   return arr.map((x, i) => (i === index ? new_pos : x));
 };
 
@@ -179,7 +178,7 @@ const colliding = [
 ];
 
 /**
- * red_colliding =  [1,2,3,4,5,6,8,9,10,13,14,15,16,17,19,20,21,24,25,26,27,28,30,31,32,33,34,36,37,38,39,41,42,43,44,45,46,47,49,50,51]
+ * colliding =  [1,2,3,4,5,6,8,9,10,13,14,15,16,17,19,20,21,24,25,26,27,28,30,31,32,33,34,36,37,38,39,41,42,43,44,45,46,47,49,50,51]
  * [  r,  g,  b,  y ]
  * [ 01, 40, 27, 14 ]
  * [ 02, 41, 28, 15 ]
@@ -192,14 +191,18 @@ const colliding = [
 const offset = { red: 00, green: 39, blue: 26, yellow: 13 };
 
 const otherPLayerPosArray = (pos, color) => {
-  const OtherPlayers = players.map((e) => e !== color);
+  const otherPlayers = players.filter((e) => e !== color);
   let otherPLayerPos = {};
-  Object.keys(offset).forEach((e) => {
-    if (e !== color) {
-      otherPLayerPos[e] =
-        pos + offset[e] > 52 ? pos + offset[e] - 52 : pos + offset[e];
-    }
+
+  otherPlayers.forEach((e) => {
+    const off = offset[e];
+    otherPLayerPos[e] = pos + off > 52 ? pos + off - 52 : pos + off;
   });
+
+  consoleSpacing("-");
+  console.log(otherPLayerPos);
+  consoleSpacing("-");
+
   return otherPLayerPos;
 };
 
@@ -211,6 +214,10 @@ const otherPLayerPosArray = (pos, color) => {
 // [18, 7, 29, 40], safe-cell
 // [29, 18, 40, 7], safe-cell
 // [40, 29, 7, 18], safe-cell
+
+const error_codes = {
+  200: "Can't play this move. Only legal moves allowed.",
+};
 
 exports.greenPlayer = greenPlayer;
 exports.redPlayer = redPlayer;
@@ -228,3 +235,4 @@ exports.consoleSpacing = consoleSpacing;
 exports.isSafe = isSafe;
 exports.arrDiff = arrDiff;
 exports.otherPLayerPosArray = otherPLayerPosArray;
+exports.error_codes = error_codes;

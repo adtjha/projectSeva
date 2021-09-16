@@ -14,7 +14,10 @@ const {
   piecesOut,
   otherPLayerPosArray,
   isSafe,
+  error_codes,
 } = require("./constant");
+
+let i = 0;
 
 module.exports = (io) => {
   io.on("connection", (socket) => {
@@ -79,7 +82,9 @@ module.exports = (io) => {
 
     socket.on("roll_dice", ({ gameId }) => {
       console.log("roll dice on server");
-      const face = Math.ceil(Math.random() * 6);
+      const diceArray = [6, 5, 6, 1, 5, 1, 5];
+      consoleSpacing(" " + i + " ");
+      const face = i > 6 ? Math.ceil(Math.random() * 6) : diceArray[i++];
       // const face = 6;
 
       // socket.emit("dice_rolled", { face });
@@ -128,20 +133,27 @@ module.exports = (io) => {
 
 function resetPiece(socket, io) {
   return ({ new_pos, gameId }) => {
-    consoleSpacing("IN RESETING PIECE");
     const userId = socket.id;
     const color = rooms.get(gameId).players.get(userId).color;
     // get other player pos
     const otherPLayerPos = otherPLayerPosArray(new_pos, color);
     let otherPLayerPresent = {};
     // find other piece,
-    if (rooms.get(gameId).players.has(socket.id)) {
+    if (rooms.get(gameId).players.has(userId)) {
       for (const [pid, player] of rooms.get(gameId).players) {
         if (player.color !== color) {
           const playerColor = player.color;
+          const playerId = pid;
           player.pos.forEach((p, i) => {
-            if (p === otherPLayerPosArray[playerColor]) {
+            if (p === otherPLayerPos[playerColor]) {
+              otherPLayerPresent[playerColor] = [];
               otherPLayerPresent[playerColor].push({
+                index: i,
+                position: p,
+                userId: playerId,
+              });
+              console.log({
+                color: playerColor,
                 index: i,
                 position: p,
               });
@@ -150,45 +162,48 @@ function resetPiece(socket, io) {
         }
       }
     }
-    console.log(isSafe(new_pos));
+
     if (
       !isSafe(new_pos) &&
       otherPLayerPresent[Object.keys(otherPLayerPresent)[0]]
     ) {
-      consoleSpacing();
-      console.log(
-        otherPLayerPresent,
-        otherPLayerPresent[Object.keys(otherPLayerPresent)[0]]
+      const playerIndex = ~~(
+        otherPLayerPresent[Object.keys(otherPLayerPresent)[0]].length *
+        Math.random()
       );
-      consoleSpacing();
-
-      const playerIndex =
-        otherPLayerPresent[Object.keys(otherPLayerPresent)[0]][
-          ~~(
-            otherPLayerPresent[Object.keys(otherPLayerPresent)[0]].length *
-            Math.random()
-          )
-        ];
       const pos =
-        otherPLayerPresent[Object.keys(otherPLayerPresent)[0]][playerIndex].pos;
+        otherPLayerPresent[Object.keys(otherPLayerPresent)[0]][playerIndex]
+          .position;
       const i =
         otherPLayerPresent[Object.keys(otherPLayerPresent)[0]][playerIndex]
           .index;
       const name =
-        otherPLayerPresent[Object.keys(otherPLayerPresent)[0]][
-          playerIndex
-        ].color.split("")[0] + "0";
+        Object.keys(otherPLayerPresent)[0].split("")[0] + (i + 1).toString();
+      const otherPLayerUserId =
+        otherPLayerPresent[Object.keys(otherPLayerPresent)[0]][playerIndex]
+          .userId;
 
-      movePiece(
-        socket,
-        io
-      )({
-        dice: name,
-        position: pos,
-        gameId,
-        index: playerIndex,
-        pieceId: name,
-      });
+      rooms.get(gameId).players.get(otherPLayerUserId).pos = newArr(
+        name,
+        rooms.get(gameId).players.get(otherPLayerUserId).pos,
+        i
+      );
+
+      setTimeout(
+        () =>
+          io.in(gameId).emit("piece_moved", {
+            posArr: rooms.get(gameId).players.get(otherPLayerUserId).pos,
+            color: Object.keys(otherPLayerPresent)[0],
+            new_pos: name,
+            index: i,
+            pieceId: name,
+          }),
+        500
+      );
+
+      return true;
+    } else {
+      return false;
     }
   };
 }
@@ -196,6 +211,7 @@ function resetPiece(socket, io) {
 function movePiece(socket, io) {
   return ({ dice, position, gameId, index, pieceId }) => {
     const userId = socket.id;
+
     const color = rooms.get(gameId).players.get(userId).color;
     const new_pos = newPos(dice, position);
 
@@ -215,20 +231,26 @@ function movePiece(socket, io) {
         pieceId,
       });
 
-      resetPiece(
-        socket,
-        io
-      )({
-        new_pos,
-        gameId,
-      });
-
-      if (dice !== 6) {
-        setTimeout(
-          () => changeCurrentPlayer(socket, io)({ game_id: gameId }),
-          1000
-        );
-      }
+      new Promise((resolve, reject) => {
+        resetPiece(
+          socket,
+          io
+        )({
+          new_pos,
+          gameId,
+        })
+          ? resolve()
+          : reject();
+      }).then(
+        () => {},
+        () => {
+          if (dice !== 6) {
+            setTimeout(() => {
+              changeCurrentPlayer(socket, io)({ game_id: gameId });
+            }, 1000);
+          }
+        }
+      );
     }
   };
 }
