@@ -4,9 +4,7 @@ const initialState = {
     game_id: '',
     current: '',
     ended: false,
-    alert: {
-        
-    }
+    alert: '',
 }
 
 export function usersReducer(state = initialState, action) {
@@ -21,6 +19,8 @@ export function usersReducer(state = initialState, action) {
             }
         case UPDATE:
             return { ...state, current: action.payload.current }
+        case ALERT:
+            return { ...state, alert: action.payload }
         default:
             return state
     }
@@ -42,6 +42,7 @@ export const CONNECT = 'connect'
 export const DISCONNECT = 'disconnect'
 export const CONFIG = 'config'
 export const NEXT = 'next'
+export const ALERT = 'alert'
 
 // action creators
 export const set_piece_out = (state) => ({
@@ -73,4 +74,8 @@ export const set_config_request = () => ({
 })
 export const next_player = () => ({
     type: NEXT,
+})
+export const alert_player = () => ({
+    type: ALERT,
+    
 })
