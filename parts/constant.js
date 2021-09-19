@@ -1,9 +1,9 @@
 const { v4: uuidv4 } = require("uuid");
 
 const consoleSpacing = (message) => {
-  console.log(" ");
-  console.log(`-----------------------${message}-----------------------`);
-  console.log(" ");
+  // console.log(" ");
+  // console.log(`-----------------------${message}-----------------------`);
+  // console.log(" ");
 };
 
 const redPlayer = {
@@ -199,9 +199,9 @@ const otherPLayerPosArray = (pos, color) => {
     otherPLayerPos[e] = pos + off > 52 ? pos + off - 52 : pos + off;
   });
 
-  consoleSpacing("-");
-  console.log(otherPLayerPos);
-  consoleSpacing("-");
+  // consoleSpacing("-");
+  // console.log(otherPLayerPos);
+  // consoleSpacing("-");
 
   return otherPLayerPos;
 };
