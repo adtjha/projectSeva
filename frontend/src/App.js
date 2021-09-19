@@ -2,7 +2,6 @@ import './App.css'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import LandingPage from './components/LandingPage'
 import { About } from './features'
-import { SocketContext, socket } from './connect/socket'
 import { Game } from 'components/Game'
 
 function App() {
@@ -11,9 +10,7 @@ function App() {
             <div className="App m-auto">
                 <Switch>
                     <Route path="/game">
-                        <SocketContext.Provider value={socket}>
-                            <Game key={1} />
-                        </SocketContext.Provider>
+                        <Game key={1} />
                     </Route>
                     <Route path="/about">
                         <About />
