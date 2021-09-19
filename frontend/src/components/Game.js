@@ -1,34 +1,23 @@
-import { SocketContext } from 'connect/socket'
-import React, { useContext, useEffect, useRef, useState } from 'react'
+
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getGameId, getGameStatus, set_data, set_name } from 'store/user'
+import {
+    connect_socket,
+    getGameId,
+    getGameStatus,
+} from 'store/user'
 import Board from './Board'
 import { GUID } from './functions/randomUid'
 
 export const Game = () => {
     const dispatch = useDispatch()
-    const socket = useRef(useContext(SocketContext))
     const [room, setRoom] = useState('')
 
     useEffect(() => {
         setRoom(GUID)
     }, [setRoom])
 
-    const handleSubmit = () => {
-        console.log(socket.current, 'here')
-        socket.current.emit('join_game', room)
-        socket.current.on('config_data', (data) => {
-            console.log(room, socket.current)
-            dispatch(set_data({ id: data.id, current: data.current }))
-            dispatch(
-                set_name({
-                    id: data.user.id,
-                    name: GUID,
-                    color: data.user.color,
-                })
-            )
-        })
-    }
+    const handleSubmit = () => dispatch(connect_socket(room))
 
     const gameId = useSelector(getGameId)
     const hasGameEnded = useSelector(getGameStatus)

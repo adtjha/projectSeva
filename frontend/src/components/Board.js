@@ -7,9 +7,9 @@ import React, { useContext, useEffect, useRef } from 'react'
 import { getBlue, getGreen, getRed, getYellow } from '../store/move'
 import { getDice } from '../store/dice'
 import { getGameId, set_data } from '../store/user'
-import { SocketContext } from '../connect/socket'
+// import { SocketContext } from '../connect/socket'
 import { Notification } from './Notification'
-import { useLogger } from 'react-use'
+// import { useLogger } from 'react-use'
 // import { useGeolocation } from "react-use";
 
 const Board = (props) => {
@@ -23,16 +23,16 @@ const Board = (props) => {
         blue: useSelector(getBlue),
         dice: useSelector(getDice),
     }
-    const socket = useRef(useContext(SocketContext))
+    // const socket = useRef(useContext(SocketContext))
     const pos = [...create2Darray(data)]
     const gameId = useSelector(getGameId)
-    
+
     useEffect(() => {
-        socket.current.on('update_current', (player) => {
-            if (mounted.current) {
-                dispatch(set_data({ id: gameId, current: player }))
-            }
-        })
+        // socket.current.on('update_current', (player) => {
+        //     if (mounted.current) {
+        //         dispatch(set_data({ id: gameId, current: player }))
+        //     }
+        // })
 
         return () => {
             mounted.current = false

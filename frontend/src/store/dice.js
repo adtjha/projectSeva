@@ -8,7 +8,11 @@ const initialState = {
 export function diceReducer(state = initialState, action) {
     switch (action.type) {
         case ROLL:
-            return { ...state, face: action.payload }
+            console.log('store : setting dice')
+            return {
+                ...state,
+                face: action.payload,
+            }
         case ROLLED:
             return { ...state, rolled: action.payload }
         case SHOWING:
@@ -27,6 +31,10 @@ export const getShowing = (state) => state.dice.showing
 export const ROLL = 'roll'
 export const ROLLED = 'rolled'
 export const SHOWING = 'showing'
+export const FETCH_DICE = 'roll dice request'
+
+// export const ROLL_DICE_REQ = 'roll dice request'
+export const ROLL_DICE_RES = 'roll dice response'
 
 // action creators
 export const set_dice = (n) => ({
@@ -40,4 +48,18 @@ export const set_rolled = (state) => ({
 export const set_showing = (state) => ({
     type: SHOWING,
     payload: state,
+})
+export const fetch_dice = ({ gameId, userColor }) => ({
+    type: FETCH_DICE,
+    payload: { gameId, userColor },
+})
+
+// export const roll_dice_req = ({ gameId }) => ({
+//     type: ROLL_DICE_REQ,
+//     payload: { gameId },
+// })
+
+export const roll_dice_res = ({ face }) => ({
+    type: ROLL_DICE_RES,
+    payload: { face },
 })
