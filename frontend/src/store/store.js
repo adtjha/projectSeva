@@ -5,17 +5,12 @@ import { diceReducer } from './dice'
 import { movesReducer } from './move'
 import { usersReducer } from './user'
 import rootSaga from './saga'
-import { SocketContext } from '../connect/socket'
 
 /**
  * Redux Store, essential to store frontend data.
  */
 
-const sagaMiddleware = createSagaMiddleware({
-    context: {
-        SocketContext,
-    },
-})
+const sagaMiddleware = createSagaMiddleware()
 
 export const store = createStore(
     combineReducers({
