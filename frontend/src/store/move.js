@@ -12,15 +12,10 @@ _.forIn(extractObject(initialState.fen), (v, k) => {
 
 export function movesReducer(state = initialState, action) {
     switch (action.type) {
-        case MOVE:
+        case ARRAY:
             return {
                 ...state,
-                [action.payload.color]: state[action.payload.color].map(
-                    (p, i) =>
-                        i === action.payload.num
-                            ? parseInt(action.payload.pos)
-                            : p
-                ),
+                [action.payload.color]: action.payload.posArr,
             }
         case RESET:
             return {
@@ -45,19 +40,15 @@ export const getYellow = (state) => state.move.yellow
 export const getBlue = (state) => state.move.blue
 
 // action types
-export const MOVE = 'move'
+export const ARRAY = 'array'
 export const RESET = 'reset'
 
 // action creators
-export const move_piece = (pos, color, num) => ({
-    type: MOVE,
-    payload: {
-        pos,
-        color,
-        num,
-    },
+export const update_arr = (color, posArr) => ({
+    type: ARRAY,
+    payload: { color, posArr },
 })
 export const reset_piece = (num, color) => ({
     type: RESET,
-    payload: color,
+    payload: { color, num },
 })

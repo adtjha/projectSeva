@@ -16,3 +16,11 @@ All the game Ui is handled by react, game data by redux.
 ## Backend
 
 This takes care of the backend.
+
+# THINGS TO REMEBER BEFORE DEPLOY
+
+- index.js
+  Uncomment app.use(express)
+
+- ./Frontend/Constants.js
+  Uncomment BASE_API

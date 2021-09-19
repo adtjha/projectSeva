@@ -1,11 +1,5 @@
-import React, {
-    useCallback,
-    useContext,
-    useEffect,
-    useLayoutEffect,
-    useRef,
-    useState,
-} from 'react'
+import React, { useCallback, useContext, useLayoutEffect, useRef } from 'react'
+import { useMedia } from 'react-use'
 import red from '../images/red.svg'
 import green from '../images/green.svg'
 import yellow from '../images/yellow.svg'
@@ -13,37 +7,35 @@ import blue from '../images/blue.svg'
 import _ from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
 import Constants from '../Constants'
-import { move_piece } from '../store/move'
-import {
-    getColor,
-    getChance,
-    getPieceOut,
-    set_piece_out,
-    set_chance,
-} from '../store/user'
+import { update_arr } from '../store/move'
+import { getColor, getGameId, getGameCurrentPlayer } from '../store/user'
 import { getDice, rolled, set_rolled } from '../store/dice'
 import { SocketContext } from 'connect/socket'
 
 function Piece(props) {
+    const mounted = useRef(true)
     const name = props.name
     const letter = props.name.split('')[0]
     const num = props.name.split('')[1]
 
     const color = Constants.colorNames[letter]
     const patharr = Constants[color.toUpperCase() + '_PATH']
+    const animate = useRef()
+    const isLg = useMedia('(min-width: 1024px)')
 
     var className, piece
 
     const position = useSelector((state) => state.move[color][num - 1])
     const dice = useSelector(getDice)
     const userColor = useSelector(getColor)
-    const isChance = useSelector(getChance)
+    const currentColor = useSelector(getGameCurrentPlayer)
     const hasRolled = useSelector(rolled)
-    const isPieceOut = useSelector(getPieceOut)
+    const gameId = useSelector(getGameId)
 
-    const socket = useContext(SocketContext)
+    const socket = useRef(useContext(SocketContext))
 
     const dispatch = useDispatch()
+    const isChance = userColor === currentColor
 
     if (letter.includes('r')) {
         piece = red
@@ -64,75 +56,63 @@ function Piece(props) {
     }
 
     const updatePos = useCallback(
-        (pos) => {
+        (posArr, pos) => {
             // animate
             const start = Constants.xy(patharr, position),
-                end = Constants.xy(
-                    patharr,
-                    parseInt(isNaN(pos) ? 1 : position - pos)
-                )
-            className += Constants.generateTranslate(start, end)
+                end = Constants.xy(patharr, pos)
+            animate.current = Constants.generateTranslate(start, end, isLg)
             setTimeout(() => {
-                dispatch(move_piece(pos, color, num - 1))
+                dispatch(update_arr(color, posArr))
                 console.log('dispatched')
-            }, 500)
+            }, 150)
         },
-        [color, dispatch, num, patharr, position, className]
+        [color, dispatch, patharr, position, animate, isLg]
     )
+    
+    // socket.on pos -> update pos
+    socket.current.off('piece_moved').on('piece_moved', ({ posArr, new_pos, pieceID }) => {
+        if (pieceID === name && mounted.current) {
+            const pos = new_pos
+            updatePos(posArr, pos)
+        }
+    })
 
+    socket.current.off('moved_piece_err').on('moved_piece_err', ({ message }) => {
+        alert(message)
+    })
+    
     useLayoutEffect(() => {
-        // socket.on pos -> update pos
-        socket.on('piece_moved', ({ toMove, color, pieceID }) => {
-            if (pieceID === name) {
-                console.log(toMove)
-                updatePos(toMove)
-            }
-        })
-    }, [socket, name, updatePos])
+
+        return () => {
+            animate.current = ''
+            mounted.current = false
+        }
+    }, [dispatch, gameId, name, updatePos])
 
     const handleClick = (e) => {
         e.preventDefault()
         if (color === userColor && isChance && hasRolled) {
-            // console.log(props, position, pieceRef.current.className)
-            if (props.name === position) {
-                // logic -> move only if pieceOut else move only if dice is 6
-                if (dice === 6 && !isPieceOut) {
-                    dispatch(set_piece_out(true))
-                    dispatch(set_rolled(false))
-                    dispatch(set_chance(true))
-                    updatePos(1)
-                    // socket.emit pos
-                    socket.emit('move_piece', {
-                        toMove: 1,
-                        color,
-                        name,
-                    })
-                } else {
-                    // chance finished
-                    dispatch(set_chance(false))
-                }
-            } else if (props.name !== position) {
-                dispatch(set_rolled(false))
-                dispatch(set_chance(true))
-                updatePos(position + dice)
-                // socket.emit pos
-                console.log(position, position+dice)
-                socket.emit('move_piece', {
-                    toMove: position + dice,
-                    color,
-                    name,
-                })
+            dispatch(set_rolled(false))
+            socket.current.emit('move_piece', {
+                name,
+                dice,
+                position,
+                gameId,
+                safe_cell: props.cell_data.safe,
+                index: num - 1,
+            })
+            if (dice !== 6) {
+                socket.current.emit('change', { game_id: gameId })
             }
         } else {
-            console.log('NOT ALLOWED')
-            dispatch(set_rolled(false))
+            console.log('NOT ALLOWED', userColor, isChance, hasRolled)
         }
     }
 
     return (
         <React.Fragment>
             <img
-                className={className}
+                className={className + ' ' + animate.current}
                 data={props.name}
                 src={piece || color}
                 alt={props.name}

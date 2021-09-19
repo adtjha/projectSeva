@@ -9,7 +9,8 @@ module.exports = {
         black: "1px solid black",
       },
       spacing: {
-        110: "28rem",
+        4.5: "1.125rem",
+        9: "2.25rem",
         18: "4.5rem",
         27: "6.75rem",
         45: "11.25rem",
@@ -19,15 +20,16 @@ module.exports = {
         90: "22.5rem",
         99: "24.75rem",
         108: "27rem",
-        117: "29.25",
+        110: "28rem",
+        117: "29.25rem",
       },
       gridTemplateColumns: {
-        13: "repeat(13, minmax(0, 2rem))",
-        sm13: "repeat(13, minmax(0, 1.5rem))",
+        15: "repeat(15, minmax(0, 2rem))",
+        sm15: "repeat(15, minmax(0, 1.5rem))",
       },
       gridTemplateRows: {
-        13: "repeat(13, minmax(0, 2rem))",
-        sm13: "repeat(13, minmax(0, 1.5rem))",
+        15: "repeat(15, minmax(0, 2rem))",
+        sm15: "repeat(15, minmax(0, 1.5rem))",
       },
       gridRowStart: {
         8: "8",
@@ -37,6 +39,8 @@ module.exports = {
         12: "12",
         13: "13",
         14: "14",
+        15: "15",
+        16: "16",
       },
       gridRowEnd: {
         8: "8",
@@ -46,6 +50,8 @@ module.exports = {
         12: "12",
         13: "13",
         14: "14",
+        15: "15",
+        16: "16",
       },
       gridColumnStart: {
         8: "8",
@@ -55,6 +61,8 @@ module.exports = {
         12: "12",
         13: "13",
         14: "14",
+        15: "15",
+        16: "16",
       },
       gridColumnEnd: {
         8: "8",
@@ -64,6 +72,8 @@ module.exports = {
         12: "12",
         13: "13",
         14: "14",
+        15: "15",
+        16: "16",
       },
       backgroundImage: (theme) => ({
         "safe-cell": "url(./images/safe.svg)",
@@ -79,6 +89,24 @@ module.exports = {
         green: colors.green,
         yellow: colors.yellow,
         red: colors.red,
+      },
+      animation: {
+        dropdown: "dropdown 450ms ease-in 1",
+        wiggle: "wiggle 300ms cubic-bezier(0.7, 0.01, 0.35, 1) infinite",
+      },
+      keyframes: {
+        dropdown: {
+          "0%": {
+            transform: "translateY(-25%)",
+          },
+          "100%": {
+            transform: "translateY(0)",
+          },
+        },
+        wiggle: {
+          "0%, 100%": { transform: "rotate(-3deg)" },
+          "50%": { transform: "rotate(3deg)" },
+        },
       },
     },
   },
