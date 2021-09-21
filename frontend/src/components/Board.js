@@ -42,11 +42,11 @@ const Board = (props) => {
     return (
         <React.Fragment>
             <Notification message="Game Started." />
-            <div className="w-max p-2 text-2xl font-semibold text-black mx-auto my-4">
+            <div className="w-auto p-2 text-2xl font-semibold text-black mx-auto my-4">
                 Room UID : {gameId}
             </div>
             <div className="board block lg:w-max lg:h-max lg:max-w-full  lg:p-4 m-auto p-1 border-2 border-solid rounded-2xl shadow-md">
-                <div className="relative z-20 lg:w-max lg:max-w-full grid grid-cols-sm15 lg:grid-cols-15 grid-rows-sm15 lg:grid-rows-15 md:gap-1 lg:gap-2 justify-items-stretch">
+                <div className="relative z-20 lg:w-max lg:max-w-full grid grid-cols-sm15 grid-rows-sm15 gap-1 lg:grid-cols-15 lg:grid-rows-15 lg:gap-2 justify-items-stretch">
                     {pos.map((cell) => (
                         <Cell key={cell.id} data={cell} />
                     ))}

@@ -20,7 +20,7 @@ function Piece(props) {
     const color = Constants.colorNames[letter]
     const patharr = Constants[color.toUpperCase() + '_PATH']
     const [animate, reset] = useState('')
-    const isLg = useMedia('(min-width: 1024px)')
+    const isLg = useMedia('(min-width: 1024px)', false)
 
     var className, piece
     const position = useSelector((state) => state.move[color][num - 1])

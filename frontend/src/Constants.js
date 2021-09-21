@@ -1,5 +1,5 @@
-const BASE_API = 'https://morning-plains-74021.herokuapp.com'
-// const BASE_API = 'http://localhost:8888'
+// const BASE_API = 'https://morning-plains-74021.herokuapp.com'
+const BASE_API = 'http://192.168.0.38:8888'
 
 const path = 6,
     safe = 5,
@@ -8,24 +8,28 @@ const path = 6,
         begin: 11,
         final: 12,
         end: 13,
+        arrow: 14,
     },
     green = {
         id: 2,
         begin: 21,
         final: 22,
         end: 23,
+        arrow: 24,
     },
     yellow = {
         id: 3,
         begin: 31,
         final: 32,
         end: 33,
+        arrow: 34,
     },
     blue = {
         id: 4,
         begin: 41,
         final: 42,
         end: 43,
+        arrow: 44,
     }
 
 const colorNames = {
@@ -65,9 +69,9 @@ const DEFAULT_CELL_LAYOUT = [
    '0',  '0',  '0',  '0',  '0',  '0',  '6', '22',  '6',  '0',  '0',  '0',  '0',  '0', '0',
    '0',  '0',  '0',  '0',  '0',  '0',  '6', '22',  '6',  '0',  '0',  '0',  '0',  '0', '0',
    '0',  '0',  '0',  '0',  '0',  '0',  '6', '22',  '6',  '0',  '0',  '0',  '0',  '0', '0',
-   '6', '11',  '6',  '6',  '6',  '6',  '0', '23',  '0',  '6',  '6',  '6',  '5',  '6', '6',
+   '6', '11',  '6',  '6',  '6',  '6', '14', '23', '24',  '6',  '6',  '6',  '5',  '6', '6',
    '6', '12', '12', '12', '12', '12', '13',  '0', '43', '42', '42', '42', '42', '42', '6',
-   '6',  '6',  '5',  '6',  '6',  '6',  '0', '33',  '0',  '6',  '6',  '6',  '6', '41', '6',
+   '6',  '6',  '5',  '6',  '6',  '6', '34', '33', '44',  '6',  '6',  '6',  '6', '41', '6',
    '0',  '0',  '0',  '0',  '0',  '0',  '6', '32',  '6',  '0',  '0',  '0',  '0',  '0', '0',
    '0',  '0',  '0',  '0',  '0',  '0',  '6', '32',  '6',  '0',  '0',  '0',  '0',  '0', '0',
    '0',  '0',  '0',  '0',  '0',  '0',  '6', '32',  '6',  '0',  '0',  '0',  '0',  '0', '0',
@@ -114,7 +118,7 @@ const RED_PATH = [
   null, null, null, null, null, null,   39,   38,   37, null, null, null, null, null, null,
 ];
 
-// 
+//
 
 // prettier-ignore
 const GREEN_PATH = [
@@ -134,7 +138,6 @@ const GREEN_PATH = [
   null, null, null, null, null, null,   27, null,   23, null, null, null, null, null, null,
   null, null, null, null, null, null,   26,   25,   24, null, null, null, null, null, null, 
 ];
-
 
 // prettier-ignore
 const YELLOW_PATH =  [
@@ -182,9 +185,9 @@ const cellsNotToDraw = [
   'da', 'db', 'dc', 'dd', 'de', 'df', null, null, null, null, 'dk', 'dl', 'dm', 'dn', 'do',
   'ea', 'eb', 'ec', 'ed', 'ee', 'ef', null, null, null, null, 'ek', 'el', 'em', 'en', 'eo',
   'fa', null, null, null, null, 'ff', null, null, null, 'fj', 'fk', 'fl', 'fm', 'fn', 'fo',
-  null, null, null, null, null, null, 'gg', null, 'gi', null, null, null, null, null, null,
   null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-  null, null, null, null, null, null, 'ig', null, 'ii', null, null, null, null, null, null,
+  null, null, null, null, null, null, null, 'hh', null, null, null, null, null, null, null,
+  null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
   'ja', 'jb', 'jc', 'jd', 'je', 'jf', null, null, null, 'jj', null, null, null, null, 'jo',
   'ka', 'kb', 'kc', 'kd', 'ke', null, null, null, null, 'kj', 'kk', 'kl', 'km', 'kn', 'ko',
   'la', 'lb', 'lc', 'ld', 'le', null, null, null, null, 'lj', 'lk', 'll', 'lm', 'ln', 'lo',
@@ -205,12 +208,20 @@ where[0] -> begin
 where[1] -> final
 where[2] -> end
 */
-const cell = 'cell lg:w-8 lg:h-8 p-0.5 lg:p-1'
+const cell = 'cell w-6 h-6 p-0.5 shadow-md lg:w-8 lg:h-8 lg:p-1'
+
+const directional_cell_obj = {
+    where: [false, false, false],
+    safe: false,
+    style: cell + ' text-center shadow-none bg-center bg-contain',
+    has: [],
+    pos: {},
+}
 
 const empty_cell_obj = {
     where: [false, false, false],
     safe: false,
-    style: cell + ' text-center border-2 border-dashed rounded',
+    style: cell + ' text-center shadow-none border lg:border-2 border-dashed rounded',
     has: [],
     pos: {},
 }
@@ -218,9 +229,7 @@ const empty_cell_obj = {
 const cell_obj = {
     where: [false, false, false],
     safe: false,
-    style:
-        cell +
-        ' text-center border-2 border-gray-200 lg:border-0 rounded lg:shadow-md bg-white ',
+    style: cell + ' text-center rounded lg:shadow-md border lg:border-2 border-white bg-white ',
     has: [],
     pos: {},
 }
@@ -230,7 +239,7 @@ const safe_cell_obj = {
     safe: true,
     style:
         cell +
-        ' text-center border-2 border-gray-200 lg:border-0 rounded lg:shadow-md bg-white bg-safe-cell bg-center bg-contain',
+        ' text-center rounded lg:shadow-md border lg:border-2 border-white bg-white bg-safe-cell bg-center bg-contain ',
     has: [],
     pos: {},
 }
@@ -238,9 +247,7 @@ const safe_cell_obj = {
 const begin_cell_obj = {
     where: [true, false, false],
     safe: false,
-    style:
-        cell +
-        ' text-center border-2 border-gray-200 lg:border-0 rounded lg:shadow-md ',
+    style: cell + ' text-center rounded lg:shadow-md bg-center bg-contain ',
     has: [],
     pos: {},
 }
@@ -248,9 +255,7 @@ const begin_cell_obj = {
 const final_cell_obj = {
     where: [false, true, false],
     safe: false,
-    style:
-        cell +
-        ' text-center border-2 border-gray-200 lg:border-0 rounded lg:shadow-md ',
+    style: cell + ' text-center rounded lg:shadow-md bg-center bg-contain ',
     has: [],
     pos: {},
 }
@@ -258,9 +263,7 @@ const final_cell_obj = {
 const end_cell_obj = {
     where: [false, false, true],
     safe: false,
-    style:
-        cell +
-        ' text-center border-2 border-gray-200 lg:border-0 rounded lg:shadow-md ',
+    style: cell + ' text-center rounded lg:shadow-md bg-center bg-contain ',
     has: [],
     pos: {},
 }
@@ -269,7 +272,7 @@ const generateTranslate = (start, end, lg) => {
     const x = end[0] - start[0],
         y = end[1] - start[1]
 
-    let space = lg ? 9 : 4.5
+    let space = lg ? 10 : 7
 
     console.log(lg, space)
 
@@ -278,17 +281,19 @@ const generateTranslate = (start, end, lg) => {
         x_s,
         y_s
 
-    if (x >= 0) {
-        x_s = x === 0 ? '' : ' translate-x-' + x_m
+    if (x_m >= 0) {
+        x_s = x_m === 0 ? '' : ' translate-x-' + x_m
     } else {
         x_s = ' -translate-x-' + -1 * x_m
     }
 
-    if (y >= 0) {
-        y_s = y === 0 ? '' : ' translate-y-' + y_m
+    if (y_m >= 0) {
+        y_s = y_m === 0 ? '' : ' translate-y-' + y_m
     } else {
         y_s = ' -translate-y-' + -1 * y_m
     }
+
+    console.log(' transition-transform duration-300 transform' + x_s + y_s)
 
     return ' transition-transform duration-300 transform' + x_s + y_s
 }
@@ -321,6 +326,7 @@ const Constants = {
     begin_cell_obj,
     final_cell_obj,
     end_cell_obj,
+    directional_cell_obj,
     generateTranslate,
     xy,
     BASE_API,

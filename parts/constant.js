@@ -1,9 +1,9 @@
 const { v4: uuidv4 } = require("uuid");
 
 const consoleSpacing = (message) => {
-  // console.log(" ");
-  // console.log(`-----------------------${message}-----------------------`);
-  // console.log(" ");
+  console.log(" ");
+  console.log(`-----------------------${message}-----------------------`);
+  console.log(" ");
 };
 
 const redPlayer = {

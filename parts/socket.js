@@ -21,94 +21,10 @@ let i = 0;
 
 module.exports = (io) => {
   io.on("connection", (socket) => {
-    // join a game,
-    socket.on("join_game", ({ room_id }) => {
-      // if room empty -> fit user in room array -> send room id
-      let config = { id: "", user: { id: "", color: "" } };
-      const empty = hasEmpty({ id: "", state: "", color: "" }, room_id);
 
-      if (empty.state) {
-        let player;
-        switch (empty.color) {
-          case "red":
-            player = { ...redPlayer };
-            break;
-          case "green":
-            player = { ...greenPlayer };
-            break;
-          case "yellow":
-            player = { ...yellowPlayer };
-            break;
-          case "blue":
-            player = { ...bluePlayer };
-            break;
-        }
-        rooms.get(empty.id).players.set(socket.id, { ...player });
+    socket.on("join_game", connectPlayer(socket));
 
-        socket.leave(socket.id);
-        socket.join(empty.id);
-
-        config.id = empty.id;
-        config.user.id = socket.id;
-        config.user.color = empty.color;
-        config.current = rooms.get(empty.id).current;
-      } else {
-        // create a room of 4
-        let room = {
-          players: new Map(),
-          current: "",
-        };
-        const room_id = uuidv4();
-        room.current = "red";
-
-        // -> Push into room into rooms array
-        rooms.set(room_id, { ...room });
-        rooms.get(room_id).players.set(socket.id, { ...redPlayer });
-
-        socket.leave(socket.id);
-        socket.join(room_id);
-
-        // -> send room id
-        config.id = room_id;
-        config.user.id = socket.id;
-        config.user.color = "red";
-        config.current = "red";
-      }
-
-      // consoleSpacing(` USER CONNECTED  @ ${new Date().toISOString()}`);
-      console.log(rooms);
-      socket.emit("config_data", config);
-    });
-
-    socket.on("roll_dice", ({ gameId }) => {
-      // console.log("roll dice on server");
-      // const diceArray = [6, 5, 6, 1, 5, 1, 5];
-      // consoleSpacing(" " + i + " ");
-      // const face = i > 6 ? Math.ceil(Math.random() * 6) : diceArray[i++];
-      // const face = 6;
-      const face = Math.ceil(Math.random() * 6);
-
-      // socket.emit("dice_rolled", { face });
-      io.in(gameId).emit("dice_rolled", {
-        face,
-      });
-
-      const pieceOut = piecesOut(rooms.get(gameId).players.get(socket.id).pos);
-
-      if (pieceOut === 0 && face !== 6) {
-        // console.log("No Piece Out and not a Six, switching player", face);
-        setTimeout(
-          () => changeCurrentPlayer(socket, io)({ game_id: gameId }),
-          1700
-        );
-      } else if (pieceOut === 1) {
-        // console.log("Single Piece Out, Auto Moving", face);
-        setTimeout(
-          () => autoMovePlayerPiece(socket, io)({ gameId, face }),
-          1700
-        );
-      }
-    });
+    socket.on("roll_dice", diceRoll(io, socket));
 
     socket.on("auto_move", autoMovePlayerPiece(socket, io));
 
@@ -118,19 +34,115 @@ module.exports = (io) => {
 
     socket.on("reset_piece", resetPiece(socket, io));
 
-    socket.on("disconnect", () => {
-      if (rooms.size !== 0) {
-        for (const [rid, room] of rooms) {
-          if (room.players.has(socket.id)) {
-            // consoleSpacing(` USER DISCONNECTED @ ${new Date().toISOString()}`);
-            // console.log(rooms.get(rid).players.get(socket.id));
-            rooms.get(rid).players.delete(socket.id);
-          }
-        }
-      }
-    });
+    socket.on("disconnect", disconnectPlayer(socket));
   });
 };
+
+function connectPlayer(socket) {
+  return ({ room_id }) => {
+    // if room empty -> fit user in room array -> send room id
+    let config = { id: "", user: { id: "", color: "" } };
+    const empty = hasEmpty({ id: "", state: "", color: "" }, room_id);
+
+    if (empty.state) {
+      let player;
+      switch (empty.color) {
+        case "red":
+          player = { ...redPlayer };
+          break;
+        case "green":
+          player = { ...greenPlayer };
+          break;
+        case "yellow":
+          player = { ...yellowPlayer };
+          break;
+        case "blue":
+          player = { ...bluePlayer };
+          break;
+      }
+      rooms.get(empty.id).players.set(socket.id, { ...player });
+
+      socket.leave(socket.id);
+      socket.join(empty.id);
+
+      config.id = empty.id;
+      config.user.id = socket.id;
+      config.user.color = empty.color;
+      config.current = rooms.get(empty.id).current;
+    } else {
+      // create a room of 4
+      let room = {
+        players: new Map(),
+        current: "",
+      };
+      const room_id = uuidv4();
+      room.current = "red";
+
+      // -> Push into room into rooms array
+      rooms.set(room_id, { ...room });
+      rooms.get(room_id).players.set(socket.id, { ...redPlayer });
+
+      socket.leave(socket.id);
+      socket.join(room_id);
+
+      // -> send room id
+      config.id = room_id;
+      config.user.id = socket.id;
+      config.user.color = "red";
+      config.current = "red";
+    }
+
+    // consoleSpacing(` USER CONNECTED  @ ${new Date().toISOString()}`);
+    console.log(rooms);
+    socket.emit("config_data", config);
+  };
+}
+
+function diceRoll(io, socket) {
+  return ({ gameId }) => {
+    // console.log("roll dice on server");
+    // const diceArray = [6, 5, 6, 1, 5, 1, 5];
+    // consoleSpacing(" " + i + " ");
+    // const face = i > 6 ? Math.ceil(Math.random() * 6) : diceArray[i++];
+    const face = 6;
+    // const face = Math.ceil(Math.random() * 6);
+
+    // socket.emit("dice_rolled", { face });
+    io.in(gameId).emit("dice_rolled", {
+      face,
+    });
+
+    const pieceOut = piecesOut(rooms.get(gameId).players.get(socket.id).pos);
+
+    if (pieceOut === 0 && face !== 6) {
+      // console.log("No Piece Out and not a Six, switching player", face);
+      setTimeout(
+        () => changeCurrentPlayer(socket, io)({ game_id: gameId }),
+        1700
+      );
+    } else if (pieceOut === 1) {
+      // console.log("Single Piece Out, Auto Moving", face);
+      setTimeout(
+        () => autoMovePlayerPiece(socket, io)({ gameId, face }),
+        1700
+      );
+    }
+  };
+}
+
+function disconnectPlayer(socket) {
+  return () => {
+    if (rooms.size !== 0) {
+      for (const [rid, room] of rooms) {
+        if (room.players.has(socket.id)) {
+          // consoleSpacing(` USER DISCONNECTED @ ${new Date().toISOString()}`);
+          // console.log(rooms.get(rid).players.get(socket.id));
+          rooms.get(rid).players.delete(socket.id);
+        }
+      }
+    }
+  };
+}
 
 function resetPiece(socket, io) {
   return ({ new_pos, gameId }) => {
@@ -349,3 +361,6 @@ function changeCurrentPlayer(socket, io) {
     });
   };
 }
+
+
+// Aditya Jha donated ₹549, to Sheela Foundation, from pooling a sum of ₹1500 pot money where each entry contribution was ₹375. 

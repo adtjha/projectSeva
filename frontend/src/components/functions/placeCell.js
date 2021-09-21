@@ -25,18 +25,23 @@ function placeCellObjects(cellid, i, color) {
     cellid = parseInt(cellid);
     // begin cell
     if (Constants[color].begin === cellid) {
-      cellObject = _.cloneDeep(Constants["begin_cell_obj"]);
-      cellObject.style += " bg-" + color + "-400";
+        cellObject = _.cloneDeep(Constants['begin_cell_obj'])
+        cellObject.style += ` bg-${color}-200 border lg:border-2 border-${color}-400 bg-start-${color}-cell`
 
-      // final cell
+        // final cell
     } else if (Constants[color].final === cellid) {
-      cellObject = _.cloneDeep(Constants["final_cell_obj"]);
-      cellObject.style += " bg-" + color + "-400";
+        cellObject = _.cloneDeep(Constants['final_cell_obj'])
+        cellObject.style += ` bg-${color}-200 border lg:border-2 border-${color}-400 bg-final-${color}-cell`
 
-      // end cell
+        // end cell
     } else if (Constants[color].end === cellid) {
-      cellObject = _.cloneDeep(Constants["end_cell_obj"]);
-      cellObject.style += " bg-" + color + "-400";
+        cellObject = _.cloneDeep(Constants['end_cell_obj'])
+        cellObject.style += ` bg-${color}-200 border lg:border-2 border-${color}-400 bg-end-${color}-cell`
+
+        // Directional Arrows
+    } else if (Constants[color].arrow === cellid) {
+        cellObject = _.cloneDeep(Constants['directional_cell_obj'])
+        cellObject.style += ` bg-arrow-${color}-cell`
     }
   } else {
     if (cellid === "6") {
