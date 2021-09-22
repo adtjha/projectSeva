@@ -95,6 +95,7 @@ const arrDiff = (arr1, arr2) => {
 };
 
 const newPos = (dice, pos) => {
+  console.log(dice, pos);
   if (isNaN(pos)) {
     return dice === 6 ? 1 : -1;
   } else if (pos >= 1 && pos < 52) {
@@ -104,6 +105,41 @@ const newPos = (dice, pos) => {
   } else {
     return -1;
   }
+};
+
+const generateFEN = (roomPlayers) => {
+  let fen = "",
+    color = "",
+    present = [];
+
+  consoleSpacing("-");
+
+  roomPlayers.forEach((player) => {
+    color = player.color;
+    present.push(color);
+    console.log(color);
+    player.pos.forEach((p, i) => {
+      fen = fen.concat(`${color.split("")[0]}`);
+      fen = isNaN(p) ? fen.concat(`${i+1}`) : fen.concat(`${p}`);
+    });
+    fen = fen.concat("/");
+  });
+
+  // const left = players.filter((p) => present.findIndex((e) => e === p) === -1);
+
+  // left.forEach((color) => {
+  //   [0, 0, 0, 0].forEach((p) => {
+  //     fen = fen.concat(`${color.split("")[0]}${p}`);
+  //   });
+  //   fen = fen.concat("/");
+  // });
+
+  // console.log(fen[fen.length - 1]);
+  // consoleSpacing("-");
+
+  fen = fen[fen.length - 1] === "/" ? fen.slice(0, fen.length - 1) : fen;
+
+  return fen;
 };
 
 const newArr = (new_pos, arr, index) => {
@@ -188,15 +224,47 @@ const colliding = [
  * [ 14, 01, 40, 27]
  */
 
-const offset = { red: 00, green: 39, blue: 26, yellow: 13 };
+const offset = {
+  red: {
+    red: 0,
+    green: 39,
+    blue: 26,
+    yellow: 13,
+  },
+  green: {
+    red: 39,
+    green: 0,
+    blue: 13,
+    yellow: 26,
+  },
+  blue: {
+    red: 26,
+    green: -13,
+    blue: 0,
+    yellow: 13,
+  },
+  yellow: {
+    red: 13,
+    green: -26,
+    blue: -13,
+    yellow: 0,
+  },
+};
+
+// red -> 00, 39, 26, 13
+// green -> 39, 00, 13, 26
+// blue -> 26, -13, 0, 13
+// yellow -> 13, -26, -13, 0
 
 const otherPLayerPosArray = (pos, color) => {
   const otherPlayers = players.filter((e) => e !== color);
   let otherPLayerPos = {};
 
   otherPlayers.forEach((e) => {
-    const off = offset[e];
-    otherPLayerPos[e] = pos + off > 52 ? pos + off - 52 : pos + off;
+    const off = offset[color][e];
+    let newPos = pos + off;
+    newPos = newPos <= 0 ? 52 - newPos : newPos;
+    otherPLayerPos[e] = newPos > 52 ? newPos - 52 : newPos;
   });
 
   // consoleSpacing("-");
@@ -236,3 +304,4 @@ exports.isSafe = isSafe;
 exports.arrDiff = arrDiff;
 exports.otherPLayerPosArray = otherPLayerPosArray;
 exports.error_codes = error_codes;
+exports.generateFEN = generateFEN;

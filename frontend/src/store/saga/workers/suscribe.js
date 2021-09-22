@@ -1,20 +1,19 @@
 import { eventChannel, END } from 'redux-saga'
-import { set_config, update_current } from 'store/user'
+import { new_config, update_current } from 'store/user'
 import { roll_dice_res } from 'store/dice'
-import { auto_move, update_arr, update_recieved } from 'store/move'
+import { update_recieved } from 'store/move'
 
 export const suscribe = (socket) => {
     console.log('suscribe')
     return eventChannel((emit) => {
         console.log('eventChannel')
 
-        socket.on('config_data', (data) => {
+        socket.on('config_data', ({ fen, dice, data }) => {
             emit(
-                set_config({
-                    id: data.user.id,
-                    game_id: data.id,
-                    current: data.current,
-                    color: data.user.color,
+                new_config({
+                    fen,
+                    dice,
+                    data,
                 })
             )
         })

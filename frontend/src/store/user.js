@@ -68,9 +68,10 @@ export const connect_socket = (room) => ({
 export const disconnect_socket = () => ({
     type: DISCONNECT,
 })
-export const set_config_request = () => ({
-    type: CONFIG,
-})
 export const next_player = () => ({
     type: NEXT,
+})
+export const new_config = (payload) => ({
+    type: CONFIG,
+    payload: payload,
 })

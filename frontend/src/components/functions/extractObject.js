@@ -1,39 +1,37 @@
-import _ from "lodash";
+import _ from 'lodash'
 
 export default function extractObject(fen) {
-  const [pattern, currentPlayer, ] = fen.split(" ");
-  var [red, green, yellow, blue] = pattern.split("/");
-  red = red.split("r");
-  green = green.split("g");
-  yellow = yellow.split("y");
-  blue = blue.split("b");
+    var colorsArr = ['red', 'green', 'yellow', 'blue']
+    var colors = {}
+    fen.split('/').forEach((e) => {
+        const color = colorsArr.find((c) => c.split('')[0] === e.split('')[0])
+        colors[color] = e
+    })
 
-  [red, green, yellow, blue].forEach((e) => {
-    e.shift();
-  });
+    _.forIn(colors, (v, k) => {
+        colors[k] = v.split(k.split('')[0])
+    })
 
-  [red, green, yellow, blue].forEach((e) => {
-    e = Object.assign(
-      e,
-      e.map((p) => parseInt(p))
-    );
-  });
+    Object.values(colors).forEach((e) => {
+        e.shift()
+    })
 
-  _.forIn({ red: red, green: green, yellow: yellow, blue: blue }, (v, k) => {
-    for (let i = 0; i < v.length; i++) {
-      if (v[i] === 0) {
-        var letter = k.split("")[0];
-        v[i] = letter.concat(i + 1);
-      } else continue;
-    }
-  });
+    Object.values(colors).forEach((e) => {
+        e = Object.assign(
+            e,
+            e.map((p) => parseInt(p))
+        )
+    })
 
-  return {
-    red: red,
-    green: green,
-    yellow: yellow,
-    blue: blue,
-    currentPlayer: currentPlayer,
-    // dice: dice,
-  };
+    console.log(colors)
+
+    _.forIn(colors, (v, k) => {
+        colors[k] = v.map((e) => {
+            return `${k.split('')[0]}${e}`
+        })
+    })
+
+    console.log(colors)
+
+    return colors
 }

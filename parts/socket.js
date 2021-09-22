@@ -15,13 +15,13 @@ const {
   otherPLayerPosArray,
   isSafe,
   error_codes,
+  generateFEN,
 } = require("./constant");
 
 let i = 0;
 
 module.exports = (io) => {
   io.on("connection", (socket) => {
-
     socket.on("join_game", connectPlayer(socket));
 
     socket.on("roll_dice", diceRoll(io, socket));
@@ -65,6 +65,10 @@ function connectPlayer(socket) {
       socket.leave(socket.id);
       socket.join(empty.id);
 
+      consoleSpacing("-");
+      console.log(rooms.get(empty.id).players);
+      consoleSpacing("-");
+
       config.id = empty.id;
       config.user.id = socket.id;
       config.user.color = empty.color;
@@ -74,6 +78,7 @@ function connectPlayer(socket) {
       let room = {
         players: new Map(),
         current: "",
+        dice: 1,
       };
       const room_id = uuidv4();
       room.current = "red";
@@ -94,18 +99,25 @@ function connectPlayer(socket) {
 
     // consoleSpacing(` USER CONNECTED  @ ${new Date().toISOString()}`);
     console.log(rooms);
-    socket.emit("config_data", config);
+    socket.emit("config_data", {
+      data: config,
+      dice: rooms.get(config.id).dice,
+      fen: generateFEN(rooms.get(config.id).players),
+    });
   };
 }
 
 function diceRoll(io, socket) {
   return ({ gameId }) => {
     // console.log("roll dice on server");
-    // const diceArray = [6, 5, 6, 1, 5, 1, 5];
+    const diceArray = [6, 4, 6, 3, 1, 2];
     // consoleSpacing(" " + i + " ");
-    // const face = i > 6 ? Math.ceil(Math.random() * 6) : diceArray[i++];
-    const face = 6;
+    const face =
+      i > diceArray.length - 1 ? Math.ceil(Math.random() * 6) : diceArray[i++];
+    // const face = 6;
     // const face = Math.ceil(Math.random() * 6);
+
+    rooms.get(gameId).dice = face;
 
     // socket.emit("dice_rolled", { face });
     io.in(gameId).emit("dice_rolled", {
@@ -122,10 +134,7 @@ function diceRoll(io, socket) {
       );
     } else if (pieceOut === 1) {
       // console.log("Single Piece Out, Auto Moving", face);
-      setTimeout(
-        () => autoMovePlayerPiece(socket, io)({ gameId, face }),
-        1700
-      );
+      setTimeout(() => autoMovePlayerPiece(socket, io)({ gameId, face }), 1700);
     }
   };
 }
@@ -150,6 +159,7 @@ function resetPiece(socket, io) {
     const color = rooms.get(gameId).players.get(userId).color;
     // get other player pos
     const otherPLayerPos = otherPLayerPosArray(new_pos, color);
+    console.log(color, otherPLayerPos);
     let otherPLayerPresent = {};
     // find other piece,
     if (rooms.get(gameId).players.has(userId)) {
@@ -165,11 +175,6 @@ function resetPiece(socket, io) {
                 position: p,
                 userId: playerId,
               });
-              // console.log({
-              //   color: playerColor,
-              //   index: i,
-              //   position: p,
-              // });
             }
           });
         }
@@ -195,6 +200,8 @@ function resetPiece(socket, io) {
       const otherPLayerUserId =
         otherPLayerPresent[Object.keys(otherPLayerPresent)[0]][playerIndex]
           .userId;
+
+      console.log(pos, playerIndex, i, name, otherPLayerUserId);
 
       rooms.get(gameId).players.get(otherPLayerUserId).pos = newArr(
         name,
@@ -226,6 +233,7 @@ function movePiece(socket, io) {
     const userId = socket.id;
 
     const color = rooms.get(gameId).players.get(userId).color;
+    consoleSpacing("-");
     const new_pos = newPos(dice, position);
 
     // -> update arr
@@ -235,7 +243,13 @@ function movePiece(socket, io) {
         rooms.get(gameId).players.get(userId).pos,
         index
       );
-
+      console.log({
+        posArr: rooms.get(gameId).players.get(userId).pos,
+        color,
+        new_pos,
+        index,
+        pieceId,
+      });
       io.in(gameId).emit("piece_moved", {
         posArr: rooms.get(gameId).players.get(userId).pos,
         color,
@@ -362,5 +376,4 @@ function changeCurrentPlayer(socket, io) {
   };
 }
 
-
-// Aditya Jha donated ₹549, to Sheela Foundation, from pooling a sum of ₹1500 pot money where each entry contribution was ₹375. 
+// Aditya Jha donated ₹549, to Sheela Foundation, from pooling a sum of ₹1500 pot money where each entry contribution was ₹375.

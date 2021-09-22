@@ -1,12 +1,12 @@
 import extractObject from '../components/functions/extractObject'
 import _ from 'lodash'
 
+const fen = 'r1r2r3r4/g1g2g3g4/y1y2y3y4/b1b2b3b4'
 const initialState = {
-    fen: 'r0r0r0r0/g0g0g0g0/y0y0y0y0/b0b0b0b0 r 4',
     update: {},
 }
 
-_.forIn(extractObject(initialState.fen), (v, k) => {
+_.forIn(extractObject(fen), (v, k) => {
     initialState[k] = v
 })
 
@@ -61,6 +61,14 @@ export function movesReducer(state = initialState, action) {
                 ...state,
                 update: action.payload,
             }
+        case PLAYERS:
+            return {
+                ...state,
+                red: action.payload.red || [],
+                green: action.payload.green || [],
+                yellow: action.payload.yellow || [],
+                blue: action.payload.blue || [],
+            }
         default:
             return state
     }
@@ -78,6 +86,7 @@ export const ARRAY = 'array'
 export const MOVE = 'move'
 export const MOVE_UPDATE = 'move update recieved'
 export const UPDATE_POS = 'update piece pos'
+export const PLAYERS = 'players'
 
 // action creators
 export const update_arr = ({ color, index, new_pos }) => ({
@@ -100,4 +109,8 @@ export const update_recieved = ({
 })
 export const update_piece_pos = () => ({
     type: UPDATE_POS,
+})
+export const set_players = ({ red, green, yellow, blue }) => ({
+    type: PLAYERS,
+    payload: { red, green, yellow, blue },
 })

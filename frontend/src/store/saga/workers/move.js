@@ -1,4 +1,4 @@
-import { put, select, delay } from 'redux-saga/effects'
+import { put, select } from 'redux-saga/effects'
 import { getUpdatePos, update_arr } from 'store/move'
 import { getDice, set_rolled } from 'store/dice'
 
