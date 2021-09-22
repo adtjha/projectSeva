@@ -272,7 +272,7 @@ const generateTranslate = (start, end, lg) => {
     const x = end[0] - start[0],
         y = end[1] - start[1]
 
-    let space = lg ? 10 : 7
+    let space = lg ? 10 : 7                         
 
     console.log(lg, space)
 

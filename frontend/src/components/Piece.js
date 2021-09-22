@@ -1,5 +1,5 @@
-import React, { useCallback, useLayoutEffect, useRef } from 'react'
-import { useLogger, useMedia, useRendersCount } from 'react-use'
+import React, { useCallback, useLayoutEffect } from 'react'
+import { useMedia } from 'react-use'
 import red from '../images/red.svg'
 import green from '../images/green.svg'
 import yellow from '../images/yellow.svg'
@@ -30,8 +30,6 @@ function Piece(props) {
     const currentColor = useSelector(getGameCurrentPlayer)
     const hasRolled = useSelector(rolled)
     const gameId = useSelector(getGameId)
-
-    // const socket = useRef(useContext(SocketContext))
 
     const dispatch = useDispatch()
     const isChance = userColor === currentColor
@@ -94,8 +92,6 @@ function Piece(props) {
             console.log('NOT ALLOWED', userColor, isChance, hasRolled)
         }
     }
-
-    // useLogger('Piece', useRendersCount(), name, animate, className)
 
     return (
         <React.Fragment>

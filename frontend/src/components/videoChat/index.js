@@ -8,13 +8,13 @@ export const VideoChat = () => {
     const currentPlayer = useSelector(getGameCurrentPlayer)
 
     const redClassName =
-        'col-start-1 col-end-7 row-start-1 row-end-6 bg-red-200 rounded-2xl overflow-hidden shadow-md lg:mb-1 lg:mr-1 border-2 border-double border-red-400'
+        'col-start-1 col-end-7 row-start-1 row-end-6 bg-red-200 rounded-2xl overflow-hidden shadow-md border-2 border-double border-red-400'
     const greenClassName =
-        'col-start-11 col-end-16 row-start-1 row-end-7  bg-green-200 rounded-2xl overflow-hidden shadow-md lg:mb-1 lg:mr-1 border-2 border-double border-green-400'
+        'col-start-11 col-end-16 row-start-1 row-end-7  bg-green-200 rounded-2xl overflow-hidden shadow-md border-2 border-double border-green-400'
     const yellowClassName =
-        'col-start-1 col-end-6 row-start-10 row-end-16 bg-yellow-200 rounded-2xl overflow-hidden shadow-md lg:mb-1 lg:mr-1 border-2 border-double border-yellow-400'
+        'col-start-1 col-end-6 row-start-10 row-end-16 bg-yellow-200 rounded-2xl overflow-hidden shadow-md border-2 border-double border-yellow-400'
     const blueClassName =
-        'col-start-10 col-end-16 row-start-11 row-end-16  bg-blue-200 rounded-2xl overflow-hidden shadow-md lg:mb-1 lg:mr-1 border-2 border-double border-blue-400'
+        'col-start-10 col-end-16 row-start-11 row-end-16  bg-blue-200 rounded-2xl overflow-hidden shadow-md border-2 border-double border-blue-400'
 
     const effect = ' animate-wiggle'
 

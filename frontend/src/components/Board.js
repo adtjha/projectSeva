@@ -3,11 +3,10 @@ import Cell from './Cell'
 import create2Darray from './functions/create2Darray'
 import { VideoChat } from './videoChat'
 import Dice from './Dice'
-import React, { useContext, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { getBlue, getGreen, getRed, getYellow } from '../store/move'
 import { getDice } from '../store/dice'
-import { getGameId, set_data } from '../store/user'
-// import { SocketContext } from '../connect/socket'
+import { getGameId } from '../store/user'
 import { Notification } from './Notification'
 // import { useLogger } from 'react-use'
 // import { useGeolocation } from "react-use";
@@ -23,17 +22,10 @@ const Board = (props) => {
         blue: useSelector(getBlue),
         dice: useSelector(getDice),
     }
-    // const socket = useRef(useContext(SocketContext))
     const pos = [...create2Darray(data)]
     const gameId = useSelector(getGameId)
 
     useEffect(() => {
-        // socket.current.on('update_current', (player) => {
-        //     if (mounted.current) {
-        //         dispatch(set_data({ id: gameId, current: player }))
-        //     }
-        // })
-
         return () => {
             mounted.current = false
         }
@@ -45,8 +37,8 @@ const Board = (props) => {
             <div className="w-auto p-2 text-2xl font-semibold text-black mx-auto my-4">
                 Room UID : {gameId}
             </div>
-            <div className="board block lg:w-max lg:h-max lg:max-w-full  lg:p-4 m-auto p-1 border-2 border-solid rounded-2xl shadow-md">
-                <div className="relative z-20 lg:w-max lg:max-w-full grid grid-cols-sm15 grid-rows-sm15 gap-1 lg:grid-cols-15 lg:grid-rows-15 lg:gap-2 justify-items-stretch">
+            <div className="board block w-107 h-107 transform scale-95 -mx-2 min-w-max min-h-max lg:w-157 lg:h-157 lg:p-4 lg:m-auto p-1 border-2 border-solid rounded-2xl shadow-md">
+                <div className="relative z-20 w-104 h-104 min-w-max min-h-max lg:w-148 lg:h-148 grid grid-cols-sm15 grid-rows-sm15 gap-1 lg:grid-cols-15 lg:grid-rows-15 lg:gap-2 justify-items-stretch">
                     {pos.map((cell) => (
                         <Cell key={cell.id} data={cell} />
                     ))}
