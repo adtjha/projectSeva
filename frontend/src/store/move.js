@@ -1,6 +1,5 @@
 import extractObject from '../components/functions/extractObject'
 import _ from 'lodash'
-// import Constants from '../components/Constants'
 
 const initialState = {
     fen: 'r0r0r0r0/g0g0g0g0/y0y0y0y0/b0b0b0b0 r 4',

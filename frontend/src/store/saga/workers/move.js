@@ -6,7 +6,6 @@ export const onMovePiece = function* () {
     try {
         const { color, new_pos, index } = yield select(getUpdatePos)
         console.log('Get updated variables')
-        yield delay(1000)
         yield put(update_arr({ color, new_pos, index }))
         console.log('position updated')
         yield put(set_rolled(false))
