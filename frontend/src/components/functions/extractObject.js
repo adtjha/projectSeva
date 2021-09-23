@@ -26,8 +26,8 @@ export default function extractObject(fen) {
     console.log(colors)
 
     _.forIn(colors, (v, k) => {
-        colors[k] = v.map((e) => {
-            return `${k.split('')[0]}${e}`
+        colors[k] = v.map((e, i) => {
+            return (e === 0) ? `${k.split('')[0]}${i+1}` : e
         })
     })
 

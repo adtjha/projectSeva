@@ -22,15 +22,15 @@ let i = 0;
 
 module.exports = (io) => {
   io.on("connection", (socket) => {
-    socket.on("join_game", connectPlayer(socket));
+    socket.on("join_game", connectPlayer(socket, io));
 
-    socket.on("roll_dice", diceRoll(io, socket));
+    socket.on("roll_dice", diceRoll(socket, io));
 
-    socket.on("auto_move", autoMovePlayerPiece(socket, io));
+    socket.on("auto_move", autoMovePlayerPiece(socket, io)); // moving, Check end here.
 
     socket.on("change", changeCurrentPlayer(socket, io));
 
-    socket.on("move_piece", movePiece(socket, io));
+    socket.on("move_piece", movePiece(socket, io)); // moving, Check end here.
 
     socket.on("reset_piece", resetPiece(socket, io));
 
@@ -38,7 +38,7 @@ module.exports = (io) => {
   });
 };
 
-function connectPlayer(socket) {
+function connectPlayer(socket, io) {
   return ({ room_id }) => {
     // if room empty -> fit user in room array -> send room id
     let config = { id: "", user: { id: "", color: "" } };
@@ -104,10 +104,15 @@ function connectPlayer(socket) {
       dice: rooms.get(config.id).dice,
       fen: generateFEN(rooms.get(config.id).players),
     });
+    io.to(config.id).emit("config_data", {
+      data: "",
+      dice: "",
+      fen: generateFEN(rooms.get(config.id).players),
+    });
   };
 }
 
-function diceRoll(io, socket) {
+function diceRoll(socket, io) {
   return ({ gameId }) => {
     // console.log("roll dice on server");
     const diceArray = [6, 4, 6, 3, 1, 2];

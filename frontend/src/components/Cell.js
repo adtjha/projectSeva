@@ -64,21 +64,23 @@ const Cell = (props) => {
         )
         pieceToMove = pieces[~~(pieces.length * Math.random())]
 
-        const color = Constants.colorNames[pieceToMove.split('')[0]]
-        const num = pieceToMove.split('')[1]
+        if (pieceToMove) {
+            const color = Constants.colorNames[pieceToMove.split('')[0]]
+            const num = pieceToMove.split('')[1]
 
-        if (color === userColor && isChance && hasRolled) {
-            dispatch(
-                move_piece({
-                    dice,
-                    position: move[color][num - 1],
-                    gameId,
-                    index: num - 1,
-                    pieceId: pieceToMove,
-                })
-            )
-        } else {
-            console.log('NOT ALLOWED', userColor, isChance, hasRolled)
+            if (color === userColor && isChance && hasRolled) {
+                dispatch(
+                    move_piece({
+                        dice,
+                        position: move[color][num - 1],
+                        gameId,
+                        index: num - 1,
+                        pieceId: pieceToMove,
+                    })
+                )
+            } else {
+                console.log('NOT ALLOWED', userColor, isChance, hasRolled)
+            }
         }
     }
 

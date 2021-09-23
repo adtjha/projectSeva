@@ -120,7 +120,7 @@ const generateFEN = (roomPlayers) => {
     console.log(color);
     player.pos.forEach((p, i) => {
       fen = fen.concat(`${color.split("")[0]}`);
-      fen = isNaN(p) ? fen.concat(`${i+1}`) : fen.concat(`${p}`);
+      fen = isNaN(p) ? fen.concat(`0`) : fen.concat(`${p}`);
     });
     fen = fen.concat("/");
   });

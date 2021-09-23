@@ -21,14 +21,22 @@ export function* setInitialState(action) {
 
     const { red, green, yellow, blue } = extractObject(fen)
 
-    yield put(
-        set_config({
-            id: data.user.id,
-            game_id: data.id,
-            current: data.current,
-            color: data.user.color,
-        })
-    )
-    yield put(set_dice(dice))
-    yield put(set_players({ red, green, yellow, blue }))
+    if (data) {
+        yield put(
+            set_config({
+                id: data.user.id,
+                game_id: data.id,
+                current: data.current,
+                color: data.user.color,
+            })
+        )
+    }
+
+    if (dice) {
+        yield put(set_dice(dice))
+    }
+
+    if (fen) {
+        yield put(set_players({ red, green, yellow, blue }))
+    }
 }

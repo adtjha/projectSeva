@@ -1,7 +1,7 @@
 import extractObject from '../components/functions/extractObject'
 import _ from 'lodash'
 
-const fen = 'r1r2r3r4/g1g2g3g4/y1y2y3y4/b1b2b3b4'
+const fen = 'r0r0r0r0/g0g0g0g0/y0y0y0y0/b0b0b0b0'
 const initialState = {
     update: {},
 }
