@@ -1,28 +1,36 @@
-
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-    connect_socket,
-    getGameId,
-    getGameStatus,
-} from 'store/user'
+import { useParams } from 'react-router'
+import { useEffectOnce } from 'react-use'
+import { connect_socket, getGameId } from 'store/user'
 import Board from './Board'
-import { GUID } from './functions/randomUid'
+import { v4 as uuidv4, validate as uuidValidate } from 'uuid'
 
 export const Game = () => {
     const dispatch = useDispatch()
     const [room, setRoom] = useState('')
+    const { id } = useParams()
 
-    useEffect(() => {
-        setRoom(GUID)
-    }, [setRoom])
+    useEffectOnce(() => {
+        console.log(id, id !== '', uuidValidate(id))
+        if (id !== '' && uuidValidate(id)) {
+            console.log('DISPATCHING')
+            dispatch(connect_socket(id))
+        } else {
+            const uid = uuidv4()
+            setRoom(uid)
+        }
+    })
+
+    // useEffect(() => {
+
+    // }, [])
 
     const handleSubmit = () => dispatch(connect_socket(room))
 
     const gameId = useSelector(getGameId)
-    const hasGameEnded = useSelector(getGameStatus)
 
-    return !hasGameEnded && gameId ? (
+    return gameId ? (
         <Board />
     ) : (
         <React.Fragment>

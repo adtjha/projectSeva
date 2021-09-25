@@ -13,7 +13,7 @@ export const Notification = (props) => {
         <>
             {show ? (
                 <div
-                    className="absolute z-20 left-2 right-2 ml-auto mr-auto top-2 h-16 p-4 flex flex-row  border-2 rounded-2xl shadow-lg bg-white animate-dropdown"
+                    className="absolute z-50 left-2 right-2 ml-auto mr-auto top-2 h-16 p-4 flex flex-row  border-2 rounded-2xl shadow-lg bg-white animate-dropdown"
                     style={{ width: 'fit-content', blockSize: 'fit-content' }}
                 >
                     <div className="pr-2">

@@ -1,5 +1,6 @@
 // const BASE_API = 'https://morning-plains-74021.herokuapp.com'
-const BASE_API = 'http://192.168.0.38:8888'
+const BASE_API = 'https://6f8c-103-221-210-183.ngrok.io'
+const WEB_APP_URL = BASE_API
 
 const path = 6,
     safe = 5,
@@ -218,10 +219,17 @@ const directional_cell_obj = {
     pos: {},
 }
 
+const directional_cell_red = 'bg-arrow-red-cell'
+const directional_cell_green = 'bg-arrow-green-cell'
+const directional_cell_blue = 'bg-arrow-blue-cell'
+const directional_cell_yellow = 'bg-arrow-yellow-cell'
+
 const empty_cell_obj = {
     where: [false, false, false],
     safe: false,
-    style: cell + ' text-center shadow-none border lg:border-2 border-dashed rounded',
+    style:
+        cell +
+        ' text-center shadow-none border lg:border-2 border-dashed rounded',
     has: [],
     pos: {},
 }
@@ -229,7 +237,9 @@ const empty_cell_obj = {
 const cell_obj = {
     where: [false, false, false],
     safe: false,
-    style: cell + ' text-center rounded lg:shadow-md border lg:border-2 border-white bg-white ',
+    style:
+        cell +
+        ' text-center rounded lg:shadow-md border lg:border-2 border-white bg-white ',
     has: [],
     pos: {},
 }
@@ -252,6 +262,33 @@ const begin_cell_obj = {
     pos: {},
 }
 
+const begin_cell_red =
+    'bg-red-200 border lg:border-2 border-red-400 bg-start-red-cell'
+const begin_cell_green =
+    'bg-green-200 border lg:border-2 border-green-400 bg-start-green-cell'
+const begin_cell_blue =
+    'bg-blue-200 border lg:border-2 border-blue-400 bg-start-blue-cell'
+const begin_cell_yellow =
+    'bg-yellow-200 border lg:border-2 border-yellow-400 bg-start-yellow-cell'
+
+const final_cell_red =
+    'bg-red-200 border lg:border-2 border-red-400 bg-final-red-cell'
+const final_cell_green =
+    'bg-green-200 border lg:border-2 border-green-400 bg-final-green-cell'
+const final_cell_blue =
+    'bg-blue-200 border lg:border-2 border-blue-400 bg-final-blue-cell'
+const final_cell_yellow =
+    'bg-yellow-200 border lg:border-2 border-yellow-400 bg-final-yellow-cell'
+
+const end_cell_red =
+    'bg-red-200 border lg:border-2 border-red-400 bg-end-red-cell'
+const end_cell_green =
+    'bg-green-200 border lg:border-2 border-green-400 bg-end-green-cell'
+const end_cell_blue =
+    'bg-blue-200 border lg:border-2 border-blue-400 bg-end-blue-cell'
+const end_cell_yellow =
+    'bg-yellow-200 border lg:border-2 border-yellow-400 bg-end-yellow-cell'
+
 const final_cell_obj = {
     where: [false, true, false],
     safe: false,
@@ -272,7 +309,7 @@ const generateTranslate = (start, end, lg) => {
     const x = end[0] - start[0],
         y = end[1] - start[1]
 
-    let space = lg ? 10 : 7                         
+    let space = lg ? 10 : 7
 
     console.log(lg, space)
 
@@ -326,10 +363,27 @@ const Constants = {
     begin_cell_obj,
     final_cell_obj,
     end_cell_obj,
+    begin_cell_red,
+    begin_cell_green,
+    begin_cell_yellow,
+    begin_cell_blue,
+    final_cell_red,
+    final_cell_green,
+    final_cell_yellow,
+    final_cell_blue,
+    end_cell_red,
+    end_cell_green,
+    end_cell_blue,
+    end_cell_yellow,
     directional_cell_obj,
+    directional_cell_red,
+    directional_cell_green,
+    directional_cell_blue,
+    directional_cell_yellow,
     generateTranslate,
     xy,
     BASE_API,
+    WEB_APP_URL,
 }
 
 export default Constants

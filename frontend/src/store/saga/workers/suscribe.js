@@ -1,5 +1,5 @@
 import { eventChannel, END } from 'redux-saga'
-import { new_config, update_current } from 'store/user'
+import { game_end, new_config, update_current } from 'store/user'
 import { roll_dice_res } from 'store/dice'
 import { update_recieved } from 'store/move'
 
@@ -30,6 +30,10 @@ export const suscribe = (socket) => {
         socket.on('piece_moved', (data) => {
             console.info('piece move socket signal')
             emit(update_recieved({ ...data }))
+        })
+
+        socket.on('game_end', (data) => {
+            emit(game_end({...data}))
         })
 
         socket.on('alert', (data) => {

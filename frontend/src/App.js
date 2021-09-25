@@ -9,7 +9,10 @@ function App() {
         <Router>
             <div className="App m-auto">
                 <Switch>
-                    <Route path="/game">
+                    <Route exact path="/game">
+                        <Game key={1} />
+                    </Route>
+                    <Route path="/game/:id">
                         <Game key={1} />
                     </Route>
                     <Route path="/about">

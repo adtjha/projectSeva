@@ -65,11 +65,21 @@ function Piece(props) {
     useLayoutEffect(() => {
         if (update.pieceId === name) {
             console.info('piece ID matched ')
-            reset(updatePos(update.new_pos))
-            setTimeout(() => {
-                console.log('updating piece position')
-                dispatch(update_piece_pos())
-            }, 300)
+            new Promise((resolve, reject) => {
+                try {
+                    reset(updatePos(update.new_pos))
+                } catch (error) {
+                    reject(error)
+                }
+                setTimeout(resolve(), 1000)
+            })
+                .then(() => {
+                    console.log('updating piece position')
+                    dispatch(update_piece_pos())
+                })
+                .catch((e) => {
+                    alert(e)
+                })
             return () => {
                 reset('')
             }

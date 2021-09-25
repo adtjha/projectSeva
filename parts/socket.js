@@ -26,7 +26,7 @@ module.exports = (io) => {
 
     socket.on("roll_dice", diceRoll(socket, io));
 
-    socket.on("auto_move", autoMovePlayerPiece(socket, io)); // moving, Check end here.
+    socket.on("auto_move", autoMovePlayerPiece(socket, io));
 
     socket.on("change", changeCurrentPlayer(socket, io));
 
@@ -262,6 +262,15 @@ function movePiece(socket, io) {
         index,
         pieceId,
       });
+
+      const winners = [];
+      rooms.get(gameId).players.forEach((player, pid) => {
+        player.pos.every((e) => e === 57) ? winners.push(player.color) : "";
+      });
+
+      if (winners.length > 0) {
+        io.in(gameId).emit("game_end", { end: winners.length === 3, winners });
+      }
 
       new Promise((resolve, reject) => {
         resetPiece(

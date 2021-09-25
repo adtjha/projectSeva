@@ -96,7 +96,7 @@ module.exports = {
         15: "15",
         16: "16",
       },
-      backgroundImage: (theme) => ({
+      backgroundImage: {
         "safe-cell": "url(./images/safe.svg)",
         "start-red-cell": "url(./images/red-start.svg)",
         "start-green-cell": "url(./images/green-start.svg)",
@@ -114,7 +114,7 @@ module.exports = {
         "arrow-green-cell": "url(./images/green-arrow.svg)",
         "arrow-blue-cell": "url(./images/blue-arrow.svg)",
         "arrow-yellow-cell": "url(./images/yellow-arrow.svg)",
-      }),
+      },
       rotate: {
         "-360": "-720deg",
         360: "720deg",
@@ -150,5 +150,4 @@ module.exports = {
   variants: {
     extend: {},
   },
-  plugins: [require("@tailwindcss/aspect-ratio")],
 };

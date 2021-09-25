@@ -4,9 +4,8 @@ const initialState = {
     game_id: '',
     current: '',
     ended: false,
-    alert: {
-        
-    }
+    winners: [],
+    alert: {},
 }
 
 export function usersReducer(state = initialState, action) {
@@ -21,6 +20,8 @@ export function usersReducer(state = initialState, action) {
             }
         case UPDATE:
             return { ...state, current: action.payload.current }
+        case GAME_END:
+            return { ...state, ended: action.payload.end, winners: [...action.payload.winners] }
         default:
             return state
     }
@@ -42,6 +43,7 @@ export const CONNECT = 'connect'
 export const DISCONNECT = 'disconnect'
 export const CONFIG = 'config'
 export const NEXT = 'next'
+export const GAME_END = 'game ended'
 
 // action creators
 export const set_piece_out = (state) => ({
@@ -74,4 +76,7 @@ export const next_player = () => ({
 export const new_config = (payload) => ({
     type: CONFIG,
     payload: payload,
+})
+export const game_end = () => ({
+    type: GAME_END,
 })

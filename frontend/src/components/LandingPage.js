@@ -12,7 +12,7 @@ const navigation = [
 
 const LandingPage = () => {
     return (
-        <div className="relative bg-antiqueWhite overflow-hidden">
+        <div className="relative overflow-hidden">
             <div className="max-w-7xl mx-auto">
                 <div className="relative z-10 pb-8 bg-transparent sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
                     <Popover>
@@ -83,7 +83,7 @@ const LandingPage = () => {
                                         static
                                         className="absolute top-0 inset-x-0 p-2 transition transform origin-top-right md:hidden"
                                     >
-                                        <div className="rounded-lg shadow-md bg-antiqueWhite ring-1 ring-black ring-opacity-5 overflow-hidden">
+                                        <div className="rounded-lg shadow-md bg-blueGray-100 ring-1 ring-black ring-opacity-5 overflow-hidden">
                                             <div className="px-5 pt-4 flex items-center justify-between">
                                                 <div>
                                                     <img
@@ -93,7 +93,7 @@ const LandingPage = () => {
                                                     />
                                                 </div>
                                                 <div className="-mr-2">
-                                                    <Popover.Button className="bg-antiqueWhite rounded-md p-2 inline-flex items-center justify-center text-blueGray-400 hover:text-blueGray-500 hover:bg-blueGray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blueGray-500">
+                                                    <Popover.Button className="bg-blueGray-100 rounded-md p-2 inline-flex items-center justify-center text-blueGray-400 hover:text-blueGray-500 hover:bg-blueGray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blueGray-500">
                                                         <span className="sr-only">
                                                             Close main menu
                                                         </span>
@@ -166,9 +166,9 @@ const LandingPage = () => {
                     </main>
                 </div>
             </div>
-            <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
+            <div className="lg:m-4 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
                 <img
-                    className="h-full w-full object-contain sm:h-72 md:h-96 lg:w-full lg:h-full"
+                    className=" w-full object-contain h-72 md:h-96 lg:w-full lg:h-full"
                     src={board}
                     alt="Ludo Board"
                 />
