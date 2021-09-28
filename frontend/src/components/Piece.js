@@ -12,6 +12,7 @@ import { getColor, getGameId, getGameCurrentPlayer } from '../store/user'
 import { getDice, rolled } from '../store/dice'
 import { useState } from 'react'
 import { useLayoutEffect } from 'react'
+import styled from 'styled-components'
 
 function Piece(props) {
     const name = props.name
@@ -108,13 +109,13 @@ function Piece(props) {
     return (
         <React.Fragment>
             <img
-                key={() => _.uniqueId()}
-                className={className + animate}
+                style={{ ...animate }}
+                className={className}
                 data={props.name}
                 src={piece || color}
                 alt={props.name}
                 onClick={handleClick}
-            ></img>
+            />
         </React.Fragment>
     )
 }

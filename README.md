@@ -13,6 +13,9 @@
 
 All the game Ui is handled by react, game data by redux.
 
+Package to Remove
+- framer motion
+
 ## Backend
 
 This takes care of the backend.

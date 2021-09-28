@@ -315,22 +315,69 @@ const generateTranslate = (start, end, lg) => {
 
     let x_m = x * space,
         y_m = y * space,
-        x_s,
-        y_s
+        x_s = remCal(x_m),
+        y_s = remCal(y_m)
 
-    if (x_m >= 0) {
-        x_s = x_m === 0 ? '' : ' translate-x-' + x_m
-    } else {
-        x_s = ' -translate-x-' + -1 * x_m
+    console.log({
+        transitionProperty: 'transform',
+        transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        transitionDuration: '300ms',
+        translateX: x_s,
+        translateY: y_s,
+    })
+
+    return {
+        transitionProperty: 'transform',
+        transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        transitionDuration: '300ms',
+        transform: `translateX(${x_s}) translateY(${y_s})`,
     }
+}
 
-    if (y_m >= 0) {
-        y_s = y_m === 0 ? '' : ' translate-y-' + y_m
+const num_to_rem = {
+    0: '0rem',
+    7: '1.75rem',
+    14: '3.5rem',
+    21: '5.25rem',
+    28: '7rem',
+    35: '8.75rem',
+    42: '10.5rem',
+    49: '12.25rem',
+    56: '14rem',
+    63: '15.75rem',
+    70: '17.5rem',
+    74: '18.5rem',
+    77: '19.25rem',
+    84: '21rem',
+    91: '22.75rem',
+    98: '24.5rem',
+    105: '26.25rem',
+    10: '2.5rem',
+    20: '5rem',
+    30: '7.5rem',
+    40: '10rem',
+    50: '12.5rem',
+    60: '15rem',
+    80: '20rem',
+    90: '22.5rem',
+    100: '25rem',
+    104: '26rem',
+    107: '26.75rem',
+    110: '27.5rem',
+    120: '30rem',
+    130: '32.5rem',
+    140: '35rem',
+    148: '37rem',
+    150: '37.5rem',
+    157: '39.25rem',
+}
+
+const remCal = (c) => {
+    if (c !== 0) {
+        return `${c/4}rem`
     } else {
-        y_s = ' -translate-y-' + -1 * y_m
+        return `0rem`
     }
-
-    return ' transition-transform duration-300 transform ' + x_s + y_s
 }
 
 const xy = (arr, e) => {
