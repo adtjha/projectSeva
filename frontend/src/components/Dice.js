@@ -47,7 +47,7 @@ const Dice = (props) => {
     // )
 
     return (
-        <div className="w-min mx-auto my-8 p-2">
+        <div className="w-24 h-24 mx-auto my-8 p-2">
             <Transition
                 as={Fragment}
                 show={isShowing}

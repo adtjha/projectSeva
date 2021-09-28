@@ -1,5 +1,5 @@
-const BASE_API = 'https://morning-plains-74021.herokuapp.com'
-// const BASE_API = 'https://6f8c-103-221-210-183.ngrok.io'
+// const BASE_API = 'https://morning-plains-74021.herokuapp.com'
+const BASE_API = 'https://04a0-117-203-183-218.ngrok.io'
 const WEB_APP_URL = BASE_API
 
 const path = 6,
@@ -187,7 +187,7 @@ const cellsNotToDraw = [
   'ea', 'eb', 'ec', 'ed', 'ee', 'ef', null, null, null, null, 'ek', 'el', 'em', 'en', 'eo',
   'fa', null, null, null, null, 'ff', null, null, null, 'fj', 'fk', 'fl', 'fm', 'fn', 'fo',
   null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-  null, null, null, null, null, null, null, 'hh', null, null, null, null, null, null, null,
+  null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
   null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
   'ja', 'jb', 'jc', 'jd', 'je', 'jf', null, null, null, 'jj', null, null, null, null, 'jo',
   'ka', 'kb', 'kc', 'kd', 'ke', null, null, null, null, 'kj', 'kk', 'kl', 'km', 'kn', 'ko',
@@ -214,7 +214,7 @@ const cell = 'cell w-6 h-6 p-0.5 shadow-md lg:w-8 lg:h-8 lg:p-1'
 const directional_cell_obj = {
     where: [false, false, false],
     safe: false,
-    style: cell + ' text-center shadow-none bg-center bg-contain',
+    style: cell + ' text-center shadow-none bg-center bg-contain ',
     has: [],
     pos: {},
 }
@@ -229,7 +229,7 @@ const empty_cell_obj = {
     safe: false,
     style:
         cell +
-        ' text-center shadow-none border lg:border-2 border-dashed rounded',
+        ' text-center shadow-none border lg:border-2 border-dashed rounded ',
     has: [],
     pos: {},
 }
@@ -263,31 +263,31 @@ const begin_cell_obj = {
 }
 
 const begin_cell_red =
-    'bg-red-200 border lg:border-2 border-red-400 bg-start-red-cell'
+    ' bg-red-200 border lg:border-2 border-red-400 bg-start-red-cell '
 const begin_cell_green =
-    'bg-green-200 border lg:border-2 border-green-400 bg-start-green-cell'
+    ' bg-green-200 border lg:border-2 border-green-400 bg-start-green-cell '
 const begin_cell_blue =
-    'bg-blue-200 border lg:border-2 border-blue-400 bg-start-blue-cell'
+    ' bg-blue-200 border lg:border-2 border-blue-400 bg-start-blue-cell '
 const begin_cell_yellow =
-    'bg-yellow-200 border lg:border-2 border-yellow-400 bg-start-yellow-cell'
+    ' bg-yellow-200 border lg:border-2 border-yellow-400 bg-start-yellow-cell '
 
 const final_cell_red =
-    'bg-red-200 border lg:border-2 border-red-400 bg-final-red-cell'
+    ' bg-red-200 border lg:border-2 border-red-400 bg-final-red-cell '
 const final_cell_green =
-    'bg-green-200 border lg:border-2 border-green-400 bg-final-green-cell'
+    ' bg-green-200 border lg:border-2 border-green-400 bg-final-green-cell '
 const final_cell_blue =
-    'bg-blue-200 border lg:border-2 border-blue-400 bg-final-blue-cell'
+    ' bg-blue-200 border lg:border-2 border-blue-400 bg-final-blue-cell '
 const final_cell_yellow =
-    'bg-yellow-200 border lg:border-2 border-yellow-400 bg-final-yellow-cell'
+    ' bg-yellow-200 border lg:border-2 border-yellow-400 bg-final-yellow-cell '
 
 const end_cell_red =
-    'bg-red-200 border lg:border-2 border-red-400 bg-end-red-cell'
+    ' bg-red-200 border lg:border-2 border-red-400 bg-end-red-cell '
 const end_cell_green =
-    'bg-green-200 border lg:border-2 border-green-400 bg-end-green-cell'
+    ' bg-green-200 border lg:border-2 border-green-400 bg-end-green-cell '
 const end_cell_blue =
-    'bg-blue-200 border lg:border-2 border-blue-400 bg-end-blue-cell'
+    ' bg-blue-200 border lg:border-2 border-blue-400 bg-end-blue-cell '
 const end_cell_yellow =
-    'bg-yellow-200 border lg:border-2 border-yellow-400 bg-end-yellow-cell'
+    ' bg-yellow-200 border lg:border-2 border-yellow-400 bg-end-yellow-cell '
 
 const final_cell_obj = {
     where: [false, true, false],
@@ -330,9 +330,7 @@ const generateTranslate = (start, end, lg) => {
         y_s = ' -translate-y-' + -1 * y_m
     }
 
-    console.log(' transition-transform duration-300 transform' + x_s + y_s)
-
-    return ' transition-transform duration-300 transform' + x_s + y_s
+    return ' transition-transform duration-300 transform ' + x_s + y_s
 }
 
 const xy = (arr, e) => {

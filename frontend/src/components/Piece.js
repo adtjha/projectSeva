@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect } from 'react'
+import React, { useCallback } from 'react'
 import { useMedia } from 'react-use'
 import red from '../images/red.svg'
 import green from '../images/green.svg'
@@ -11,6 +11,7 @@ import { move_piece, update_piece_pos } from '../store/move'
 import { getColor, getGameId, getGameCurrentPlayer } from '../store/user'
 import { getDice, rolled } from '../store/dice'
 import { useState } from 'react'
+import { useLayoutEffect } from 'react'
 
 function Piece(props) {
     const name = props.name
@@ -45,11 +46,11 @@ function Piece(props) {
     }
 
     if (_.inRange(props.multiple, 1, 2)) {
-        className = 'w-3 h-3 lg:w-4 lg:h-4'
+        className = 'w-3 h-3 lg:w-4 lg:h-4 '
     } else if (_.inRange(props.multiple, 2, 4)) {
-        className = 'w-2 h-2 lg:w-3 lg:h-3'
+        className = 'w-2 h-2 lg:w-3 lg:h-3 '
     } else if (_.inRange(props.multiple, 4, 6)) {
-        className = 'w-1 h-1 lg:w-2 lg:h-2'
+        className = 'w-1 h-1 lg:w-2 lg:h-2 '
     }
 
     const updatePos = useCallback(
@@ -71,7 +72,8 @@ function Piece(props) {
                 } catch (error) {
                     reject(error)
                 }
-                setTimeout(resolve(), 1000)
+                // setTimeout(resolve(), 1000)
+                resolve()
             })
                 .then(() => {
                     console.log('updating piece position')
@@ -106,7 +108,8 @@ function Piece(props) {
     return (
         <React.Fragment>
             <img
-                className={className + ' ' + animate}
+                key={() => _.uniqueId()}
+                className={className + animate}
                 data={props.name}
                 src={piece || color}
                 alt={props.name}
