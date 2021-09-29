@@ -4,7 +4,7 @@ import { useParams } from 'react-router'
 import { useEffectOnce } from 'react-use'
 import { connect_socket, getGameId } from 'store/user'
 import Board from './Board'
-import { v4 as uuidv4, validate as uuidValidate } from 'uuid'
+import { guid } from './functions/guid'
 
 export const Game = () => {
     const dispatch = useDispatch()
@@ -12,19 +12,14 @@ export const Game = () => {
     const { id } = useParams()
 
     useEffectOnce(() => {
-        console.log(id, id !== '', uuidValidate(id))
-        if (id !== '' && uuidValidate(id)) {
-            console.log('DISPATCHING')
+        console.log(id)
+        if (id !== undefined) {
             dispatch(connect_socket(id))
         } else {
-            const uid = uuidv4()
+            const uid = guid()
             setRoom(uid)
         }
     })
-
-    // useEffect(() => {
-
-    // }, [])
 
     const handleSubmit = () => dispatch(connect_socket(room))
 

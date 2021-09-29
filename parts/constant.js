@@ -151,7 +151,11 @@ const noPieceOut = (arr) => {
 };
 
 const piecesOut = (arr) => {
-  return arr.filter((i) => !isNaN(i) && i < 57 && i >= 1).length;
+  return arr.filter((i) => !isNaN(i) && i < 52 && i >= 1).length;
+};
+
+const piecesOnFinal = (arr) => {
+  return arr.filter((i) => !isNaN(i) && i >= 52 && i < 57);
 };
 
 const cell_types = {
@@ -161,68 +165,13 @@ const cell_types = {
   end: [57],
 };
 
+const safe_cell = [1, 9, 14, 22, 27, 35, 40, 48, 52, 53, 54, 55, 56, 57];
+
 const isSafe = (pos) => {
-  return Object.keys(cell_types).every(
-    (type) => cell_types[type].findIndex((i) => i === pos) !== -1
-  );
+  return safe_cell.findIndex((e) => e === pos) !== -1;
 };
 
 const players = ["red", "green", "blue", "yellow"];
-
-// [red, green, blue, yellow]
-// prettier-ignore
-const colliding = [
-  [09, 42, 31, 20],
-  [20, 09, 42, 31],
-  [42, 31, 20, 09],
-  [31, 20, 09, 42],
-
-  [10, 43, 32, 21],
-  [21, 10, 43, 32],
-  [43, 32, 21, 10],
-  [32, 21, 10, 43],
-
-  [08, 41, 30, 19],
-  [19, 08, 41, 30],
-  [41, 30, 19, 08],
-  [30, 19, 08, 41],
-
-  [13, 02, 35, 24],
-  [24, 13, 02, 35],
-  [02, 35, 24, 13],
-  [35, 24, 13, 02],
-
-  [06, 39, 28, 17],
-  [17, 06, 39, 28],
-  [39, 28, 17, 06],
-  [28, 17, 06, 39],
-
-  [14, 03, 36, 25],
-  [25, 14, 03, 36],
-  [03, 36, 25, 14],
-  [36, 25, 14, 03],
-
-  [05, 38, 27, 16],
-  [16, 05, 38, 27],
-  [38, 27, 16, 05],
-  [27, 16, 05, 38],
-
-  [15, 04, 37, 26],
-  [26, 15, 04, 37],
-  [04, 37, 26, 15],
-  [37, 26, 15, 04],
-];
-
-/**
- * colliding =  [1,2,3,4,5,6,8,9,10,13,14,15,16,17,19,20,21,24,25,26,27,28,30,31,32,33,34,36,37,38,39,41,42,43,44,45,46,47,49,50,51]
- * [  r,  g,  b,  y ]
- * [ 01, 40, 27, 14 ]
- * [ 02, 41, 28, 15 ]
- *
- * [ 00, 39, 26, 13 ]
- * pos + offset > 52 ? (pos + offset - 52) : (pos + offset)
- * [ 14, 01, 40, 27]
- */
 
 const offset = {
   red: {
@@ -265,15 +214,6 @@ const otherPLayerPosArray = (pos, color) => {
   return otherPLayerPos;
 };
 
-// [1, 34, 12, 23], red-start
-// [12, 1, 23, 34], green-start
-// [34, 23, 1, 12], yellow-start
-// [23, 12, 34, 1], blue-start
-// [7, 40, 18, 29], safe-cell
-// [18, 7, 29, 40], safe-cell
-// [29, 18, 40, 7], safe-cell
-// [40, 29, 7, 18], safe-cell
-
 const error_codes = {
   200: "Can't play this move. Only legal moves allowed.",
 };
@@ -296,3 +236,5 @@ exports.arrDiff = arrDiff;
 exports.otherPLayerPosArray = otherPLayerPosArray;
 exports.error_codes = error_codes;
 exports.generateFEN = generateFEN;
+exports.piecesOnFinal = piecesOnFinal;
+

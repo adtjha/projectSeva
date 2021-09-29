@@ -1,4 +1,5 @@
 const { v4: uuidv4 } = require("uuid");
+const { guid } = require("./guid");
 const {
   consoleSpacing,
   rooms,
@@ -16,6 +17,7 @@ const {
   isSafe,
   error_codes,
   generateFEN,
+  piecesOnFinal,
 } = require("./constant");
 
 let i = 0;
@@ -80,7 +82,8 @@ function connectPlayer(socket, io) {
         current: "",
         dice: 1,
       };
-      const room_id = uuidv4();
+      // const room_id = uuidv4();
+      const room_id = guid();
       room.current = "red";
 
       // -> Push into room into rooms array
@@ -130,14 +133,24 @@ function diceRoll(socket, io) {
     });
 
     const pieceOut = piecesOut(rooms.get(gameId).players.get(socket.id).pos);
+    const pieceOnFinal = piecesOnFinal(
+      rooms.get(gameId).players.get(socket.id).pos
+    );
 
-    if (pieceOut === 0 && face !== 6) {
+    if (
+      pieceOut === 0 &&
+      face !== 6 &&
+      pieceOnFinal.filter((e) => e + face === 57).length === 0
+    ) {
       // console.log("No Piece Out and not a Six, switching player", face);
       setTimeout(
         () => changeCurrentPlayer(socket, io)({ game_id: gameId }),
         1700
       );
-    } else if (pieceOut === 1) {
+    } else if (
+      pieceOut === 1 ||
+      (pieceOut === 0 && pieceOnFinal.length === 1)
+    ) {
       // console.log("Single Piece Out, Auto Moving", face);
       setTimeout(() => autoMovePlayerPiece(socket, io)({ gameId, face }), 1700);
     }
@@ -243,6 +256,7 @@ function movePiece(socket, io) {
 
     // -> update arr
     if (new_pos !== -1) {
+      // updating players array
       rooms.get(gameId).players.get(userId).pos = newArr(
         new_pos,
         rooms.get(gameId).players.get(userId).pos,
@@ -255,6 +269,7 @@ function movePiece(socket, io) {
         index,
         pieceId,
       });
+      // relay new arrays to users
       io.in(gameId).emit("piece_moved", {
         posArr: rooms.get(gameId).players.get(userId).pos,
         color,

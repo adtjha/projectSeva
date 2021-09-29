@@ -78,7 +78,7 @@ const Board = (props) => {
                 </div>
             </div>
 
-            <div className="board z-0 block w-107 h-107 transform scale-85 -mx-2 sm:m-auto min-w-max min-h-max lg:w-157 lg:h-157 lg:p-4 p-1 border-2 border-solid rounded-2xl shadow-md">
+            <div className="board z-0 block w-107 h-107 transform scale-95 lg:scale-85 -my-2 mx-auto min-w-max min-h-max lg:w-157 lg:h-157 lg:p-4 p-1 border-2 border-solid rounded-2xl shadow-md">
                 <div className="relative z-20 w-104 h-104 min-w-max min-h-max lg:w-148 lg:h-148 grid grid-cols-sm15 grid-rows-sm15 gap-1 lg:grid-cols-15 lg:grid-rows-15 lg:gap-2 justify-items-stretch">
                     {pos.map((cell) => (
                         <Cell key={cell.id} data={cell} />
