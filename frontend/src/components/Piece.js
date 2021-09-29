@@ -12,7 +12,6 @@ import { getColor, getGameId, getGameCurrentPlayer } from '../store/user'
 import { getDice, rolled } from '../store/dice'
 import { useState } from 'react'
 import { useLayoutEffect } from 'react'
-import styled from 'styled-components'
 
 function Piece(props) {
     const name = props.name

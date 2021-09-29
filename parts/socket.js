@@ -263,13 +263,17 @@ function movePiece(socket, io) {
         pieceId,
       });
 
-      const winners = [];
+      const winners = [],
+        winnerLength = rooms.get(gameId).players.size - 1;
       rooms.get(gameId).players.forEach((player, pid) => {
         player.pos.every((e) => e === 57) ? winners.push(player.color) : "";
       });
 
       if (winners.length > 0) {
-        io.in(gameId).emit("game_end", { end: winners.length === 3, winners });
+        io.in(gameId).emit("game_end", {
+          end: winners.length === winnerLength,
+          winners,
+        });
       }
 
       new Promise((resolve, reject) => {

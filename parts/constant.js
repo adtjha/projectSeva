@@ -232,29 +232,24 @@ const offset = {
     yellow: 13,
   },
   green: {
-    red: 39,
+    red: 13,
     green: 0,
-    blue: 13,
+    blue: 39,
     yellow: 26,
   },
   blue: {
     red: 26,
-    green: -13,
+    green: 13,
     blue: 0,
-    yellow: 13,
+    yellow: 39,
   },
   yellow: {
-    red: 13,
-    green: -26,
-    blue: -13,
+    red: 39,
+    green: 26,
+    blue: 13,
     yellow: 0,
   },
 };
-
-// red -> 00, 39, 26, 13
-// green -> 39, 00, 13, 26
-// blue -> 26, -13, 0, 13
-// yellow -> 13, -26, -13, 0
 
 const otherPLayerPosArray = (pos, color) => {
   const otherPlayers = players.filter((e) => e !== color);
@@ -266,10 +261,6 @@ const otherPLayerPosArray = (pos, color) => {
     newPos = newPos <= 0 ? 52 - newPos : newPos;
     otherPLayerPos[e] = newPos > 52 ? newPos - 52 : newPos;
   });
-
-  // consoleSpacing("-");
-  // console.log(otherPLayerPos);
-  // consoleSpacing("-");
 
   return otherPLayerPos;
 };
