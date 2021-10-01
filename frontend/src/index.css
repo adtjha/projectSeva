@@ -17,3 +17,23 @@ code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
         monospace;
 }
+
+/* .board_screen {
+    grid-template-rows: 4rem auto !important;
+    height: 92vh !important;
+    width: fit-content !important;
+    transform: scale(0.95) !important;
+    transform-origin: bottom center !important;
+    margin-left: -8px !important;
+}
+
+@media (min-width: 1024px) {
+    .board_screen {
+        margin: 1rem auto !important;
+        grid-template-rows: auto !important;
+        height: 92vh !important;
+        grid-auto-flow: column dense;
+        width: -webkit-fill-available !important;
+        align-content: space-evenly;
+    }
+} */

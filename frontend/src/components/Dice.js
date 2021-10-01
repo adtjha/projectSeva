@@ -47,7 +47,7 @@ const Dice = (props) => {
     // )
 
     return (
-        <div className="w-24 h-24 mx-auto my-8 p-2">
+        <div className="w-16 h-16 mx-auto my-8 lg:my-auto">
             <Transition
                 as={Fragment}
                 show={isShowing}
@@ -59,13 +59,13 @@ const Dice = (props) => {
                 leaveTo="opacity-0 scale-95 "
             >
                 <div
-                    className="w-16 font-mono text-4xl m-auto text-center p-0 text-gray-400"
+                    className="w-16 h-16 font-mono text-4xl m-auto text-center p-0 text-gray-400"
                     onClick={handleClick}
                 >
                     <img src={srcList[props.num - 1]} alt={props.num}></img>
                 </div>
             </Transition>
-        </div>
+         </div>
     )
 }
 

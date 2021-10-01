@@ -54,59 +54,70 @@ const Board = (props) => {
     }
 
     return (
-        <React.Fragment>
-            <Notification message="Game Started." />
-            <div
-                className="hover:rounded-lg hover:shadow-md hover:cursor-pointer w-max z-0 p-2 text-2xl font-semibold text-black mx-auto my-4 flex flex-row content-evenly items-center"
-                onClick={handleShare}
-            >
-                <div className="flex flex-col w-auto content-evenly items-center">
-                    <span className="w-max text-sm tracking-widest font-normal opacity-80">
-                        ROOM UID
-                    </span>
-                    <span className="w-max">{gameId}</span>
-                </div>
-                <div className="w-7 opacity-60 mx-4">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        classname="h-5 w-5"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                    >
-                        <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"></path>
-                    </svg>
-                </div>
+        <div className="grid grid-flow-col max-w-full items-center transform scale-90">
+            <div className="lg:w-75 lg:h-150 bg-blueGray-400 border border-blueGray-800 text-xl text-blueGray-800 font-mono text-center">
+                Advertisement
             </div>
 
-            <div className="board z-0 block w-107 h-107 transform scale-95 lg:scale-85 -my-2 mx-auto min-w-max min-h-max lg:w-157 lg:h-157 lg:p-4 p-1 border-2 border-solid rounded-2xl shadow-md">
-                <div className="relative z-20 w-104 h-104 min-w-max min-h-max lg:w-148 lg:h-148 grid grid-cols-sm15 grid-rows-sm15 gap-1 lg:grid-cols-15 lg:grid-rows-15 lg:gap-2 justify-items-stretch">
-                    {pos.map((cell) => (
-                        <Cell key={cell.id} data={cell} />
-                    ))}
-                    <VideoChat />
+            <div className="board_screen grid justify-items-start justify-between">
+                <Notification message="Game Started." />
+
+                <div className=" w-max h-16 z-0 p-2 text-2xl font-semibold text-black m-auto flex flex-row content-evenly items-center">
+                    <div className="flex flex-col w-auto content-evenly items-center">
+                        <span className="w-max">{gameId}</span>
+                    </div>
+                    <button
+                        onClick={handleShare}
+                        className="w-7 opacity-60 mx-4 hover:rounded-lg hover:shadow-md hover:cursor-pointer"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            classname="h-5 w-5"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                        >
+                            <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"></path>
+                        </svg>
+                    </button>
                 </div>
-            </div>
-            <Dice num={data.dice} />
-            {hasGameEnded ? (
-                <React.Fragment>
-                    <div
-                        className="bg-blueGray-900 opacity-40 fixed inset-0 z-10"
-                        style={{
-                            height: '100vh',
-                            width: '100vw',
-                        }}
-                        onClick={() => console.log('GAME OVER')}
-                    ></div>
-                    <div class="w-104 h-104 z-20 fixed inset-0 m-auto p-4 shadow-2xl rounded-2xl bg-blueGray-50">
-                        <div className="text-center font-normal text-2xl tracking-widest">
-                            GAME END : WINNERS
+
+                <div className="justify-around justify-items-center items-end w-full lg:w-192 h-148 lg:h-auto m-auto grid grid-flow-row-dense lg:grid-flow-col-dense">
+                    <div className="board z-0 block w-107 h-107 lg:transform lg:scale-85 lg:origin-center -my-2 mx-auto lg:-my-12 min-w-max min-h-max lg:w-157 lg:h-157 lg:p-4 p-1 border-2 border-solid rounded-2xl shadow-md">
+                        <div className="relative z-20 w-104 h-104 min-w-max min-h-max lg:w-148 lg:h-148 grid grid-cols-sm15 grid-rows-sm15 gap-1 lg:grid-cols-15 lg:grid-rows-15 lg:gap-2 justify-items-stretch">
+                            {pos.map((cell) => (
+                                <Cell key={cell.id} data={cell} />
+                            ))}
+                            <VideoChat />
                         </div>
                     </div>
-                </React.Fragment>
-            ) : (
-                ' '
-            )}
-        </React.Fragment>
+                    <Dice num={data.dice} />
+                </div>
+
+                {hasGameEnded ? (
+                    <React.Fragment>
+                        <div
+                            className="bg-blueGray-900 opacity-40 fixed inset-0 z-10"
+                            style={{
+                                height: '100vh',
+                                width: '100vw',
+                            }}
+                            onClick={() => console.log('GAME OVER')}
+                        ></div>
+                        <div class="w-104 h-104 z-20 fixed inset-0 m-auto p-4 shadow-2xl rounded-2xl bg-blueGray-50">
+                            <div className="text-center font-normal text-2xl tracking-widest">
+                                GAME END : WINNERS
+                            </div>
+                        </div>
+                    </React.Fragment>
+                ) : (
+                    ' '
+                )}
+            </div>
+            
+            <div className="lg:w-75 lg:h-150 bg-blueGray-400 border border-blueGray-800 text-xl text-blueGray-800 font-mono text-center">
+                Advertisement
+            </div>
+        </div>
     )
 }
 

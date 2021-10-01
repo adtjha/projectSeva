@@ -1,6 +1,6 @@
 import { put, select } from 'redux-saga/effects'
 import { getColor, getGameCurrentPlayer, getGameId } from 'store/user'
-import { set_rolled } from 'store/dice'
+import { rolled, set_rolled } from 'store/dice'
 
 export const switchPlayer = function* (socket) {
     const game_id = yield select(getGameId)
@@ -9,10 +9,11 @@ export const switchPlayer = function* (socket) {
 }
 
 export const handleSwitchPlayer = function* () {
-    const userColor = yield select(getColor)
-    const currentPlayer = yield select(getGameCurrentPlayer)
-    if (userColor === currentPlayer) {
-        // reset for safety
-        yield put(set_rolled(false))
-    }
+    // const userColor = yield select(getColor)
+    // const currentPlayer = yield select(getGameCurrentPlayer)
+    // const hasRolled = yield select(rolled)
+    // if (userColor === currentPlayer && hasRolled) {
+    //     // reset for safety
+    //     yield put(set_rolled(false))
+    // }
 }

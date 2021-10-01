@@ -40,6 +40,13 @@ module.exports = (io) => {
   });
 };
 
+/**
+ *  Chance
+ *  each player gets a chance,
+ *  player plays the chance, either roll | roll + move | chance + 1 
+ *  
+ */
+
 function connectPlayer(socket, io) {
   return ({ room_id }) => {
     // if room empty -> fit user in room array -> send room id
@@ -145,14 +152,16 @@ function diceRoll(socket, io) {
       // console.log("No Piece Out and not a Six, switching player", face);
       setTimeout(
         () => changeCurrentPlayer(socket, io)({ game_id: gameId }),
-        1700
+        300
       );
+      // () => changeCurrentPlayer(socket, io)({ game_id: gameId });
     } else if (
       pieceOut === 1 ||
       (pieceOut === 0 && pieceOnFinal.length === 1)
     ) {
       // console.log("Single Piece Out, Auto Moving", face);
-      setTimeout(() => autoMovePlayerPiece(socket, io)({ gameId, face }), 1700);
+      setTimeout(() => autoMovePlayerPiece(socket, io)({ gameId, face }), 300);
+      // () => autoMovePlayerPiece(socket, io)({ gameId, face });
     }
   };
 }
@@ -162,9 +171,10 @@ function disconnectPlayer(socket) {
     if (rooms.size !== 0) {
       for (const [rid, room] of rooms) {
         if (room.players.has(socket.id)) {
-          // consoleSpacing(` USER DISCONNECTED @ ${new Date().toISOString()}`);
-          // console.log(rooms.get(rid).players.get(socket.id));
           rooms.get(rid).players.delete(socket.id);
+        }
+        if (rooms.get(rid).players.size === 0) {
+          rooms.delete(rid);
         }
       }
     }
