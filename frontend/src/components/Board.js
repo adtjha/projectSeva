@@ -56,55 +56,55 @@ const Board = (props) => {
     }
 
     return (
-        <div className="grid grid-flow-col max-w-full items-center justify-items-center">
+        <div
+            className=" flex flex-col content-center"
+            style={{ width: '100vw', height: '100vh', margin: 'auto' }}
+        >
             {/* <div className="lg:w-75 lg:h-150 bg-blueGray-400 border border-blueGray-800 text-xl text-blueGray-800 font-mono text-center">
                 Advertisement
             </div> */}
+            <div className="w-5/6 h-16 items-center justify-end my-4 mx-auto flex flex-row">
+                <div className="flex flex-row flex-grow items-center text-center text-blueGray-800">
+                    <div className="text-lg font-bold">
+                        <span className="w-max">{gameId}</span>
+                    </div>
+                    <button
+                        onClick={handleShare}
+                        className="w-7 opacity-60 mx-4 hover:rounded-lg hover:shadow-md hover:cursor-pointer"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            classname="h-5 w-5"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                        >
+                            <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div className="flex flex-col mr-2 items-center text-center text-blueGray-800">
+                    <div
+                        className="text-xs font-normal opacity-80"
+                        style={{ letterSpacing: '0.25em' }}
+                    >
+                        PLAYERS
+                    </div>
+                    <div className="text-lg font-bold ">98,76,54,321</div>
+                </div>
+                <div className="w-16 h-16 flex flex-row">
+                    <img
+                        className="w-12 h-12 m-auto rounded-full shadow-2xl border-2 border-blueGray-800"
+                        src={`https://avatars.dicebear.com/api/${randomGender()}/${guid()}.svg?background=%23F1F5F9`}
+                        alt="avatar"
+                    />
+                </div>
+            </div>
 
-            <div className="grid justify-items-start justify-between">
+            <div className="w-full ml-4 grid justify-items-center justify-center">
                 <Notification message="Game Started." />
 
-                <div className="w-5/6 h-16 items-center justify-end my-4 mx-auto flex flex-row">
-                        <div className="flex flex-row flex-grow items-center text-center text-blueGray-800">
-                            <div className="text-lg font-bold">
-                                <span className="w-max">{gameId}</span>
-                            </div>
-                            <button
-                                onClick={handleShare}
-                                className="w-7 opacity-60 mx-4 hover:rounded-lg hover:shadow-md hover:cursor-pointer"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    classname="h-5 w-5"
-                                    viewBox="0 0 20 20"
-                                    fill="currentColor"
-                                >
-                                    <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"></path>
-                                </svg>
-                            </button>
-                        </div>
-                        <div className="flex flex-col mr-2 items-center text-center text-blueGray-800">
-                            <div
-                                className="text-xs font-normal opacity-80"
-                                style={{ letterSpacing: '0.25em' }}
-                            >
-                                PLAYERS
-                            </div>
-                            <div className="text-lg font-bold ">
-                                98,76,54,321
-                            </div>
-                        </div>
-                        <div className="w-16 h-16 flex flex-row">
-                            <img
-                                className="w-12 h-12 m-auto rounded-full shadow-2xl border-2 border-blueGray-800"
-                                src={`https://avatars.dicebear.com/api/${randomGender()}/${guid()}.svg?background=%23F1F5F9`}
-                                alt="avatar"
-                            />
-                        </div>
-                </div>
-
                 <div className="justify-around justify-items-center items-end w-full lg:w-192 h-148 lg:h-auto m-auto grid grid-flow-row-dense lg:grid-flow-col-dense">
-                    <div className="board z-0 block w-107 h-107 lg:transform lg:scale-85 lg:origin-center -my-2 mx-auto lg:-my-12 min-w-max min-h-max lg:w-157 lg:h-157 lg:p-4 p-1 border-2 border-solid rounded-2xl shadow-md">
+                    <div className="board z-0  block w-107 h-107 transform scale-90 lg:transform lg:scale-85 origin-top-left lg:origin-center ml-2 -my-2 mx-auto lg:-my-12 min-w-max min-h-max lg:w-157 lg:h-157 lg:p-4 p-1 border-2 border-solid rounded-2xl shadow-md">
                         <div className="relative z-20 w-104 h-104 min-w-max min-h-max lg:w-148 lg:h-148 grid grid-cols-sm15 grid-rows-sm15 gap-1 lg:grid-cols-15 lg:grid-rows-15 lg:gap-2 justify-items-stretch">
                             {pos.map((cell) => (
                                 <Cell key={cell.id} data={cell} />
