@@ -26,3 +26,11 @@ export const onDiceRolled = function* (action) {
         console.log(e)
     }
 }
+
+export const unrollDice = function* () {
+    try {
+        yield put(set_rolled(false))
+    } catch (e) {
+        console.error(e)
+    }
+}

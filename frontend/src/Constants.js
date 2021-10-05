@@ -1,6 +1,6 @@
 // const BASE_API = 'https://morning-plains-74021.herokuapp.com'
-const BASE_API = 'https://6528-117-203-182-10.ngrok.io'
-const WEB_APP_URL = BASE_API
+const BASE_API = 'https://5385-103-149-20-141.ngrok.io'
+const WEB_APP_URL = 'http://192.168.1.39:3000'
 
 const path = 6,
     safe = 5,

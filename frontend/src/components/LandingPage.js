@@ -1,179 +1,117 @@
-import { Popover, Transition } from '@headlessui/react'
-import { MenuIcon, XIcon } from '@heroicons/react/outline'
-import { Fragment } from 'react'
-import board from '../images/board.png'
-import logo from '../images/logo/favicon.ico'
+import { auth, signInWithGoogle, logout } from '../firebase'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { useEffect } from 'react'
+import { useHistory } from 'react-router'
 
-const navigation = [
-    { name: 'about', href: '/about' },
-    { name: "Let's play", href: '/game' },
-    { name: 'Business', href: '/business' },
-]
+const loadingIcon = (
+    <svg
+        class="animate-spin -ml-1 mr-3 h-5 w-5 text-blueGray-100"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+    >
+        <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+        ></circle>
+        <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        ></path>
+    </svg>
+)
+
+const signOut = (
+    <button
+        type="button"
+        class="inline-flex items-center px-4 py-2 ml-2 border border-transparent text-base leading-6 font-medium rounded-md text-blueGray-100 bg-blueGray-600 hover:bg-blueGray-500 focus:border-rose-700 active:bg-blueGray-700 transition ease-in-out duration-150"
+        disabled=""
+        onClick={logout}
+    >
+        Sign Out
+    </button>
+)
+
+const signIn = (
+    <button
+        type="button"
+        class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-blueGray-100 bg-blueGray-600 hover:bg-blueGray-500 focus:border-rose-700 active:bg-blueGray-700 transition ease-in-out duration-150"
+        disabled=""
+        onClick={signInWithGoogle}
+    >
+        Sign In With Google
+    </button>
+)
 
 const LandingPage = () => {
+    const [user, loading, error] = useAuthState(auth)
+    const history = useHistory()
+
+    console.log({user, loading, error})
+
+    useEffect(() => {
+        if (loading) {
+            return
+        }
+        if (user) history.replace('/game')
+    }, [user, loading, history])
+
     return (
-        <div className="relative overflow-hidden">
-            <div className="max-w-7xl mx-auto">
-                <div className="relative z-10 pb-8 bg-transparent sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
-                    <Popover>
-                        {({ open }) => (
-                            <>
-                                <div className="relative pt-6 px-4 sm:px-6 lg:px-8">
-                                    <nav
-                                        className="relative flex items-center justify-between sm:h-10 lg:justify-start"
-                                        aria-label="Global"
-                                    >
-                                        <div className="flex items-center flex-grow flex-shrink-0 lg:flex-grow-0">
-                                            <div className="flex items-center justify-between w-full md:w-auto">
-                                                <a href="/workflow">
-                                                    <span className="sr-only">
-                                                        Workflow
-                                                    </span>
-                                                    <img
-                                                        className="h-8 w-auto sm:h-10"
-                                                        src={logo}
-                                                        alt="logo"
-                                                    />
-                                                </a>
-                                                <div className="-mr-2 flex items-center md:hidden">
-                                                    <Popover.Button className="bg-transparent rounded-md p-2 inline-flex items-center justify-center text-blueGray-400 hover:text-blueGray-500 hover:bg-blueGray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blueGray-500">
-                                                        <span className="sr-only">
-                                                            Open main menu
-                                                        </span>
-                                                        <MenuIcon
-                                                            className="h-6 w-6"
-                                                            aria-hidden="true"
-                                                        />
-                                                    </Popover.Button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="hidden md:block md:ml-10 md:pr-4 md:space-x-8">
-                                            {navigation.map((item) => (
-                                                <a
-                                                    key={item.name}
-                                                    href={item.href}
-                                                    className="font-medium text-blueGray-500 hover:text-blueGray-900"
-                                                >
-                                                    {item.name}
-                                                </a>
-                                            ))}
-                                            <a
-                                                href="/"
-                                                className="font-medium text-blueGray-600 hover:text-blueGray-500"
-                                            >
-                                                Log in
-                                            </a>
-                                        </div>
-                                    </nav>
-                                </div>
-
-                                <Transition
-                                    show={open}
-                                    as={Fragment}
-                                    enter="duration-150 ease-out"
-                                    enterFrom="opacity-0 scale-95"
-                                    enterTo="opacity-100 scale-100"
-                                    leave="duration-100 ease-in"
-                                    leaveFrom="opacity-100 scale-100"
-                                    leaveTo="opacity-0 scale-95"
+        <section class="text-blueGray-600 body-font">
+            <div class="container h-screen mx-auto flex px-5 py-14 items-center justify-center flex-col">
+                <div class="text-center lg:w-2/3 w-full">
+                    <h1 class="title-font text-6xl mb-4 font-bold text-blueGray-900">
+                        Fundraising made fun.
+                    </h1>
+                    <p class="mb-8 leading-relaxed tracking-normal capitalize">
+                        Meet random people, buy-in table, play ludo to win house
+                        money to bankroll your cause.
+                    </p>
+                    <div class="flex justify-center">
+                        {user ? (
+                            loading ? (
+                                <button
+                                    type="button"
+                                    class="inline-flex items-center px-4 py-2 ml-2 border border-transparent text-base leading-6 font-medium rounded-md text-blueGray-100 bg-blueGray-600 hover:bg-blueGray-500 focus:border-rose-700 active:bg-blueGray-700 transition ease-in-out duration-150 cursor-not-allowed"
+                                    disabled=""
                                 >
-                                    <Popover.Panel
-                                        focus
-                                        static
-                                        className="absolute top-0 inset-x-0 p-2 transition transform origin-top-right md:hidden"
+                                    {loadingIcon} Signing In
+                                </button>
+                            ) : (
+                                <>
+                                    <button
+                                        type="button"
+                                        class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-blueGray-100 bg-blueGray-600 hover:bg-blueGray-500 focus:border-rose-700 active:bg-blueGray-700 transition ease-in-out duration-150"
+                                        disabled=""
                                     >
-                                        <div className="rounded-lg shadow-md bg-blueGray-100 ring-1 ring-black ring-opacity-5 overflow-hidden">
-                                            <div className="px-5 pt-4 flex items-center justify-between">
-                                                <div>
-                                                    <img
-                                                        className="h-8 w-auto"
-                                                        src={logo}
-                                                        alt=""
-                                                    />
-                                                </div>
-                                                <div className="-mr-2">
-                                                    <Popover.Button className="bg-blueGray-100 rounded-md p-2 inline-flex items-center justify-center text-blueGray-400 hover:text-blueGray-500 hover:bg-blueGray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blueGray-500">
-                                                        <span className="sr-only">
-                                                            Close main menu
-                                                        </span>
-                                                        <XIcon
-                                                            className="h-6 w-6"
-                                                            aria-hidden="true"
-                                                        />
-                                                    </Popover.Button>
-                                                </div>
-                                            </div>
-                                            <div className="px-2 pt-2 pb-3 space-y-1">
-                                                {navigation.map((item) => (
-                                                    <a
-                                                        key={item.name}
-                                                        href={item.href}
-                                                        className="block px-3 py-2 rounded-md text-base font-medium text-blueGray-700 hover:text-blueGray-900 hover:bg-blueGray-50"
-                                                    >
-                                                        {item.name}
-                                                    </a>
-                                                ))}
-                                            </div>
-                                            <a
-                                                href="/"
-                                                className="block w-full px-5 py-3 text-center font-medium text-blueGray-600 bg-blueGray-50 hover:bg-blueGray-100"
-                                            >
-                                                Log in
-                                            </a>
-                                        </div>
-                                    </Popover.Panel>
-                                </Transition>
-                            </>
+                                        Hi! {user.email}
+                                    </button>
+                                    {signOut}
+                                </>
+                            )
+                        ) : (
+                            signIn
                         )}
-                    </Popover>
-
-                    <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
-                        <div className="sm:text-center lg:text-left">
-                            <h1 className="text-4xl tracking-tight font-extrabold text-blueGray-900 sm:text-5xl md:text-6xl">
-                                <span className="block xl:inline">
-                                    Play to donate,
-                                </span>{' '}
-                                <span className="block text-blueGray-600 xl:inline">
-                                    Charity made fun
-                                </span>
-                            </h1>
-                            <p className="mt-3 text-base text-blueGray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                                A platform for meeting random people, play ludo
-                                with them, interact with live video chat. Pool
-                                in money, win it all to donate to your favourite
-                                charity.
-                            </p>
-                            <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-                                <div className="rounded-md shadow">
-                                    <a
-                                        href="/signup"
-                                        className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blueGray-600 hover:bg-blueGray-700 md:py-4 md:text-lg md:px-10"
-                                    >
-                                        Sign up
-                                    </a>
-                                </div>
-                                <div className="mt-3 sm:mt-0 sm:ml-3">
-                                    <a
-                                        href="/game"
-                                        className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-blueGray-700 bg-blueGray-100 hover:bg-blueGray-200 md:py-4 md:text-lg md:px-10"
-                                    >
-                                        Live demo
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </main>
+                        {error ? (
+                            <button
+                                type="button"
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-blueGray-100 bg-blueGray-600 hover:bg-blueGray-500 focus:border-rose-700 active:bg-blueGray-700 transition ease-in-out duration-150 cursor-not-allowed"
+                                disabled=""
+                            >
+                                Unable to Sign In
+                            </button>
+                        ) : (
+                            ''
+                        )}
+                    </div>
                 </div>
             </div>
-            <div className="lg:m-4 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
-                <img
-                    className=" w-full object-contain h-72 md:h-96 lg:w-full lg:h-full"
-                    src={board}
-                    alt="Ludo Board"
-                />
-            </div>
-        </div>
+        </section>
     )
 }
 

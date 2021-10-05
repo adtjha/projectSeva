@@ -9,6 +9,8 @@ import { getDice } from '../store/dice'
 import { getGameId, getGameStatus } from '../store/user'
 import { Notification } from './Notification'
 import Constants from 'Constants'
+import { randomGender } from './functions/randomGender'
+import { guid } from './functions/guid'
 
 const Board = (props) => {
     const mounted = useRef(true)
@@ -54,31 +56,51 @@ const Board = (props) => {
     }
 
     return (
-        <div className="grid grid-flow-col max-w-full items-center transform scale-90">
-            <div className="lg:w-75 lg:h-150 bg-blueGray-400 border border-blueGray-800 text-xl text-blueGray-800 font-mono text-center">
+        <div className="grid grid-flow-col max-w-full items-center justify-items-center">
+            {/* <div className="lg:w-75 lg:h-150 bg-blueGray-400 border border-blueGray-800 text-xl text-blueGray-800 font-mono text-center">
                 Advertisement
-            </div>
+            </div> */}
 
-            <div className="board_screen grid justify-items-start justify-between">
+            <div className="grid justify-items-start justify-between">
                 <Notification message="Game Started." />
 
-                <div className=" w-max h-16 z-0 p-2 text-2xl font-semibold text-black m-auto flex flex-row content-evenly items-center">
-                    <div className="flex flex-col w-auto content-evenly items-center">
-                        <span className="w-max">{gameId}</span>
-                    </div>
-                    <button
-                        onClick={handleShare}
-                        className="w-7 opacity-60 mx-4 hover:rounded-lg hover:shadow-md hover:cursor-pointer"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            classname="h-5 w-5"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                        >
-                            <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"></path>
-                        </svg>
-                    </button>
+                <div className="w-5/6 h-16 items-center justify-end my-4 mx-auto flex flex-row">
+                        <div className="flex flex-row flex-grow items-center text-center text-blueGray-800">
+                            <div className="text-lg font-bold">
+                                <span className="w-max">{gameId}</span>
+                            </div>
+                            <button
+                                onClick={handleShare}
+                                className="w-7 opacity-60 mx-4 hover:rounded-lg hover:shadow-md hover:cursor-pointer"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    classname="h-5 w-5"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                >
+                                    <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div className="flex flex-col mr-2 items-center text-center text-blueGray-800">
+                            <div
+                                className="text-xs font-normal opacity-80"
+                                style={{ letterSpacing: '0.25em' }}
+                            >
+                                PLAYERS
+                            </div>
+                            <div className="text-lg font-bold ">
+                                98,76,54,321
+                            </div>
+                        </div>
+                        <div className="w-16 h-16 flex flex-row">
+                            <img
+                                className="w-12 h-12 m-auto rounded-full shadow-2xl border-2 border-blueGray-800"
+                                src={`https://avatars.dicebear.com/api/${randomGender()}/${guid()}.svg?background=%23F1F5F9`}
+                                alt="avatar"
+                            />
+                        </div>
                 </div>
 
                 <div className="justify-around justify-items-center items-end w-full lg:w-192 h-148 lg:h-auto m-auto grid grid-flow-row-dense lg:grid-flow-col-dense">
@@ -113,10 +135,10 @@ const Board = (props) => {
                     ' '
                 )}
             </div>
-            
-            <div className="lg:w-75 lg:h-150 bg-blueGray-400 border border-blueGray-800 text-xl text-blueGray-800 font-mono text-center">
+
+            {/* <div className="lg:w-75 lg:h-150 bg-blueGray-400 border border-blueGray-800 text-xl text-blueGray-800 font-mono text-center">
                 Advertisement
-            </div>
+            </div> */}
         </div>
     )
 }

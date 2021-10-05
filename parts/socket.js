@@ -414,7 +414,7 @@ function changeCurrentPlayer(socket, io) {
 
     // socket.emit("update_current", rooms.get(game_id).current);
     io.in(game_id).emit("update_current", {
-      current: rooms.get(game_id).current,
+      current: rooms.get(game_id).current
     });
   };
 }

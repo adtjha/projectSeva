@@ -32,6 +32,7 @@ export const ROLL = 'roll'
 export const ROLLED = 'rolled'
 export const SHOWING = 'showing'
 export const FETCH_DICE = 'roll dice request'
+export const UNROLL_DICE = 'unroll dice'
 
 // export const ROLL_DICE_REQ = 'roll dice request'
 export const ROLL_DICE_RES = 'roll dice response'
@@ -62,4 +63,8 @@ export const fetch_dice = ({ gameId, userColor }) => ({
 export const roll_dice_res = ({ face }) => ({
     type: ROLL_DICE_RES,
     payload: { face },
+})
+
+export const un_roll_dice = () => ({
+    type: UNROLL_DICE,
 })

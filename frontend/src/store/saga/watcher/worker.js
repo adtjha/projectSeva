@@ -1,9 +1,9 @@
-import { takeLatest, takeEvery } from 'redux-saga/effects'
+import { takeLatest, takeEvery, takeLeading } from 'redux-saga/effects'
 import { CONFIG, NEXT, UPDATE } from 'store/user'
 import { MOVE, UPDATE_POS } from 'store/move'
 import { switchPlayer, handleSwitchPlayer } from '../workers/player'
 import { onMovePieceRequest, onMovePiece } from '../workers/move'
-import { onDiceRolled, onRollDice } from '../workers/dice'
+import { onDiceRolled, onRollDice, unrollDice } from '../workers/dice'
 import { FETCH_DICE, ROLL_DICE_RES } from 'store/dice'
 import { setInitialState } from '../workers/read'
 
@@ -13,6 +13,7 @@ export const socketWorker = function* (socket) {
 
     yield takeLatest(FETCH_DICE, onRollDice, socket)
     yield takeLatest(ROLL_DICE_RES, onDiceRolled)
+    yield takeLeading('unroll dice', unrollDice)
 
     yield takeLatest(UPDATE_POS, onMovePiece)
     yield takeLatest(MOVE, onMovePieceRequest, socket)

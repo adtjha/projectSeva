@@ -171,7 +171,7 @@ const isSafe = (pos) => {
   return safe_cell.findIndex((e) => e === pos) !== -1;
 };
 
-const players = ["red", "green", "blue", "yellow"];
+const players = ["red", "blue", "yellow", "green"];
 
 const offset = {
   red: {
@@ -237,4 +237,3 @@ exports.otherPLayerPosArray = otherPLayerPosArray;
 exports.error_codes = error_codes;
 exports.generateFEN = generateFEN;
 exports.piecesOnFinal = piecesOnFinal;
-
