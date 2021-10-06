@@ -13,7 +13,7 @@ const server = app.listen(port, () => {
 });
 
 const io = new Server(server, { cors: { origin: "*" } });
-require("./parts/socket")(io);
+require("./src/socket")(io);
 
 app.get("/", (req, res) => {
   console.log("Hello World!");

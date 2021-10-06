@@ -218,22 +218,44 @@ const error_codes = {
   200: "Can't play this move. Only legal moves allowed.",
 };
 
-exports.greenPlayer = greenPlayer;
-exports.redPlayer = redPlayer;
-exports.players = players;
-exports.noPieceOut = noPieceOut;
-exports.piecesOut = piecesOut;
-exports.newArr = newArr;
-exports.newPos = newPos;
-exports.hasEmpty = hasEmpty;
-exports.bluePlayer = bluePlayer;
-exports.yellowPlayer = yellowPlayer;
-exports.rooms = rooms;
-exports.roomDefault = roomDefault;
-exports.consoleSpacing = consoleSpacing;
-exports.isSafe = isSafe;
-exports.arrDiff = arrDiff;
-exports.otherPLayerPosArray = otherPLayerPosArray;
-exports.error_codes = error_codes;
-exports.generateFEN = generateFEN;
-exports.piecesOnFinal = piecesOnFinal;
+// exports.greenPlayer = greenPlayer;
+// exports.redPlayer = redPlayer;
+// exports.players = players;
+// exports.noPieceOut = noPieceOut;
+// exports.piecesOut = piecesOut;
+// exports.newArr = newArr;
+// exports.newPos = newPos;
+// exports.hasEmpty = hasEmpty;
+// exports.bluePlayer = bluePlayer;
+// exports.yellowPlayer = yellowPlayer;
+// exports.rooms = rooms;
+// exports.roomDefault = roomDefault;
+// exports.consoleSpacing = consoleSpacing;
+// exports.isSafe = isSafe;
+// exports.arrDiff = arrDiff;
+// exports.otherPLayerPosArray = otherPLayerPosArray;
+// exports.error_codes = error_codes;
+// exports.generateFEN = generateFEN;
+// exports.piecesOnFinal = piecesOnFinal;
+
+exports = {
+  greenPlayer,
+  redPlayer,
+  players,
+  noPieceOut,
+  piecesOut,
+  newArr,
+  newPos,
+  hasEmpty,
+  bluePlayer,
+  yellowPlayer,
+  rooms,
+  roomDefault,
+  consoleSpacing,
+  isSafe,
+  arrDiff,
+  otherPLayerPosArray,
+  error_codes,
+  generateFEN,
+  piecesOnFinal,
+};
