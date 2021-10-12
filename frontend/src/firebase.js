@@ -1,4 +1,4 @@
-import firebase from 'firebase'
+import { initializeApp } from 'firebase/app'
 
 const firebaseConfig = {
     apiKey: 'AIzaSyDp-mjeR9fXLYrpurAWxTEptQuglRU-QRY',
@@ -10,11 +10,11 @@ const firebaseConfig = {
     measurementId: 'G-C0WW4QZSFH',
 }
 
-const app = firebase.initializeApp(firebaseConfig)
+const app = initializeApp(firebaseConfig)
 const auth = app.auth()
 const db = app.firestore()
 
-const googleProvider = new firebase.auth.GoogleAuthProvider()
+const googleProvider = new auth.GoogleAuthProvider()
 
 const signInWithGoogle = async () => {
     try {
