@@ -1,41 +1,42 @@
-const { v4: uuidv4 } = require("uuid");
 const { resetPiece } = require("./resetPiece");
 const { changeCurrentPlayer } = require("./changeCurrentPlayer");
+const { newPos, rooms, consoleSpacing, newArr } = require("../constant");
+const { client } = require("../..");
 
 function movePiece(socket, io) {
-  return ({ dice, position, gameId, index, pieceId }) => {
+  return async ({ dice, position, gameId, index, pieceId }) => {
+    const room = JSON.parse(await client.get(gameId));
     const userId = socket.id;
+    const player = room.players[userId];
+    const color = player.color;
 
-    const color = rooms.get(gameId).players.get(userId).color;
-    consoleSpacing("-");
     const new_pos = newPos(dice, position);
 
-    // -> update arr
     if (new_pos !== -1) {
-      // updating players array
-      rooms.get(gameId).players.get(userId).pos = newArr(
-        new_pos,
-        rooms.get(gameId).players.get(userId).pos,
-        index
-      );
+      player.pos = newArr(new_pos, player.pos, index);
       console.log({
-        posArr: rooms.get(gameId).players.get(userId).pos,
-        color,
-        new_pos,
-        index,
-        pieceId,
-      });
-      // relay new arrays to users
-      io.in(gameId).emit("piece_moved", {
-        posArr: rooms.get(gameId).players.get(userId).pos,
+        posArr: player.pos,
         color,
         new_pos,
         index,
         pieceId,
       });
 
-      const winners = [], winnerLength = rooms.get(gameId).players.size - 1;
-      rooms.get(gameId).players.forEach((player, pid) => {
+      await client.set(gameId, ".", JSON.stringify(room), "XX");
+
+      // relay new arrays to users
+      io.in(gameId).emit("piece_moved", {
+        posArr: player.pos,
+        color,
+        new_pos,
+        index,
+        pieceId,
+      });
+
+      const winners = [],
+        winnerLength = Object.keys(room.players).length - 1;
+
+      Object.values(room.players).forEach((player) => {
         player.pos.every((e) => e === 57) ? winners.push(player.color) : "";
       });
 
@@ -57,7 +58,7 @@ function movePiece(socket, io) {
           ? resolve()
           : reject();
       }).then(
-        () => { },
+        () => {},
         () => {
           if (dice !== 6) {
             setTimeout(() => {

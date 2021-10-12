@@ -1,12 +1,16 @@
-const { v4: uuidv4 } = require("uuid");
+const { client } = require("../..");
+const { rooms } = require("../constant");
 
 function changeCurrentPlayer(socket, io) {
-  return ({ game_id }) => {
+  return async ({ game_id }) => {
     // consoleSpacing(`CHANGING PLAYER from ${rooms.get(game_id).current}`);
-    const currentColor = rooms.get(game_id).players.get(socket.id).color;
-    let availableColors = [], nextColor;
+    const room = JSON.parse(await client.get(game_id));
 
-    rooms.get(game_id).players.forEach((player, id, map) => {
+    const currentColor = room.players[socket.id].color;
+    let availableColors = [],
+      nextColor;
+
+    Object.values(room.players).forEach((player) => {
       availableColors.push(player.color);
     });
 
@@ -25,27 +29,29 @@ function changeCurrentPlayer(socket, io) {
           currentColor === availableColors[0]
             ? availableColors[1]
             : currentColor === availableColors[1]
-              ? availableColors[2]
-              : availableColors[0];
+            ? availableColors[2]
+            : availableColors[0];
         break;
       case 4:
         nextColor =
           currentColor === availableColors[0]
             ? availableColors[1]
             : currentColor === availableColors[1]
-              ? availableColors[2]
-              : currentColor === availableColors[2]
-                ? availableColors[3]
-                : availableColors[0];
+            ? availableColors[2]
+            : currentColor === availableColors[2]
+            ? availableColors[3]
+            : availableColors[0];
         break;
     }
 
-    rooms.get(game_id).current = nextColor;
-    // consoleSpacing(rooms.get(game_id).current);
-    // socket.emit("update_current", rooms.get(game_id).current);
+    room.current = nextColor;
+
+    await client.set(game_id, ".", JSON.stringify(room), "XX");
+
     io.in(game_id).emit("update_current", {
-      current: rooms.get(game_id).current
+      current: room.current,
     });
   };
 }
+
 exports.changeCurrentPlayer = changeCurrentPlayer;

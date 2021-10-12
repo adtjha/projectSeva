@@ -17,7 +17,7 @@ export const onMovePiece = function* () {
         )
         if (
             [red, green, blue, yellow].filter((arr) => arr.length === 4)
-                .length > 1
+                .length >= 1
         ) {
             yield put(un_roll_dice())
         }

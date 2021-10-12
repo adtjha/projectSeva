@@ -1,5 +1,3 @@
-const { v4: uuidv4 } = require("uuid");
-
 const consoleSpacing = (message) => {
   console.log(" ");
   console.log(`-----------------------${message}-----------------------`);
@@ -31,23 +29,32 @@ const bluePlayer = {
 };
 
 const roomDefault = {
-  players: new Map(),
+  players: {},
   current: "",
+  dice: 1,
 };
 
-const rooms = new Map();
+var roomsCount = 1;
+
+var roomIdsHaveSpace = {
+  "2eo3": ["red", "green", "blue", "yellow"],
+};
+
+var rooms = {
+  "2eo3": { players: {}, current: "red", dice: 1 },
+};
 
 const hasEmpty = (empty, room_id) => {
   let playerColors = [...players];
 
-  if (rooms.size !== 0) {
+  if (Object.keys(rooms).length !== 0) {
     // check if room exsists, if yes, return empty room details
-    if (room_id && rooms.has(room_id)) {
-      if (rooms.get(room_id).players.size < 4) {
+    if (room_id && rooms.hasOwnProperty(room_id)) {
+      if (Object.keys(rooms[room_id].players).length < 4) {
         empty.id = room_id;
-        empty.current = rooms.get(room_id).current;
+        empty.current = rooms[room_id].current;
 
-        rooms.get(room_id).players.forEach((player, id, map) => {
+        rooms[room_id].players.forEach((player) => {
           playerColors = playerColors.filter((color) => color !== player.color);
         });
 
@@ -60,14 +67,14 @@ const hasEmpty = (empty, room_id) => {
     }
 
     // check if loop run for first time.
-    for (const [id, room] of rooms) {
-      if (room.players.size < 4) {
+    for (const [id, room] of Object.entries(rooms)) {
+      if (Object.keys(room.players).length < 4) {
         // room empty
         empty.id = id;
         empty.current = room.current;
 
         // remove colors already taken from playerColor
-        room.players.forEach((player, id, map) => {
+        Object.values(room.players).forEach((player) => {
           playerColors = playerColors.filter((color) => color !== player.color);
         });
 
@@ -114,7 +121,7 @@ const generateFEN = (roomPlayers) => {
 
   consoleSpacing("-");
 
-  roomPlayers.forEach((player) => {
+  Object.values(roomPlayers).forEach((player) => {
     color = player.color;
     present.push(color);
     console.log(color);
@@ -124,18 +131,6 @@ const generateFEN = (roomPlayers) => {
     });
     fen = fen.concat("/");
   });
-
-  // const left = players.filter((p) => present.findIndex((e) => e === p) === -1);
-
-  // left.forEach((color) => {
-  //   [0, 0, 0, 0].forEach((p) => {
-  //     fen = fen.concat(`${color.split("")[0]}${p}`);
-  //   });
-  //   fen = fen.concat("/");
-  // });
-
-  // console.log(fen[fen.length - 1]);
-  // consoleSpacing("-");
 
   fen = fen[fen.length - 1] === "/" ? fen.slice(0, fen.length - 1) : fen;
 
@@ -218,44 +213,22 @@ const error_codes = {
   200: "Can't play this move. Only legal moves allowed.",
 };
 
-// exports.greenPlayer = greenPlayer;
-// exports.redPlayer = redPlayer;
-// exports.players = players;
-// exports.noPieceOut = noPieceOut;
-// exports.piecesOut = piecesOut;
-// exports.newArr = newArr;
-// exports.newPos = newPos;
-// exports.hasEmpty = hasEmpty;
-// exports.bluePlayer = bluePlayer;
-// exports.yellowPlayer = yellowPlayer;
-// exports.rooms = rooms;
-// exports.roomDefault = roomDefault;
-// exports.consoleSpacing = consoleSpacing;
-// exports.isSafe = isSafe;
-// exports.arrDiff = arrDiff;
-// exports.otherPLayerPosArray = otherPLayerPosArray;
-// exports.error_codes = error_codes;
-// exports.generateFEN = generateFEN;
-// exports.piecesOnFinal = piecesOnFinal;
-
-exports = {
-  greenPlayer,
-  redPlayer,
-  players,
-  noPieceOut,
-  piecesOut,
-  newArr,
-  newPos,
-  hasEmpty,
-  bluePlayer,
-  yellowPlayer,
-  rooms,
-  roomDefault,
-  consoleSpacing,
-  isSafe,
-  arrDiff,
-  otherPLayerPosArray,
-  error_codes,
-  generateFEN,
-  piecesOnFinal,
-};
+exports.greenPlayer = greenPlayer;
+exports.redPlayer = redPlayer;
+exports.players = players;
+exports.noPieceOut = noPieceOut;
+exports.piecesOut = piecesOut;
+exports.newArr = newArr;
+exports.newPos = newPos;
+exports.hasEmpty = hasEmpty;
+exports.bluePlayer = bluePlayer;
+exports.yellowPlayer = yellowPlayer;
+exports.rooms = rooms;
+exports.roomDefault = roomDefault;
+exports.consoleSpacing = consoleSpacing;
+exports.isSafe = isSafe;
+exports.arrDiff = arrDiff;
+exports.otherPLayerPosArray = otherPLayerPosArray;
+exports.error_codes = error_codes;
+exports.generateFEN = generateFEN;
+exports.piecesOnFinal = piecesOnFinal;
