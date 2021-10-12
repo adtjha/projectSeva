@@ -1,4 +1,5 @@
 const BASE_API = 'https://morning-plains-74021.herokuapp.com'
+const WEB_APP_URL = BASE_API
 // const BASE_API = 'https://5385-103-149-20-141.ngrok.io'
 // const WEB_APP_URL = 'http://192.168.1.39:3000'
 
@@ -336,7 +337,7 @@ const generateTranslate = (start, end, lg) => {
 
 const remCal = (c) => {
     if (c !== 0) {
-        return `${c/4}rem`
+        return `${c / 4}rem`
     } else {
         return `0rem`
     }
