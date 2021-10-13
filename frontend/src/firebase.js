@@ -1,4 +1,18 @@
 import { initializeApp } from 'firebase/app'
+import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signOut,
+} from 'firebase/auth'
+import {
+    getFirestore,
+    collection,
+    doc,
+    addDoc,
+    getDoc,
+    where,
+} from 'firebase/firestore'
 
 const firebaseConfig = {
     apiKey: 'AIzaSyDp-mjeR9fXLYrpurAWxTEptQuglRU-QRY',
@@ -11,21 +25,20 @@ const firebaseConfig = {
 }
 
 const app = initializeApp(firebaseConfig)
-const auth = app.auth()
-const db = app.firestore()
+const auth = getAuth(app)
+const db = getFirestore(app)
 
-const googleProvider = new auth.GoogleAuthProvider()
+const googleProvider = new GoogleAuthProvider()
 
 const signInWithGoogle = async () => {
     try {
-        const res = await auth.signInWithPopup(googleProvider)
+        const res = await signInWithPopup(auth, googleProvider)
         const user = res.user
-        const query = await db
-            .collection('users')
-            .where('uid', '==', user.uid)
-            .get()
+        const userRef = collection(db, 'users')
+        const query = await getDoc(userRef, where('uid', '==', user.uid))
+
         if (query.docs.length === 0) {
-            await db.collection('users').add({
+            await addDoc(doc(db, 'users'), {
                 uid: user.uid,
                 name: user.displayName,
                 authProvider: 'google',
@@ -38,51 +51,8 @@ const signInWithGoogle = async () => {
     }
 }
 
-const signInWithEmailAndPassword = async (email, password) => {
-    try {
-        await auth.signInWithEmailAndPassword(email, password)
-    } catch (err) {
-        console.error(err)
-        alert(err.message)
-    }
+const logout = async () => {
+    await signOut(auth)
 }
 
-const registerWithEmailAndPassword = async (name, email, password) => {
-    try {
-        const res = await auth.createUserWithEmailAndPassword(email, password)
-        const user = res.user
-        await db.collection('users').add({
-            uid: user.uid,
-            name,
-            authProvider: 'local',
-            email,
-        })
-    } catch (err) {
-        console.error(err)
-        alert(err.message)
-    }
-}
-
-const sendPasswordResetEmail = async (email) => {
-    try {
-        await auth.sendPasswordResetEmail(email)
-        alert('Password reset link sent!')
-    } catch (err) {
-        console.error(err)
-        alert(err.message)
-    }
-}
-
-const logout = () => {
-    auth.signOut()
-}
-
-export {
-    auth,
-    db,
-    signInWithGoogle,
-    signInWithEmailAndPassword,
-    registerWithEmailAndPassword,
-    sendPasswordResetEmail,
-    logout,
-}
+export { auth, db, signInWithGoogle, logout }
