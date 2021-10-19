@@ -1,4 +1,8 @@
 const initialState = {
+    name: '',
+    email: '',
+    uid: '',
+    photoURL: '',
     color: '',
     id: '',
     game_id: '',
@@ -21,7 +25,19 @@ export function usersReducer(state = initialState, action) {
         case UPDATE:
             return { ...state, current: action.payload.current }
         case GAME_END:
-            return { ...state, ended: action.payload.end, winners: [...action.payload.winners] }
+            return {
+                ...state,
+                ended: action.payload.end,
+                winners: [...action.payload.winners],
+            }
+        case 'USER_LOGIN':
+            return {
+                ...state,
+                name: action.payload.name,
+                email: action.payload.email,
+                uid: action.payload.uid,
+                photoURL: action.payload.photoURL,
+            }
         default:
             return state
     }

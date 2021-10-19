@@ -1,8 +1,8 @@
-import extractObject from 'components/functions/extractObject'
+import extractObject from '../../../components/Game/functions/extractObject'
 import { call, put, takeLatest } from 'redux-saga/effects'
-import { set_dice } from 'store/dice'
-import { set_players } from 'store/move'
-import { set_config } from 'store/user'
+import { set_dice } from '../../dice'
+import { set_players } from '../../move'
+import { set_config } from '../../user'
 import { suscribe } from './suscribe'
 
 // Worker

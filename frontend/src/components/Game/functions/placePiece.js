@@ -1,4 +1,4 @@
-import Constants from '../../Constants'
+import Constants from '../../../Constants'
 import _ from 'lodash'
 
 export function placePiece(colorArray, color, board) {

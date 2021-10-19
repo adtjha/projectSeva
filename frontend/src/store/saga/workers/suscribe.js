@@ -1,7 +1,7 @@
 import { eventChannel, END } from 'redux-saga'
-import { game_end, new_config, update_current } from 'store/user'
-import { roll_dice_res } from 'store/dice'
-import { update_recieved } from 'store/move'
+import { game_end, new_config, update_current } from '../../user'
+import { roll_dice_res } from '../../dice'
+import { update_recieved } from '../../move'
 
 export const suscribe = (socket) => {
     console.log('suscribe')

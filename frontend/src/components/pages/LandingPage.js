@@ -1,4 +1,4 @@
-import { auth, signInWithGoogle, logout } from '../firebase'
+import { auth, signInWithGoogle, logout } from '../../firebase'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useEffect } from 'react'
 import { useHistory } from 'react-router'
@@ -48,17 +48,20 @@ const signIn = (
     </button>
 )
 
-const LandingPage = () => {
+const LandingPage = ({ navigation }) => {
     const [user, loading, error] = useAuthState(auth)
     const history = useHistory()
 
-    console.log({user, loading, error})
+    console.log({ user, loading, error })
 
     useEffect(() => {
         if (loading) {
             return
         }
-        if (user) history.replace('/game')
+        if (user) {
+            console.log(user.email)
+            // history.replace('/game')
+        }
     }, [user, loading, history])
 
     return (

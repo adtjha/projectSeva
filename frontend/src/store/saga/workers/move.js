@@ -1,6 +1,6 @@
 import { put, select, delay } from 'redux-saga/effects'
-import { un_roll_dice } from 'store/dice'
-import { getBlue, getGreen, getRed, getUpdatePos, getYellow, update_arr } from 'store/move'
+import { un_roll_dice } from '../../dice'
+import { getBlue, getGreen, getRed, getUpdatePos, getYellow, update_arr } from '../../move'
 
 export const onMovePiece = function* () {
     try {

@@ -1,4 +1,4 @@
-import Constants from '../../Constants'
+import Constants from '../../../Constants'
 import create2Darray from './create2Darray'
 import extractObject from './extractObject'
 

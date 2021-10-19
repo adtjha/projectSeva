@@ -1,10 +1,10 @@
 import { takeLatest, takeEvery, takeLeading } from 'redux-saga/effects'
-import { CONFIG, NEXT, UPDATE } from 'store/user'
-import { MOVE, UPDATE_POS } from 'store/move'
+import { CONFIG, NEXT, UPDATE } from '../../user'
+import { MOVE, UPDATE_POS } from '../../move'
 import { switchPlayer, handleSwitchPlayer } from '../workers/player'
 import { onMovePieceRequest, onMovePiece } from '../workers/move'
 import { onDiceRolled, onRollDice, unrollDice } from '../workers/dice'
-import { FETCH_DICE, ROLL_DICE_RES } from 'store/dice'
+import { FETCH_DICE, ROLL_DICE_RES } from '../../dice'
 import { setInitialState } from '../workers/read'
 
 // Watcher

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { getGameCurrentPlayer } from 'store/user'
+import { getGameCurrentPlayer } from '../../../store/user'
 
 export const VideoChat = () => {
     const [current, setCurrent] = useState('')

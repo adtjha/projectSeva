@@ -1,3 +1,5 @@
+import { guid } from './components/Game/functions/guid'
+import { randomGender } from './components/Game/functions/randomGender'
 import { initializeApp } from 'firebase/app'
 import {
     getAuth,
@@ -43,6 +45,8 @@ const signInWithGoogle = async () => {
                 name: user.displayName,
                 authProvider: 'google',
                 email: user.email,
+                avatar: user.photoURL ? user.photoURL : `${randomGender()}/${guid()}`,
+                phone: user.phoneNumber
             })
         }
     } catch (err) {

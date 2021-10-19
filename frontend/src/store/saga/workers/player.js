@@ -1,6 +1,6 @@
 import { put, select } from 'redux-saga/effects'
-import { getColor, getGameCurrentPlayer, getGameId } from 'store/user'
-import { rolled, un_roll_dice } from 'store/dice'
+import { getColor, getGameCurrentPlayer, getGameId } from '../../user'
+import { rolled, un_roll_dice } from '../../dice'
 
 export const switchPlayer = function* (socket) {
     const game_id = yield select(getGameId)

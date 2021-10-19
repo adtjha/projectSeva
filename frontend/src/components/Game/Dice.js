@@ -1,14 +1,14 @@
 import { Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import one from '../images/dice/1.svg'
-import two from '../images/dice/2.svg'
-import three from '../images/dice/3.svg'
-import four from '../images/dice/4.svg'
-import five from '../images/dice/5.svg'
-import six from '../images/dice/6.svg'
-import { fetch_dice, getShowing, rolled } from '../store/dice'
-import { getColor, getGameCurrentPlayer, getGameId } from 'store/user'
+import one from '../../images/dice/1.svg'
+import two from '../../images/dice/2.svg'
+import three from '../../images/dice/3.svg'
+import four from '../../images/dice/4.svg'
+import five from '../../images/dice/5.svg'
+import six from '../../images/dice/6.svg'
+import { fetch_dice, getShowing, rolled } from '../../store/dice'
+import { getColor, getGameCurrentPlayer, getGameId } from '../../store/user'
 
 const Dice = (props) => {
     let isShowing = useSelector(getShowing)

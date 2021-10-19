@@ -1,10 +1,10 @@
 import React from 'react'
 import Piece from './Piece'
-import { getColor, getGameId, getGameCurrentPlayer } from '../store/user'
-import { getDice, rolled } from '../store/dice'
-import Constants from '../Constants'
+import { getColor, getGameId, getGameCurrentPlayer } from '../../store/user'
+import { getDice, rolled } from '../../store/dice'
+import Constants from '../../Constants'
 import { useDispatch, useSelector } from 'react-redux'
-import { move_piece } from 'store/move'
+import { move_piece } from '../../store/move'
 
 const Cell = (props) => {
     let styles, piece

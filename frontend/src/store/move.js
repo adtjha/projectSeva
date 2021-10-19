@@ -1,4 +1,4 @@
-import extractObject from '../components/functions/extractObject'
+import extractObject from '../components/Game/functions/extractObject'
 import _ from 'lodash'
 
 const fen = 'r0r0r0r0/g0g0g0g0/y0y0y0y0/b0b0b0b0'
