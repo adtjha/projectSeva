@@ -1,10 +1,88 @@
-import { motion } from 'framer-motion'
+import { AnimatePresence, AnimateSharedLayout, motion } from 'framer-motion'
 import { useState } from 'react'
 import image from '../../images/logo/android-chrome-512x512.png'
 import { ReactComponent as GoogleIcon } from '../../images/icons/google.svg'
 import { ReactComponent as XIcon } from '../../images/icons/x.svg'
+import { signInWithGoogle } from '../../firebase'
+import { useHistory } from 'react-router'
 
-const LoginForm = ({ open, setOpen }) => {
+const UserId = ({ isPhone, setIsPhone, phone, setPhone, email, setEmail }) => {
+    return isPhone ? (
+        <>
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                key="phone"
+                layoutId="userId"
+                layout
+                className="relative mx-auto mt-2 flex flex-col content-around items-stretch"
+            >
+                <div>
+                    <label
+                        htmlFor="phone"
+                        className="text-blueGray-400 text-base"
+                    >
+                        phone
+                    </label>
+                    <input
+                        className="rounded-lg border-transparent flex-1 appearance-none border border-blueGray-300 w-full py-2 px-4 bg-white text-blueGray-700 placeholder-blueGray-400 shadow-sm text-2xl focus:outline-none focus:ring-2 focus:ring-blueGray-900 focus:border-transparent"
+                        id="phone"
+                        name="phone"
+                        placeholder="xxxx-xxx-xxx"
+                        type="text"
+                        pattern="^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[789]\d{9}$"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                    />
+                </div>
+                <span
+                    onClick={() => setIsPhone(!isPhone)}
+                    className="text-right text-blueGray-400 text-base hover:underline cursor-pointer"
+                >
+                    use email instead?
+                </span>
+            </motion.div>
+        </>
+    ) : (
+        <>
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                key="email"
+                layoutId="userId"
+                className="relative mx-auto mt-2 flex flex-col content-around items-stretch"
+            >
+                <div>
+                    <label
+                        htmlFor="email"
+                        className="text-blueGray-400 text-base"
+                    >
+                        email
+                    </label>
+                    <input
+                        className="rounded-lg border-transparent flex-1 appearance-none border border-blueGray-300 w-full py-2 px-4 bg-white text-blueGray-700 placeholder-blueGray-400 shadow-sm text-2xl focus:outline-none focus:ring-2 focus:ring-blueGray-900 focus:border-transparent"
+                        id="email"
+                        name="email"
+                        placeholder="abc@xyz.com"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                </div>
+                <span
+                    onClick={() => setIsPhone(!isPhone)}
+                    className="text-right text-blueGray-400 text-base hover:underline cursor-pointer"
+                >
+                    use phone instead?
+                </span>
+            </motion.div>
+        </>
+    )
+}
+
+const LoginForm = ({ open, setOpen, layout_id }) => {
     const [email, setEmail] = useState('stuart@little.com')
     const [phone, setPhone] = useState('9156518821')
     const [isPhone, setIsPhone] = useState(false)
@@ -19,6 +97,8 @@ const LoginForm = ({ open, setOpen }) => {
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0 }}
+            layout
+            layoutId="form"
         >
             <form autoComplete="on" onSubmit={handleSubmit}>
                 <div
@@ -27,70 +107,14 @@ const LoginForm = ({ open, setOpen }) => {
                 >
                     <XIcon />
                 </div>
-                {isPhone ? (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="relative mx-auto mt-2 flex flex-col content-around items-stretch"
-                    >
-                        <motion.div>
-                            <label
-                                htmlFor="phone"
-                                className="text-blueGray-400 text-base"
-                            >
-                                phone
-                            </label>
-                            <input
-                                className="rounded-lg border-transparent flex-1 appearance-none border border-blueGray-300 w-full py-2 px-4 bg-white text-blueGray-700 placeholder-blueGray-400 shadow-sm text-2xl focus:outline-none focus:ring-2 focus:ring-blueGray-900 focus:border-transparent"
-                                id="phone"
-                                name="phone"
-                                placeholder="xxxx-xxx-xxx"
-                                type="text"
-                                pattern="^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[789]\d{9}$"
-                                value={phone}
-                                onChange={(e) => setPhone(e.target.value)}
-                            />
-                        </motion.div>
-                        <span
-                            onClick={() => setIsPhone(!isPhone)}
-                            className="text-right text-blueGray-400 text-base hover:underline cursor-pointer"
-                        >
-                            use email instead?
-                        </span>
-                    </motion.div>
-                ) : (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="relative mx-auto mt-2 flex flex-col content-around items-stretch"
-                    >
-                        <motion.div>
-                            <label
-                                htmlFor="email"
-                                className="text-blueGray-400 text-base"
-                            >
-                                email
-                            </label>
-                            <input
-                                className="rounded-lg border-transparent flex-1 appearance-none border border-blueGray-300 w-full py-2 px-4 bg-white text-blueGray-700 placeholder-blueGray-400 shadow-sm text-2xl focus:outline-none focus:ring-2 focus:ring-blueGray-900 focus:border-transparent"
-                                id="email"
-                                name="email"
-                                placeholder="abc@xyz.com"
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                        </motion.div>
-                        <span
-                            onClick={() => setIsPhone(!isPhone)}
-                            className="text-right text-blueGray-400 text-base hover:underline cursor-pointer"
-                        >
-                            use phone instead?
-                        </span>
-                    </motion.div>
-                )}
+                <UserId
+                    isPhone={isPhone}
+                    setIsPhone={setIsPhone}
+                    phone={phone}
+                    setPhone={setPhone}
+                    email={email}
+                    setEmail={setEmail}
+                />
                 <div className="relative mx-auto mt-2 flex flex-col content-around items-stretch">
                     <label
                         htmlFor="password"
@@ -128,6 +152,15 @@ const LoginForm = ({ open, setOpen }) => {
 
 const Login = () => {
     const [open, setOpen] = useState(false)
+    const history = useHistory()
+
+    const login = () => {
+        signInWithGoogle()
+            .then((e) => {
+                history.replace('/profile')
+            })
+            .catch((e) => alert(e))
+    }
 
     return (
         <div className="h-screen w-screen lg:grid lg:grid-flow-row lg:grid-cols-2 lg:grid-rows-1">
@@ -170,38 +203,51 @@ const Login = () => {
                         Sign in
                     </h1>
                 </div>
-                <div className="w-84 h-auto bg-white shadow-xl rounded-2xl p-8">
-                    {open ? (
-                        <LoginForm open={open} setOpen={setOpen} />
-                    ) : (
-                        <>
+                <AnimatePresence initial={false}>
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="w-84 h-auto bg-white shadow-xl rounded-2xl p-8"
+                    >
+                        {open ? (
+                            <LoginForm open={open} setOpen={setOpen} />
+                        ) : (
                             <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                whileTap={{ scale: 0.98 }}
-                                className="relative hover:bg-blueGray-100 mx-auto my-4 rounded-lg border-transparent flex flex-row items-center justify-center appearance-none border border-blueGray-300 hover:border-blueGray-600 cursor-pointer w-full py-2 px-4 bg-white text-blueGray-700 hover:shadow-sm text-base text-center"
+                                initial={{ opacity: 0, scale: 0 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0 }}
+                                layout
+                                layoutId="form"
                             >
-                                <div className="w-6 h-6 mr-2">
-                                    <GoogleIcon />
-                                </div>
-                                <span className="">Sign in with Google</span>
+                                <motion.button
+                                    layout
+                                    whileTap={{ scale: 0.98 }}
+                                    className="disabled:opacity-50 relative hover:bg-blueGray-100 mx-auto my-4 rounded-lg border-transparent flex flex-row items-center justify-center appearance-none border border-blueGray-300 hover:border-blueGray-600 cursor-pointer w-full py-2 px-4 bg-white text-blueGray-700 hover:shadow-sm text-base text-center"
+                                    onClick={login}
+                                >
+                                    <div className="w-6 h-6 mr-2">
+                                        <GoogleIcon />
+                                    </div>
+                                    <span className="">
+                                        Sign in with Google
+                                    </span>
+                                </motion.button>
+                                <motion.button
+                                    disabled
+                                    layout
+                                    whileTap={{ scale: 0.98 }}
+                                    onClick={() => setOpen(!open)}
+                                    className="disabled:opacity-50 relative hover:bg-blueGray-100 mx-auto my-4 rounded-lg border-transparent flex flex-row items-center justify-center appearance-none border border-blueGray-300 hover:border-blueGray-600 cursor-pointer w-full py-2 px-4 bg-white text-blueGray-700 hover:shadow-sm text-base text-center"
+                                >
+                                    <span className="">
+                                        Sign in with phone or email
+                                    </span>
+                                </motion.button>
                             </motion.div>
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                whileTap={{ scale: 0.98 }}
-                                onClick={() => setOpen(!open)}
-                                className="relative hover:bg-blueGray-100 mx-auto my-4 rounded-lg border-transparent flex flex-row items-center justify-center appearance-none border border-blueGray-300 hover:border-blueGray-600 cursor-pointer w-full py-2 px-4 bg-white text-blueGray-700 hover:shadow-sm text-base text-center"
-                            >
-                                <span className="">
-                                    Sign in with phone or email
-                                </span>
-                            </motion.div>
-                        </>
-                    )}
-                </div>
+                        )}
+                    </motion.div>
+                </AnimatePresence>
                 <div className="-mb-8 p-8">
                     <h1 className="text-blueGray-400 lg:text-base text-lg">
                         Don't have an account yet?{' '}

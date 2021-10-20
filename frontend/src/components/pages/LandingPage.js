@@ -2,6 +2,7 @@ import { auth, signInWithGoogle, logout } from '../../firebase'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useEffect } from 'react'
 import { useHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 
 const loadingIcon = (
     <svg
@@ -38,14 +39,13 @@ const signOut = (
 )
 
 const signIn = (
-    <button
+    <Link
         type="button"
         class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-blueGray-100 bg-blueGray-600 hover:bg-blueGray-500 focus:border-rose-700 active:bg-blueGray-700 transition ease-in-out duration-150"
-        disabled=""
-        onClick={signInWithGoogle}
+        to="/login"
     >
         Sign In With Google
-    </button>
+    </Link>
 )
 
 const LandingPage = ({ navigation }) => {
