@@ -3,6 +3,7 @@ import { useState } from 'react'
 import image from '../../images/logo/android-chrome-512x512.png'
 import { ReactComponent as GoogleIcon } from '../../images/icons/google.svg'
 import { ReactComponent as XIcon } from '../../images/icons/x.svg'
+import { Link } from 'react-router-dom'
 
 const SignUpForm = ({ open, setOpen }) => {
     const [email, setEmail] = useState('stuart@little.com')
@@ -125,7 +126,7 @@ const Signup = () => {
     const [open, setOpen] = useState(false)
     return (
         <div className="h-screen w-screen lg:grid lg:grid-flow-row lg:grid-cols-2 lg:grid-rows-1">
-            <div className="hidden h-screen w-full lg:flex">
+            <Link to="/" className="hidden h-screen w-full lg:flex">
                 <motion.div
                     whileHover={{
                         scale: 1.2,
@@ -157,7 +158,7 @@ const Signup = () => {
                         dedo
                     </motion.h1>
                 </motion.div>
-            </div>
+            </Link>
             <div className="bg-blueGray-50 w-full h-full flex flex-col flex-wrap justify-center items-center m-auto">
                 <div className="p-4">
                     <motion.h1
@@ -213,10 +214,9 @@ const Signup = () => {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            href={'/login'}
                             className="font-semibold hover:underline"
                         >
-                            Sign in
+                            <Link to="/login">Sign in</Link>
                         </motion.a>
                     </motion.h1>
                 </div>

@@ -12,7 +12,7 @@ import {
     collection,
     doc,
     addDoc,
-    getDoc,
+    getDocs,
     where,
 } from 'firebase/firestore'
 
@@ -37,7 +37,7 @@ const signInWithGoogle = async () => {
         const res = await signInWithPopup(auth, googleProvider)
         const user = res.user
         const userRef = collection(db, 'users')
-        const query = await getDoc(userRef, where('uid', '==', user.uid))
+        const query = await getDocs(userRef, where('uid', '==', user.uid))
 
         if (query.docs.length === 0) {
             await addDoc(doc(db, 'users'), {

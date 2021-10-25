@@ -132,8 +132,7 @@ module.exports = {
         red: colors.red,
       },
       animation: {
-        dropdown: "dropdown 450ms ease-in 1",
-        wiggle: "wiggle 300ms cubic-bezier(0.7, 0.01, 0.35, 1) infinite",
+        'pulse-fast': "pulse 500ms cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
       keyframes: {
         dropdown: {

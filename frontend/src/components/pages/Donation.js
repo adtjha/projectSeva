@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '../../firebase'
 import image from '../../images/logo/android-chrome-512x512.png'
@@ -60,26 +61,19 @@ const donationsList = [
     },
 ]
 
+const CheckLoginRedirect = () => {
+    
+}
+
 const Donation = () => {
-    const [user, loading, error] = useAuthState(auth)
-    console.log(user, loading, error)
-    return error ? (
-        <div>error</div>
-    ) : loading ? (
-        <Loading />
-    ) : (
-        <div>
-            <div className="w-screen flex justify-between items-center py-4 px-8">
-                <img className="h-8 w-8 mr-4" src={image} alt="logo" />
-                <h1 className="text-4xl font-bold text-blueGray-600">
-                    Donations
-                </h1>
-                <img
-                    className="w-12 h-12 rounded-full border shadow-lg"
-                    src={user.photoURL}
-                    alt="user"
-                />
-            </div>
+    console.log('YAYAYAYA')
+
+    useEffect(() => {
+
+    })
+
+    return (
+        <main>
             <div className="w-screen h-max flex flex-col md:flex-row lg:flex-row justify-around items-center py-4 px-8">
                 {donationsList.map((d) => (
                     <div className="h-auto w-84 p-4 m-2 bg-blueGray-50 rounded-2xl shadow-xl flex flex-col items-center justify-center">
@@ -136,7 +130,7 @@ const Donation = () => {
                     </div>
                 ))}
             </div>
-        </div>
+        </main>
     )
 }
 
