@@ -1,4 +1,4 @@
-import { AnimatePresence, AnimateSharedLayout, motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import image from '../../images/logo/android-chrome-512x512.png'
 import { ReactComponent as GoogleIcon } from '../../images/icons/google.svg'

@@ -7,7 +7,10 @@ import { useState } from 'react'
 import { LogoutIcon } from '@heroicons/react/outline'
 import { Link } from 'react-router-dom'
 
-const loginMenu = [{ name: 'funds', href: '#' }]
+const loginMenu = [
+    { name: 'home', href: '/' },
+    { name: 'funds', href: '/fund' },
+]
 
 export const Nav = ({ user }) => {
     const isLg = useMedia('(min-width: 768px)', false)
@@ -48,7 +51,7 @@ export const Nav = ({ user }) => {
 
     return (
         <div className="relative z-40 top-0 w-full flex flex-col md:flex-row items-center justify-center p-4">
-            <div className="w-full flex justify-between items-center p-4 bg-white rounded-lg shadow-lg border-2 border-gray-100">
+            <div className="w-full flex justify-between items-center p-4 bg-white rounded-lg shadow-md border-2 border-gray-100">
                 <div className="w-36 flex flex-row items-center justify-evenly">
                     <img className="h-8 w-8" src={image} alt="logo" />
                     <h1 className="text-4xl font-bold text-blueGray-600">
@@ -126,7 +129,12 @@ export const Nav = ({ user }) => {
                                     key={i}
                                     className="items-center text-lg text-blueGray-500 hover:text-blueGray-800 cursor-pointer"
                                 >
-                                    <Link to={`${e.href}`}>{e.name}</Link>
+                                    <Link
+                                        to={`${e.href}`}
+                                        onClick={() => setOpen(false)}
+                                    >
+                                        {e.name}
+                                    </Link>
                                 </motion.h1>
                             ))}
                         </motion.div>

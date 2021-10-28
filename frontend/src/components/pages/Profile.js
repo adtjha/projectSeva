@@ -1,17 +1,25 @@
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '../../firebase'
-import { Switch, Route, useHistory, useRouteMatch } from 'react-router-dom'
+import {
+    Switch,
+    Route,
+    useHistory,
+    useRouteMatch,
+    Link,
+} from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useWindowScroll } from 'react-use'
-import Donation from './Donation'
-import AddMoney from './AddMoney'
 import { Game } from '../Game'
 import { Loading } from '../Loading'
 import { Nav } from '../Nav'
 import { guid } from '../Game/functions/guid'
+import Fund from './Fund'
+import parse from '../Game/functions/parse'
+import Card from './Card'
 
 const channels = [
     {
+        id: '45bc68er',
         name: 'Father-kidney transplant and son-bone marrow transplant. Please help save the family.',
         img: 'https://fakeimg.pl/64x64/',
         totalRaised: 4500,
@@ -19,6 +27,7 @@ const channels = [
         minDonation: 225,
     },
     {
+        id: '45bc68er',
         name: 'Father-kidney transplant and son-bone marrow transplant. Please help save the family.',
         img: 'https://fakeimg.pl/64x64/',
         totalRaised: 4500,
@@ -26,6 +35,7 @@ const channels = [
         minDonation: 225,
     },
     {
+        id: '45bc68er',
         name: 'Father-kidney transplant and son-bone marrow transplant. Please help save the family.',
         img: 'https://fakeimg.pl/64x64/',
         totalRaised: 4500,
@@ -33,6 +43,7 @@ const channels = [
         minDonation: 225,
     },
     {
+        id: '45bc68er',
         name: 'Father-kidney transplant and son-bone marrow transplant. Please help save the family.',
         img: 'https://fakeimg.pl/64x64/',
         totalRaised: 4500,
@@ -40,6 +51,7 @@ const channels = [
         minDonation: 225,
     },
     {
+        id: '45bc68er',
         name: 'Father-kidney transplant and son-bone marrow transplant. Please help save the family.',
         img: 'https://fakeimg.pl/64x64/',
         totalRaised: 4500,
@@ -47,6 +59,7 @@ const channels = [
         minDonation: 225,
     },
     {
+        id: '45bc68er',
         name: 'Father-kidney transplant and son-bone marrow transplant. Please help save the family.',
         img: 'https://fakeimg.pl/64x64/',
         totalRaised: 4500,
@@ -54,6 +67,7 @@ const channels = [
         minDonation: 225,
     },
     {
+        id: '45bc68er',
         name: 'Father-kidney transplant and son-bone marrow transplant. Please help save the family.',
         img: 'https://fakeimg.pl/64x64/',
         totalRaised: 4500,
@@ -61,6 +75,7 @@ const channels = [
         minDonation: 225,
     },
     {
+        id: '45bc68er',
         name: 'Father-kidney transplant and son-bone marrow transplant. Please help save the family.',
         img: 'https://fakeimg.pl/64x64/',
         totalRaised: 4500,
@@ -68,6 +83,7 @@ const channels = [
         minDonation: 225,
     },
     {
+        id: '45bc68er',
         name: 'Father-kidney transplant and son-bone marrow transplant. Please help save the family.',
         img: 'https://fakeimg.pl/64x64/',
         totalRaised: 4500,
@@ -75,6 +91,7 @@ const channels = [
         minDonation: 225,
     },
     {
+        id: '45bc68er',
         name: 'Father-kidney transplant and son-bone marrow transplant. Please help save the family.',
         img: 'https://fakeimg.pl/64x64/',
         totalRaised: 4500,
@@ -82,6 +99,7 @@ const channels = [
         minDonation: 225,
     },
     {
+        id: '45bc68er',
         name: 'Father-kidney transplant and son-bone marrow transplant. Please help save the family.',
         img: 'https://fakeimg.pl/64x64/',
         totalRaised: 4500,
@@ -89,6 +107,7 @@ const channels = [
         minDonation: 225,
     },
     {
+        id: '45bc68er',
         name: 'Father-kidney transplant and son-bone marrow transplant. Please help save the family.',
         img: 'https://fakeimg.pl/64x64/',
         totalRaised: 4500,
@@ -96,6 +115,7 @@ const channels = [
         minDonation: 225,
     },
     {
+        id: '45bc68er',
         name: 'Father-kidney transplant and son-bone marrow transplant. Please help save the family.',
         img: 'https://fakeimg.pl/64x64/',
         totalRaised: 4500,
@@ -103,6 +123,7 @@ const channels = [
         minDonation: 225,
     },
     {
+        id: '45bc68er',
         name: 'Father-kidney transplant and son-bone marrow transplant. Please help save the family.',
         img: 'https://fakeimg.pl/64x64/',
         totalRaised: 4500,
@@ -110,6 +131,7 @@ const channels = [
         minDonation: 225,
     },
     {
+        id: '45bc68er',
         name: 'Father-kidney transplant and son-bone marrow transplant. Please help save the family.',
         img: 'https://fakeimg.pl/64x64/',
         totalRaised: 4500,
@@ -117,6 +139,7 @@ const channels = [
         minDonation: 225,
     },
     {
+        id: '45bc68er',
         name: 'Father-kidney transplant and son-bone marrow transplant. Please help save the family.',
         img: 'https://fakeimg.pl/64x64/',
         totalRaised: 4500,
@@ -124,6 +147,7 @@ const channels = [
         minDonation: 225,
     },
     {
+        id: '45bc68er',
         name: 'Father-kidney transplant and son-bone marrow transplant. Please help save the family.',
         img: 'https://fakeimg.pl/64x64/',
         totalRaised: 4500,
@@ -144,55 +168,57 @@ const Home = () => {
             </div>
             <div className="w-full flex flex-col flex-wrap md:flex-row justify-around items-center p-4">
                 {channels.map((c, i) => (
-                    <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.98 }}
-                        key={guid}
-                        className="p-4 bg-blueGray-50 shadow-lg border border-blueGray-200 rounded-2xl max-w-sm my-4 flex flex-col items-center cursor-pointer"
-                    >
-                        <div className="mb-2 flex flex-row items-center justify-between">
-                            <div className="font-bold">{c.name}</div>
-                            <motion.img
-                                className="w-24 h-24 m-auto rounded-2xl"
-                                src={c.img}
-                                alt="pics"
-                            />
-                        </div>
-                        <div className="my-2 w-full flex flex-row items-center justify-around">
-                            <div className="flex flex-col items-center justify-center">
-                                <div className="text-blueGray-400 uppercase text-xs tracking-wider">
-                                    RAISED
+                    <Link to={`/card/${c.id}`}>
+                        <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.98 }}
+                            key={guid}
+                            className="p-4 bg-gradient-to-b from-blueGray-50 to-blueGray-100  shadow-lg border border-blueGray-200 rounded-2xl max-w-sm my-4 flex flex-col items-center cursor-pointer"
+                        >
+                            <div className="mb-2 flex flex-row items-center justify-between">
+                                <div className="font-bold">{c.name}</div>
+                                <motion.img
+                                    className="w-24 h-24 m-auto rounded-2xl"
+                                    src={c.img}
+                                    alt="pics"
+                                />
+                            </div>
+                            <div className="my-2 w-full flex flex-row items-center justify-around">
+                                <div className="flex flex-col items-center justify-center">
+                                    <div className="text-blueGray-400 uppercase text-xs tracking-wider">
+                                        RAISED
+                                    </div>
+                                    <div className="w-18 flex flex-row items-center justify-evenly">
+                                        ₹ {parse(c.totalRaised)}
+                                    </div>
                                 </div>
-                                <div className="w-18 flex flex-row items-center justify-evenly">
-                                    ₹ {c.totalRaised}
+                                <div className="flex flex-col items-center justify-center">
+                                    <div className="text-blueGray-400 uppercase text-xs tracking-wider">
+                                        PLAYING
+                                    </div>
+                                    <div className="w-18 flex flex-row items-center justify-evenly">
+                                        {c.users}
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-5 w-5 text-blueGray-400 ml-1"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                        >
+                                            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col items-center justify-center">
+                                    <div className="text-blueGray-400 uppercase text-xs tracking-wider">
+                                        MINIMUM
+                                    </div>
+                                    <div className="w-18 flex flex-row items-center justify-evenly">
+                                        ₹ {parse(c.minDonation)}
+                                    </div>
                                 </div>
                             </div>
-                            <div className="flex flex-col items-center justify-center">
-                                <div className="text-blueGray-400 uppercase text-xs tracking-wider">
-                                    PLAYING
-                                </div>
-                                <div className="w-18 flex flex-row items-center justify-evenly">
-                                    {c.users}
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-5 w-5 text-blueGray-400 ml-1"
-                                        viewBox="0 0 20 20"
-                                        fill="currentColor"
-                                    >
-                                        <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div className="flex flex-col items-center justify-center">
-                                <div className="text-blueGray-400 uppercase text-xs tracking-wider">
-                                    MINIMUM
-                                </div>
-                                <div className="w-18 flex flex-row items-center justify-evenly">
-                                    ₹ {c.minDonation}
-                                </div>
-                            </div>
-                        </div>
-                    </motion.div>
+                        </motion.div>
+                    </Link>
                 ))}
             </div>
             <motion.div
@@ -240,8 +266,8 @@ const Profile = () => {
     ) : loading ? (
         <Loading />
     ) : user ? (
-        <div>
-            <header>
+        <div className="w-full h-full flex flex-col items-center justify-center">
+            <header className="w-full h-full">
                 <Nav user={user} />
             </header>
 
@@ -249,11 +275,11 @@ const Profile = () => {
                 <Route exact path={path}>
                     <Home />
                 </Route>
-                <Route path="/donation">
-                    <Donation />
+                <Route path="/card/:id">
+                    <Card />
                 </Route>
-                <Route path="/funds">
-                    <AddMoney />
+                <Route path="/fund">
+                    <Fund />
                 </Route>
                 <Route exact path="/game">
                     <Game key={1} />
