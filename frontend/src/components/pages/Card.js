@@ -62,7 +62,7 @@ const Card = () => {
 
     return (
         <div className="w-full flex flex-col items-center justify-center p-4">
-            <div className="w-full h-full bg-white shadow-md rounded-full md:rounded-2xl m-4 mt-0 flex flex-wrap md:flex-nowrap md:flex-row items-center md:items-start justify-center md:justify-start">
+            <div className="w-full h-full bg-white shadow-md rounded-lg md:rounded-2xl m-4 mt-0 pt-4 flex flex-wrap md:flex-nowrap md:flex-row items-center md:items-start justify-center md:justify-start">
                 <div className="w-36 md:w-1/3 md:h-full -mb-16 md:m-4 z-10 bg-blueGray-200 shadow-md rounded-full md:rounded-2xl overflow-hidden">
                     <img src={data.img} alt="card" />
                 </div>
@@ -112,7 +112,7 @@ const Card = () => {
                                         {s.type}
                                     </div>
                                     <p
-                                        className={`text-xs text-${s.color}-400 pr-2 md:text-left`}
+                                        className={`text-xs text-${s.color}-400 pr-2 text-left`}
                                     >
                                         {s.description}
                                     </p>

@@ -30,7 +30,7 @@ const data = {
 const Fund = () => {
     return (
         <div className="w-full h-full flex flex-wrap md:flex-nowrap md:flex-row items-center md:items-start justify-center md:justify-start">
-            <div className="w-1/2  m-4 py-4 bg-white shadow-md rounded-lg flex flex-col items-center justify-evenly">
+            <div className="w-full md:w-1/2  m-4 py-4 bg-white shadow-md rounded-lg flex flex-col items-center justify-evenly">
                 <div className="mb-4 text-3xl font-bold text-blueGray-300 uppercase">
                     funds
                 </div>
@@ -58,7 +58,7 @@ const Fund = () => {
                     </motion.button>
                 </div>
             </div>
-            <div className="w-1/2  m-4 py-4 bg-white shadow-md rounded-lg flex flex-col items-center justify-evenly">
+            <div className="w-full md:w-1/2  m-4 py-4 bg-white shadow-md rounded-lg flex flex-col items-center justify-evenly">
                 <div className="mb-4 text-3xl font-bold text-blueGray-300 uppercase">
                     History
                 </div>
