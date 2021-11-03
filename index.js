@@ -1,5 +1,8 @@
 const express = require("express");
 const app = express();
+
+// const api = require("./src/api");
+
 const { Server } = require("socket.io");
 const process = require("process");
 // const path = require("path");
@@ -31,12 +34,11 @@ var serviceAccount = JSON.parse(process.env.GOOGLE_CRED);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
-exports.db = admin.firestore();
-exports.FieldValue = admin.firestore.FieldValue;
+const db = admin.firestore();
+const FieldValue = admin.firestore.FieldValue;
 
-
-
-
+exports.db = db;
+exports.FieldValue = FieldValue;
 
 const port = process.env.PORT || 8888;
 
@@ -56,3 +58,79 @@ app.get("/", (req, res) => {
 // app.get("/*", (req, res) => {
 //   res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
 // });
+
+// app.use("/api", api);
+
+app.use(express.json());
+
+app.get("/api/test", (req, res) => {
+  res.json({
+    result: true,
+    data: new Date().toLocaleString(),
+  });
+});
+
+app.post("/api/channel", (req, res) => {
+  const channel = req.body;
+  db.collection("channel")
+    .add({ ...channel })
+    .then((resp) =>
+      res.status(200).json({
+        success: true,
+        message: "Channel created successfully.",
+        data: {
+          [resp.id]: { ...channel },
+        },
+      })
+    )
+    .catch((error) => {
+      console.log(`"Rejected 2" : ${error}`);
+      res.status(400).json({
+        success: false,
+        message: `Error creating channel: ${err}`,
+        error_code: 101,
+        data: {},
+      });
+    });
+});
+
+app.get("/api/channel", (req, res) => {
+  const id = req.body.id;
+
+  const snapshot = db.collection("channel").doc(id).get();
+
+  snapshot
+    .then((doc) => res.status(200).json({ ...doc.data() }))
+    .catch((err) =>
+      res.status(400).json({
+        success: false,
+        message: `Missing/Incorrect Id : ${err}`,
+        error_code: 102,
+        data: {},
+      })
+    );
+});
+
+app.delete("/api/channel", (req, res) => {
+  const id = req.body.id;
+
+  const snapshot = db.collection("channel").doc(id).delete();
+
+  snapshot
+    .then(() =>
+      res.status(200).json({
+        success: true,
+        message: "Channel deleted successfully",
+        error_code: 102,
+        data: {},
+      })
+    )
+    .catch((err) =>
+      res.status(400).json({
+        success: false,
+        message: `Missing/Incorrect Id : ${err}`,
+        error_code: 102,
+        data: {},
+      })
+    );
+});

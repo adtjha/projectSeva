@@ -5,35 +5,13 @@ import { motion } from 'framer-motion'
 
 const data = {
     img: 'https://avatars.dicebear.com/api/avataaars/salmaHayek.svg',
-    keywords: [
-        'actor',
-        'producer',
-        'director',
-        'actor',
-        'producer',
-        'director',
-        'actor',
-        'producer',
-        'director',
-    ],
+    keywords: ['actor', 'producer', 'director'],
     description:
         "Salma Hayek was born on September 2, 1966 in Coatzacoalcos, Mexico. Her father's of Lebanese descent & her mother's of Mexican/Spanish ancestry. After having seen Willy Wonka & the Chocolate Factory (1971) in a local movie theater, she decided she wanted to become an actress.",
     services: [
         {
-            type: 'Request a clip',
-            color: 'blue',
-            icon: 'VideoCameraIcon',
-            description:
-                'Personalized  video with a message, for you and your loved ones.',
-            options: {},
-            pricing: {
-                currency: '$',
-                amount: 500,
-            },
-        },
-        {
-            type: 'set a meet',
-            color: 'purple',
+            type: 'play ludo',
+            color: 'blueGray',
             icon: 'UsersIcon',
             description:
                 'Setup a short meeting, and video chat with your favourite star.',
@@ -55,15 +33,18 @@ const data = {
             text: 'The app is honestly just the title. I don’t think it’s the best because you have to PAY REAL MONEY to make it have a fake I message missed ft call or missed call!? Also why can I change the home Screen?',
         },
     ],
+    totalRaised: 4500,
+    users: 20,
+    minDonation: 225,
 }
 
 const Card = () => {
     const { id } = useParams()
 
     return (
-        <div className="w-full flex flex-col items-center justify-center p-4">
+        <div className="w-full md:w-4/6 flex flex-col items-center justify-center p-4">
             <div className="w-full h-full bg-white shadow-md rounded-lg md:rounded-2xl m-4 mt-0 pt-4 flex flex-wrap md:flex-nowrap md:flex-row items-center md:items-start justify-center md:justify-start">
-                <div className="w-36 md:w-1/3 md:h-full -mb-16 md:m-4 z-10 bg-blueGray-200 shadow-md rounded-full md:rounded-2xl overflow-hidden">
+                <div className="w-full md:w-1/3 md:h-full -m-4 -mb-16 md:m-8 md:mr-0 z-10 flex items-center justify-center bg-blueGray-200 md:shadow-md rounded-t-lg md:rounded-lg overflow-hidden">
                     <img src={data.img} alt="card" />
                 </div>
                 <div className="w-full m-4 p-4 pt-16 md:pt-4 h-full flex flex-col items-center md:items-start justify-evenly md:justify-start">
@@ -88,6 +69,40 @@ const Card = () => {
                         <p className="py-2 px-4 md:px-0 text-blueGray-600 text-center md:text-left overflow-hidden">
                             {data.description}
                         </p>
+                    </div>
+                    <div className="w-full my-2 flex flex-row items-center justify-evenly">
+                        <div className="flex flex-col items-center justify-center">
+                            <div className="text-blueGray-400 uppercase text-xs tracking-wider">
+                                RAISED
+                            </div>
+                            <div className="w-18 flex flex-row items-center justify-evenly">
+                                ₹ {parse(data.totalRaised)}
+                            </div>
+                        </div>
+                        <div className="flex flex-col items-center justify-center">
+                            <div className="text-blueGray-400 uppercase text-xs tracking-wider">
+                                PLAYING
+                            </div>
+                            <div className="w-18 flex flex-row items-center justify-evenly">
+                                {data.users}
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-5 w-5 text-blueGray-400 ml-1"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                >
+                                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div className="flex flex-col items-center justify-center">
+                            <div className="text-blueGray-400 uppercase text-xs tracking-wider">
+                                MINIMUM
+                            </div>
+                            <div className="w-18 flex flex-row items-center justify-evenly">
+                                ₹ {parse(data.minDonation)}
+                            </div>
+                        </div>
                     </div>
                     <div className="w-full flex flex-col md:flex-row items-center justify-between">
                         {data.services.map((s) => (

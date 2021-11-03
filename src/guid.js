@@ -1,4 +1,4 @@
-const guid = () => {
+exports.guid = () => {
   let t = "",
     l = 4;
   for (let i = 0; i < l; i++) {
@@ -10,8 +10,6 @@ const guid = () => {
   t = "a" + t;
   return t;
 };
-
-exports.guid = guid;
 
 exports.verifyGUID = (guid) => {
   var tests = [];

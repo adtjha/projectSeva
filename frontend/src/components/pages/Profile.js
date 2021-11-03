@@ -173,7 +173,7 @@ const Home = () => {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.98 }}
                             key={guid}
-                            className="p-4 bg-gradient-to-b from-blueGray-50 to-blueGray-100  shadow-lg border border-blueGray-200 rounded-2xl max-w-sm my-4 flex flex-col items-center cursor-pointer"
+                            className="p-4 bg-gradient-to-b from-white to-blueGray-100  shadow-lg border border-blueGray-200 rounded-2xl max-w-sm my-4 flex flex-col items-center cursor-pointer"
                         >
                             <div className="mb-2 flex flex-row items-center justify-between">
                                 <div className="font-bold">{c.name}</div>
