@@ -63,7 +63,7 @@ const Board = (props) => {
             {/* <div className="lg:w-75 lg:h-150 bg-blueGray-400 border border-blueGray-800 text-xl text-blueGray-800 font-mono text-center">
                 Advertisement
             </div> */}
-            <div className="w-5/6 h-16 items-center justify-end my-4 mx-auto flex flex-row">
+            {/* <div className="w-5/6 h-16 items-center justify-end my-4 mx-auto flex flex-row">
                 <div className="flex flex-row flex-grow items-center text-center text-blueGray-800">
                     <div className="text-lg font-bold">
                         <span className="w-max">{gameId}</span>
@@ -98,7 +98,7 @@ const Board = (props) => {
                         alt="avatar"
                     />
                 </div>
-            </div>
+            </div> */}
 
             <div className="w-full ml-4 grid justify-items-center justify-center">
                 <Notification message="Game Started." />

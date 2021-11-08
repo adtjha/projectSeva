@@ -1,7 +1,4 @@
-import { collection, query, where } from '@firebase/firestore'
-import { db } from '../firebase'
 import React, { useState } from 'react'
-import { useCollectionDataOnce } from 'react-firebase-hooks/firestore'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
 import { useEffectOnce } from 'react-use'
@@ -13,9 +10,6 @@ import { Choice } from './Choice'
 export const Game = ({ user }) => {
     const dispatch = useDispatch()
     const [room, setRoom] = useState('')
-    const [values, loading, error] = useCollectionDataOnce(
-        query(collection(db, 'users'), where('email', '==', user.email))
-    )
     const { id } = useParams()
 
     useEffectOnce(() => {
@@ -25,11 +19,6 @@ export const Game = ({ user }) => {
         } else {
             const uid = guid()
             setRoom(uid)
-        }
-        if (values) {
-            console.log(values)
-        } else {
-            error ? console.error(error) : console.log(loading)
         }
     })
 
@@ -41,9 +30,7 @@ export const Game = ({ user }) => {
         <Board />
     ) : (
         <React.Fragment>
-            {Choice({ values, room, setRoom, handleSubmit })}
+            {Choice({ user, room, setRoom, handleSubmit })}
         </React.Fragment>
     )
 }
-
-

@@ -5,12 +5,10 @@ import {
     Route,
     useHistory,
     useRouteMatch,
-    Link,
 } from 'react-router-dom'
 import { Game } from '../Game'
 import { Loading } from '../Loading'
 import { Nav } from '../Nav'
-import { guid } from '../Game/functions/guid'
 import Fund from './Fund'
 import { Home } from './Home'
 import { Card } from './Card'
@@ -32,19 +30,16 @@ const Profile = () => {
 
             <Switch>
                 <Route exact path={path}>
-                    <Home />
-                </Route>
-                <Route path="/card/:id">
-                    <Card />
+                    <Home user={user} />
                 </Route>
                 <Route path="/fund">
-                    <Fund />
+                    <Fund user={user} />
                 </Route>
                 <Route exact path="/game">
-                    <Game key={1} />
+                    <Game user={user} key={1} />
                 </Route>
                 <Route path="/game/:id">
-                    <Game key={1} />
+                    <Game user={user} key={1} />
                 </Route>
             </Switch>
         </div>

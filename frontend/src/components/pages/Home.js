@@ -83,3 +83,11 @@ export const Home = () => {
         </>
     );
 };
+
+
+/**
+ * GoTo URL : https://www.dedo.com/game?channel=72nWEeqmyKRtZjyotl4f&room=a2zf0
+ * 
+ * channel = 72nWEeqmyKRtZjyotl4f
+ * room = a2zf0
+ */

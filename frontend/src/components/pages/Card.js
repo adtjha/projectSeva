@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import parse from '../Game/functions/parse'
 import { UsersIcon, XCircleIcon } from '@heroicons/react/solid'
+import { Link } from 'react-router-dom'
 
 export const Card = ({ isSelected, data, setSelected, id }) => {
     return (
@@ -201,26 +202,28 @@ export const Card = ({ isSelected, data, setSelected, id }) => {
                                 </div>
                             </div>
                             <div className="w-full hover:bg-blueGray-100 rounded-lg p-2 flex flex-col md:flex-row items-center justify-between">
-                                <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.98 }}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    className={`w-full py-2 px-4 md:px-2 m-2 bg-blueGray-600 rounded-lg shadow-md flex flex-row items-center justify-between`}
-                                >
-                                    <div className="w-12 md:w-20 flex items-center">
-                                        <UsersIcon className="m-2 w-6 md:w-12 h-6 md:h-12 text-blueGray-200" />
-                                    </div>
-                                    <div className="p-2 flex flex-grow flex-col items-start justify-center">
-                                        <div className="uppercase font-bold text-white">
-                                            play ludo
+                                <Link to={`/game?channel=${id}`}>
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.98 }}
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        className={`w-full py-2 px-4 md:px-2 m-2 bg-blueGray-600 rounded-lg shadow-md flex flex-row items-center justify-between`}
+                                    >
+                                        <div className="w-12 md:w-20 flex items-center">
+                                            <UsersIcon className="m-2 w-6 md:w-12 h-6 md:h-12 text-blueGray-200" />
                                         </div>
-                                    </div>
-                                    <div className="flex items-center text-white font-bold text-2xl">
-                                        ₹{parse(data.pricing)}
-                                    </div>
-                                </motion.button>
+                                        <div className="p-2 flex flex-grow flex-col items-start justify-center">
+                                            <div className="uppercase font-bold text-white">
+                                                play ludo
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center text-white font-bold text-2xl">
+                                            ₹{parse(data.pricing)}
+                                        </div>
+                                    </motion.button>
+                                </Link>
                                 <p className="text-xs text-blueGray-400 px-4 text-left">
                                     Setup a short meeting, and video chat with
                                     your favourite star.
