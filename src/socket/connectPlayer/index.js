@@ -32,7 +32,6 @@ function connectPlayer(socket, io) {
         console.log(snapshot);
         space = snapshot[0].exists;
         idsHaveSpace = { [snapshot[0].id]: snapshot[0].data()["colors"] };
-        console.log(idsHaveSpace, Object.keys(idsHaveSpace)[0]);
       } else {
         space = false;
       }

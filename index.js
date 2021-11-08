@@ -61,76 +61,28 @@ app.get("/", (req, res) => {
 
 // app.use("/api", api);
 
+/**
+░█████╗░██╗░░██╗░█████╗░███╗░░██╗███╗░░██╗███████╗██╗░░░░░  ░█████╗░██████╗░██╗██╗░██████╗
+██╔══██╗██║░░██║██╔══██╗████╗░██║████╗░██║██╔════╝██║░░░░░  ██╔══██╗██╔══██╗██║╚█║██╔════╝
+██║░░╚═╝███████║███████║██╔██╗██║██╔██╗██║█████╗░░██║░░░░░  ███████║██████╔╝██║░╚╝╚█████╗░
+██║░░██╗██╔══██║██╔══██║██║╚████║██║╚████║██╔══╝░░██║░░░░░  ██╔══██║██╔═══╝░██║░░░░╚═══██╗
+╚█████╔╝██║░░██║██║░░██║██║░╚███║██║░╚███║███████╗███████╗  ██║░░██║██║░░░░░██║░░░██████╔╝
+░╚════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝╚═╝░░╚══╝╚══════╝╚══════╝  ╚═╝░░╚═╝╚═╝░░░░░╚═╝░░░╚═════╝░
+ */
+
 app.use(express.json());
 
-app.get("/api/test", (req, res) => {
-  res.json({
-    result: true,
-    data: new Date().toLocaleString(),
-  });
-});
+const {
+  getChannel,
+  postChannel,
+  testChannel,
+  deleteChannel,
+} = require("./src/api/channel");
 
-app.post("/api/channel", (req, res) => {
-  const channel = req.body;
-  db.collection("channel")
-    .add({ ...channel })
-    .then((resp) =>
-      res.status(200).json({
-        success: true,
-        message: "Channel created successfully.",
-        data: {
-          [resp.id]: { ...channel },
-        },
-      })
-    )
-    .catch((error) => {
-      console.log(`"Rejected 2" : ${error}`);
-      res.status(400).json({
-        success: false,
-        message: `Error creating channel: ${err}`,
-        error_code: 101,
-        data: {},
-      });
-    });
-});
+app.get("/api/test", testChannel);
 
-app.get("/api/channel", (req, res) => {
-  const id = req.body.id;
+app.post("/api/channel", postChannel);
 
-  const snapshot = db.collection("channel").doc(id).get();
+app.get("/api/channel", getChannel);
 
-  snapshot
-    .then((doc) => res.status(200).json({ ...doc.data() }))
-    .catch((err) =>
-      res.status(400).json({
-        success: false,
-        message: `Missing/Incorrect Id : ${err}`,
-        error_code: 102,
-        data: {},
-      })
-    );
-});
-
-app.delete("/api/channel", (req, res) => {
-  const id = req.body.id;
-
-  const snapshot = db.collection("channel").doc(id).delete();
-
-  snapshot
-    .then(() =>
-      res.status(200).json({
-        success: true,
-        message: "Channel deleted successfully",
-        error_code: 102,
-        data: {},
-      })
-    )
-    .catch((err) =>
-      res.status(400).json({
-        success: false,
-        message: `Missing/Incorrect Id : ${err}`,
-        error_code: 102,
-        data: {},
-      })
-    );
-});
+app.delete("/api/channel", deleteChannel);
