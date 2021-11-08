@@ -1,4 +1,5 @@
-.board{
+.board {
     background-color: #f2f2f2;
-    width: fit-content;
+    width: 100vw;
+    height: 100vh;
 }

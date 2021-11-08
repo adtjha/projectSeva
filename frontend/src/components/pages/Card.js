@@ -1,89 +1,63 @@
-import { useParams } from 'react-router-dom'
-import { VideoCameraIcon, UsersIcon } from '@heroicons/react/solid'
+import { motion, AnimatePresence } from 'framer-motion'
 import parse from '../Game/functions/parse'
-import { motion } from 'framer-motion'
+import { UsersIcon, XCircleIcon } from '@heroicons/react/solid'
 
-const data = {
-    img: 'https://avatars.dicebear.com/api/avataaars/salmaHayek.svg',
-    keywords: ['actor', 'producer', 'director'],
-    description:
-        "Salma Hayek was born on September 2, 1966 in Coatzacoalcos, Mexico. Her father's of Lebanese descent & her mother's of Mexican/Spanish ancestry. After having seen Willy Wonka & the Chocolate Factory (1971) in a local movie theater, she decided she wanted to become an actress.",
-    services: [
-        {
-            type: 'play ludo',
-            color: 'blueGray',
-            icon: 'UsersIcon',
-            description:
-                'Setup a short meeting, and video chat with your favourite star.',
-            options: {
-                maxLimit: '5',
-                pricingUnit: '60000ms',
-            },
-            pricing: {
-                currency: '$',
-                amount: 2500,
-            },
-        },
-    ],
-    ratings: [
-        {
-            img: 'https://avatars.dicebear.com/api/avataaars/supposeKumar.svg',
-            name: 'Suppose Kumar',
-            stars: '3.5',
-            text: 'The app is honestly just the title. I don’t think it’s the best because you have to PAY REAL MONEY to make it have a fake I message missed ft call or missed call!? Also why can I change the home Screen?',
-        },
-    ],
-    totalRaised: 4500,
-    users: 20,
-    minDonation: 225,
-}
-
-const Card = () => {
-    const { id } = useParams()
-
+export const Card = ({ isSelected, data, setSelected, id }) => {
     return (
-        <div className="w-full md:w-4/6 flex flex-col items-center justify-center p-4">
-            <div className="w-full h-full bg-white shadow-md rounded-lg md:rounded-2xl m-4 mt-0 pt-4 flex flex-wrap md:flex-nowrap md:flex-row items-center md:items-start justify-center md:justify-start">
-                <div className="w-full md:w-1/3 md:h-full -m-4 -mb-16 md:m-8 md:mr-0 z-10 flex items-center justify-center bg-blueGray-200 md:shadow-md rounded-t-lg md:rounded-lg overflow-hidden">
-                    <img src={data.img} alt="card" />
-                </div>
-                <div className="w-full m-4 p-4 pt-16 md:pt-4 h-full flex flex-col items-center md:items-start justify-evenly md:justify-start">
-                    <div className="w-full flex flex-col items-center md:items-start">
-                        <h1 className="text-4xl md:text-6xl font-bold">
-                            Salma Hayek
-                        </h1>
-                        <p className="py-2 px-4 md:px-0 text-xs text-center md:text-left text-blueGray-400">
-                            {data.keywords.map((k, i, arr) => (
-                                <>
-                                    <a
-                                        href="/"
-                                        key={k}
-                                        className="w-min capitalize hover:text-red-400 hover:underline cursor-pointer p-0 m-0"
-                                    >
-                                        #{k}
-                                    </a>
-                                    {i !== arr.length - 1 ? ', ' : ''}
-                                </>
-                            ))}
-                        </p>
-                        <p className="py-2 px-4 md:px-0 text-blueGray-600 text-center md:text-left overflow-hidden">
-                            {data.description}
-                        </p>
-                    </div>
-                    <div className="w-full my-2 flex flex-row items-center justify-evenly">
+        <>
+            {!isSelected && (
+                <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.98 }}
+                    key={id}
+                    layoutId={id}
+                    onClick={() => setSelected(id)}
+                    className="p-4 bg-gradient-to-b from-white to-blueGray-100  shadow-lg border border-blueGray-200 rounded-2xl max-w-sm my-4 flex flex-col items-center cursor-pointer"
+                >
+                    <motion.div className="mb-2 flex flex-row items-center justify-between">
+                        <motion.div
+                            layoutId={`${id}-img-box`}
+                            className="w-48 mr-2 z-10 flex items-center justify-center bg-blueGray-200 md:shadow-md rounded-t-lg md:rounded-lg overflow-hidden"
+                        >
+                            <motion.img
+                                layoutId={`${id}-img`}
+                                src={data.img}
+                                alt="pics"
+                            />
+                        </motion.div>
+                        <motion.h1
+                            layoutId={`${id}-name`}
+                            className="font-bold"
+                        >
+                            {data.name}
+                        </motion.h1>
+                    </motion.div>
+                    <motion.div className="my-2 w-full flex flex-row items-center justify-around">
                         <div className="flex flex-col items-center justify-center">
-                            <div className="text-blueGray-400 uppercase text-xs tracking-wider">
+                            <motion.div
+                                layoutId={`${id}-raised-title`}
+                                className="text-blueGray-400 uppercase text-xs tracking-wider"
+                            >
                                 RAISED
-                            </div>
-                            <div className="w-18 flex flex-row items-center justify-evenly">
-                                ₹ {parse(data.totalRaised)}
-                            </div>
+                            </motion.div>
+                            <motion.div
+                                layoutId={`${id}-raised`}
+                                className="w-18 flex flex-row items-center justify-evenly"
+                            >
+                                ₹ {parse(data.raised)}
+                            </motion.div>
                         </div>
                         <div className="flex flex-col items-center justify-center">
-                            <div className="text-blueGray-400 uppercase text-xs tracking-wider">
+                            <motion.div
+                                layoutId={`${id}-playing-title`}
+                                className="text-blueGray-400 uppercase text-xs tracking-wider"
+                            >
                                 PLAYING
-                            </div>
-                            <div className="w-18 flex flex-row items-center justify-evenly">
+                            </motion.div>
+                            <motion.div
+                                layoutId={`${id}-playing`}
+                                className="w-18 flex flex-row items-center justify-evenly"
+                            >
                                 {data.users}
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -93,81 +67,169 @@ const Card = () => {
                                 >
                                     <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
                                 </svg>
-                            </div>
+                            </motion.div>
                         </div>
                         <div className="flex flex-col items-center justify-center">
-                            <div className="text-blueGray-400 uppercase text-xs tracking-wider">
-                                MINIMUM
-                            </div>
-                            <div className="w-18 flex flex-row items-center justify-evenly">
-                                ₹ {parse(data.minDonation)}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="w-full flex flex-col md:flex-row items-center justify-between">
-                        {data.services.map((s) => (
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.98 }}
-                                className={`w-full py-2 px-4 md:px-2 m-2 bg-${s.color}-600 rounded-lg shadow-md flex flex-row items-center justify-between`}
+                            <motion.div
+                                layoutId={`${id}-min-title`}
+                                className="text-blueGray-400 uppercase text-xs tracking-wider"
                             >
-                                <div className="w-12 md:w-20 flex items-center">
-                                    {s.icon === 'VideoCameraIcon' ? (
-                                        <VideoCameraIcon
-                                            className={`m-2 w-6 md:w-12 h-6 md:h-12 text-${s.color}-200`}
-                                        />
-                                    ) : (
-                                        <UsersIcon
-                                            className={`m-2 w-6 md:w-12 h-6 md:h-12 text-${s.color}-200`}
-                                        />
-                                    )}
-                                </div>
-                                <div className="p-2 flex flex-grow flex-col items-start justify-center">
-                                    <div className="uppercase font-bold text-white">
-                                        {s.type}
-                                    </div>
-                                    <p
-                                        className={`text-xs text-${s.color}-400 pr-2 text-left`}
-                                    >
-                                        {s.description}
-                                    </p>
-                                </div>
-                                <div className="flex items-center text-white font-bold text-2xl">
-                                    ₹{parse(s.pricing.amount)}
-                                </div>
-                            </motion.button>
-                        ))}
-                    </div>
-                </div>
-            </div>
-            <div className="w-full h-full flex flex-wrap md:flex-row items-center md:items-start justify-center md:justify-start">
-                <div className="w-full p-4 bg-white shadow-md rounded-lg h-full flex flex-col items-center md:items-start justify-evenly md:justify-start">
-                    {data.ratings.map((r) => (
-                        <div className="w-full p-4 bg-blueGray-100 hover:bg-blueGray-200 rounded-lg flex flex-row items-start justify-between">
-                            <div className="w-8 h-8 flex items-center">
-                                <img
-                                    className="rounded-full shadow-md bg-blueGray-400"
-                                    src={r.img}
-                                    alt="rating"
-                                />
-                            </div>
-                            <div className="w-full ml-2 flex-col items-start justify-evenly">
-                                <div className="w-full h-8 flex flex-row items-center justify-between">
-                                    <div className="text-lg">{r.name}</div>
-                                    <div className="font-bold">{r.stars}</div>
-                                </div>
-                                <div className="w-full flex flex-row items-center justify-between">
-                                    <div className="text-blueGray-600">
-                                        {r.text}
-                                    </div>
-                                </div>
-                            </div>
+                                MINIMUM
+                            </motion.div>
+                            <motion.div
+                                layoutId={`${id}-min`}
+                                className="w-18 flex flex-row items-center justify-evenly"
+                            >
+                                ₹ {parse(data.pricing)}
+                            </motion.div>
                         </div>
-                    ))}
-                </div>
-            </div>
-        </div>
+                    </motion.div>
+                </motion.div>
+            )}
+
+            <AnimatePresence>
+                {isSelected && (
+                    <motion.div
+                        key={id}
+                        layoutId={id}
+                        className="absolute top-0 z-40 w-full md:w-2/3 m-auto p-4 shadow-md rounded-2xl bg-white border border-blueGray-200 flex flex-wrap md:flex-nowrap md:flex-row items-center md:items-start justify-center md:justify-start cursor-pointer"
+                    >
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="w-10 h-10 p-1 bg-white rounded-2xl absolute top-0 right-0 z-20"
+                        >
+                            <XCircleIcon onClick={() => setSelected(null)} />
+                        </motion.div>
+                        <motion.div
+                            layoutId={`${id}-img-box`}
+                            className="w-full md:w-1/3 md:h-full  md:m-4 z-10 flex items-center justify-center bg-blueGray-200 md:shadow-md rounded-t-lg md:rounded-lg overflow-hidden"
+                        >
+                            <motion.img
+                                layoutId={`${id}-img`}
+                                src={data.img}
+                                alt="card"
+                            />
+                        </motion.div>
+                        <motion.div className="w-full h-full flex flex-col items-center md:items-start justify-evenly md:justify-start">
+                            <div className="w-full flex flex-col items-start md:items-start">
+                                <motion.h1
+                                    layoutId={`${id}-name`}
+                                    className="p-2 pb-1 text-xl md:text-4xl font-bold bg-gradient-to-b from-transparent via-white to-white"
+                                >
+                                    {data.name}
+                                </motion.h1>
+                                <motion.p
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className="p-2 pt-0 text-sm text-blueGray-400"
+                                >
+                                    {data.keywords.map((k, i, arr) => (
+                                        <>
+                                            <a
+                                                href="/"
+                                                key={k}
+                                                className="w-min capitalize hover:text-red-400 hover:underline cursor-pointer p-0 m-0"
+                                            >
+                                                #{k}
+                                            </a>
+                                            {i !== arr.length - 1 ? ', ' : ''}
+                                        </>
+                                    ))}
+                                </motion.p>
+                                <motion.p
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className="p-2 text-blueGray-600 overflow-hidden"
+                                >
+                                    {data.description}
+                                </motion.p>
+                            </div>
+                            <div className="w-full p-2 flex flex-row items-center justify-evenly">
+                                <div className=" flex flex-col items-center justify-center">
+                                    <motion.div
+                                        layoutId={`${id}-raised-title`}
+                                        className="text-blueGray-400 uppercase text-xs tracking-wider"
+                                    >
+                                        RAISED
+                                    </motion.div>
+                                    <motion.div
+                                        layoutId={`${id}-raised`}
+                                        className="w-18 flex flex-row items-center justify-evenly"
+                                    >
+                                        ₹ {parse(data.raised)}
+                                    </motion.div>
+                                </div>
+                                <div className=" flex flex-col items-center justify-center">
+                                    <motion.div
+                                        layoutId={`${id}-playing-title`}
+                                        className="text-blueGray-400 uppercase text-xs tracking-wider"
+                                    >
+                                        PLAYING
+                                    </motion.div>
+                                    <motion.div
+                                        layoutId={`${id}-playing`}
+                                        className="w-18 flex flex-row items-center justify-evenly"
+                                    >
+                                        {data.users}
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-5 w-5 text-blueGray-400 ml-1"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                        >
+                                            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                                        </svg>
+                                    </motion.div>
+                                </div>
+                                <div className=" flex flex-col items-center justify-center">
+                                    <motion.div
+                                        layoutId={`${id}-min-title`}
+                                        className="text-blueGray-400 uppercase text-xs tracking-wider"
+                                    >
+                                        MINIMUM
+                                    </motion.div>
+                                    <motion.div
+                                        layoutId={`${id}-min`}
+                                        className="w-18 flex flex-row items-center justify-evenly"
+                                    >
+                                        ₹ {parse(data.pricing)}
+                                    </motion.div>
+                                </div>
+                            </div>
+                            <div className="w-full hover:bg-blueGray-100 rounded-lg p-2 flex flex-col md:flex-row items-center justify-between">
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className={`w-full py-2 px-4 md:px-2 m-2 bg-blueGray-600 rounded-lg shadow-md flex flex-row items-center justify-between`}
+                                >
+                                    <div className="w-12 md:w-20 flex items-center">
+                                        <UsersIcon className="m-2 w-6 md:w-12 h-6 md:h-12 text-blueGray-200" />
+                                    </div>
+                                    <div className="p-2 flex flex-grow flex-col items-start justify-center">
+                                        <div className="uppercase font-bold text-white">
+                                            play ludo
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center text-white font-bold text-2xl">
+                                        ₹{parse(data.pricing)}
+                                    </div>
+                                </motion.button>
+                                <p className="text-xs text-blueGray-400 px-4 text-left">
+                                    Setup a short meeting, and video chat with
+                                    your favourite star.
+                                </p>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </>
     )
 }
-
-export default Card
