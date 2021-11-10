@@ -57,7 +57,7 @@ export const SET_CONFIG = 'set config'
 export const UPDATE = 'update'
 export const CONNECT = 'connect'
 export const DISCONNECT = 'disconnect'
-export const CONFIG = 'config'
+// export const CONFIG = 'config'
 export const NEXT = 'next'
 export const GAME_END = 'game ended'
 
@@ -89,10 +89,10 @@ export const disconnect_socket = () => ({
 export const next_player = () => ({
     type: NEXT,
 })
-export const new_config = (payload) => ({
-    type: CONFIG,
-    payload: payload,
-})
+// export const new_config = (payload) => ({
+//     type: CONFIG,
+//     payload: payload,
+// })
 export const game_end = () => ({
     type: GAME_END,
 })

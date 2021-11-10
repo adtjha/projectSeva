@@ -34,6 +34,7 @@ function autoMovePlayerPiece(socket, io) {
         gameId,
         index,
         pieceId: name,
+        userId,
       });
     }
   };

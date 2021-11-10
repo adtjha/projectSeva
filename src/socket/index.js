@@ -19,6 +19,7 @@ const { diceRoll } = require("./diceRoll");
 const { disconnectPlayer } = require("./disconnectPlayer");
 const { movePiece } = require("./movePiece");
 const { resetPiece } = require("./resetPiece");
+const { endGame } = require("./endGame");
 
 module.exports = (io) => {
   io.on("connection", (socket) => {
@@ -34,6 +35,10 @@ module.exports = (io) => {
 
     socket.on("reset_piece", resetPiece(socket, io));
 
+    socket.on("end_game", endGame(socket, io));
+
     socket.on("disconnect", disconnectPlayer(socket));
   });
 };
+
+

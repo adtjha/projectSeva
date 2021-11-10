@@ -16,9 +16,7 @@ export function* read(socket) {
     })
 }
 
-export function* setInitialState(action) {
-    const { fen, dice, data } = action.payload
-
+export function* setInitialState({ fen, dice, data }) {
     const { red, green, yellow, blue } = extractObject(fen)
 
     if (data) {
@@ -39,4 +37,6 @@ export function* setInitialState(action) {
     if (fen) {
         yield put(set_players({ red, green, yellow, blue }))
     }
+
+    return
 }

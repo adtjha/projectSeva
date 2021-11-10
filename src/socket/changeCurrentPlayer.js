@@ -2,7 +2,7 @@ const { client } = require("../..");
 const { rooms } = require("../constant");
 
 function changeCurrentPlayer(socket, io) {
-  return async ({ game_id }) => {
+  return async ({ game_id, userId }) => {
     // consoleSpacing(`CHANGING PLAYER from ${rooms.get(game_id).current}`);
     const room = JSON.parse(await client.get(game_id));
 

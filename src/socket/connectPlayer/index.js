@@ -12,7 +12,7 @@ const { fitIntoDesiredRoom } = require("./fitIntoDesiredRoom");
  */
 
 function connectPlayer(socket, io) {
-  return async ({ channelId, roomId, userId }) => {
+  return async ({ channelId, roomId, userId }, callback) => {
     // if room empty -> fit user in room array -> send room id
     var config = { id: "", current: "", user: { id: "", color: "" } },
       room,
@@ -24,17 +24,19 @@ function connectPlayer(socket, io) {
       // room id absent
       // Get first empty room
       const snapshot = await db
-        .collection(`channel/${channelId}/rooms`)
+        .collection("channel")
+        .doc(channelId)
+        .collection("rooms")
         .where("colors", ">", 0)
         .orderBy("colors", "asc")
         .get();
 
       if (snapshot.docs.length > 0) {
         console.log(snapshot.docs);
-        space = snapshot.docs[0].exists;
         idsHaveSpace = {
           [snapshot.docs[0].id]: snapshot.docs[0].data()["colors"],
         };
+        space = true;
       } else {
         space = false;
       }
@@ -52,6 +54,7 @@ function connectPlayer(socket, io) {
         }));
       } else {
         ({ roomId, room, config, error } = await createNewRoom({
+          channelId,
           roomId,
           room,
           userId,
@@ -62,6 +65,7 @@ function connectPlayer(socket, io) {
       }
     } else {
       ({ room, config, error } = await fitIntoDesiredRoom({
+        channelId,
         room,
         roomId,
         userId,
@@ -85,12 +89,13 @@ function connectPlayer(socket, io) {
           user.ref.set({ room: roomId, socket: socket.id }, { merge: true });
         });
 
-      socket.emit("config_data", {
+      callback({
         data: config,
         dice: room.dice,
         fen: generateFEN(room.players),
       });
-      io.to(config.id).emit("config_data", {
+
+      io.to(roomId).emit("config_data", {
         data: "",
         dice: "",
         fen: generateFEN(room.players),

@@ -99,7 +99,7 @@ export const Card = ({ isSelected, data, setSelected, id }) => {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="w-10 h-10 p-1 bg-white rounded-2xl absolute top-0 right-0 z-20"
+                            className="w-10 h-10 p-1 bg-white text-blueGray-400 hover:text-blueGray-800 rounded-2xl absolute top-0 right-0 z-20"
                         >
                             <XCircleIcon onClick={() => setSelected(null)} />
                         </motion.div>
@@ -117,7 +117,7 @@ export const Card = ({ isSelected, data, setSelected, id }) => {
                             <div className="w-full flex flex-col items-start md:items-start">
                                 <motion.h1
                                     layoutId={`${id}-name`}
-                                    className="p-2 pb-1 text-xl md:text-4xl font-bold bg-gradient-to-b from-transparent via-white to-white"
+                                    className="p-2 pb-1 text-xl md:text-4xl font-bold text-blueGray-800"
                                 >
                                     {data.name}
                                 </motion.h1>
@@ -201,7 +201,7 @@ export const Card = ({ isSelected, data, setSelected, id }) => {
                                     </motion.div>
                                 </div>
                             </div>
-                            <div className="w-full hover:bg-blueGray-100 rounded-lg p-2 flex flex-col md:flex-row items-center justify-between">
+                            <div className="w-full hover:bg-blueGray-100 rounded-lg p-2 flex flex-col md:flex-row-reverse items-center justify-between">
                                 <Link to={`/game/${id}`}>
                                     <motion.button
                                         whileHover={{ scale: 1.05 }}
@@ -209,13 +209,13 @@ export const Card = ({ isSelected, data, setSelected, id }) => {
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
                                         exit={{ opacity: 0 }}
-                                        className={`w-full py-2 px-4 md:px-2 m-2 bg-blueGray-600 rounded-lg shadow-md flex flex-row items-center justify-between`}
+                                        className="w-84 min-w-full py-2 px-4 m-2 bg-blueGray-600 rounded-lg shadow-md flex flex-row items-center justify-between"
                                     >
                                         <div className="w-12 md:w-20 flex items-center">
-                                            <UsersIcon className="m-2 w-6 md:w-12 h-6 md:h-12 text-blueGray-200" />
+                                            <UsersIcon className="m-2 w-6 md:w-8 h-6 md:h-8 text-blueGray-200" />
                                         </div>
-                                        <div className="p-2 flex flex-grow flex-col items-start justify-center">
-                                            <div className="uppercase font-bold text-white">
+                                        <div className="w-full p-2 flex flex-grow flex-col items-start justify-center">
+                                            <div className="uppercase text-2xl font-bold text-white">
                                                 play ludo
                                             </div>
                                         </div>

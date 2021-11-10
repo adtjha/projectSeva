@@ -1,5 +1,5 @@
 // const BASE_API = 'https://morning-plains-74021.herokuapp.com'
-const BASE_API = 'http://127.0.0.1:8888'
+const BASE_API = 'http://localhost:8888'
 const WEB_APP_URL = BASE_API
 // const WEB_APP_URL = 'http://192.168.1.39:3000'
 

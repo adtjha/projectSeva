@@ -93,9 +93,9 @@ export const update_arr = ({ color, index, new_pos }) => ({
     type: ARRAY,
     payload: { color, index, new_pos },
 })
-export const move_piece = ({ dice, position, gameId, index, pieceId }) => ({
+export const move_piece = ({ dice, position, gameId, index, pieceId, userId }) => ({
     type: MOVE,
-    payload: { dice, position, gameId, index, pieceId },
+    payload: { dice, position, gameId, index, pieceId, userId },
 })
 export const update_recieved = ({
     color,

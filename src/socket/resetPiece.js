@@ -1,5 +1,5 @@
 const { client } = require("../..");
-const { otherPLayerPosArray, newArr } = require("../constant");
+const { otherPLayerPosArray, newArr, isSafe } = require("../constant");
 
 function resetPiece(socket, io) {
   return async ({ new_pos, gameId, userId }) => {

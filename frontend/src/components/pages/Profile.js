@@ -6,7 +6,6 @@ import { Loading } from '../Loading'
 import { Nav } from '../Nav'
 import Fund from './Fund'
 import { Home } from './Home'
-import { Card } from './Card'
 
 const Profile = () => {
     const [user, loading, error] = useAuthState(auth)

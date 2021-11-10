@@ -24,7 +24,9 @@ async function fitIntoDifferentRoom({
     color = idsHaveSpace[Object.keys(idsHaveSpace)[0]].pop();
 
   await db
-    .collection(`channel/${channelId}/rooms`)
+    .collection("channel")
+    .doc(channelId)
+    .collection("rooms")
     .doc(Object.keys(idsHaveSpace)[0])
     .update("colors", FieldValue.arrayRemove(color));
 
@@ -62,7 +64,9 @@ async function fitIntoDifferentRoom({
 
   if (idsHaveSpace[Object.keys(idsHaveSpace)[0]].length === 0) {
     await db
-      .collection(`channel/${channelId}/rooms`)
+      .collection("channel")
+      .doc(channelId)
+      .collection("rooms")
       .doc(Object.keys(idsHaveSpace)[0])
       .delete();
   }

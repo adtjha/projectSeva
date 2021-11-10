@@ -98,6 +98,7 @@ function Piece(props) {
                     gameId,
                     index: num - 1,
                     pieceId: name,
+                    userId: props.userId
                 })
             )
         } else {

@@ -29,6 +29,7 @@ const Cell = (props) => {
                         name={e}
                         size={0}
                         multiple={props.data.has.length}
+                        userId={props.userId}
                     />
                 )
             })
@@ -41,6 +42,7 @@ const Cell = (props) => {
                         name={e}
                         size={0}
                         multiple={1}
+                        userId={props.userId}
                     />
                 )
             })
@@ -76,6 +78,7 @@ const Cell = (props) => {
                         gameId,
                         index: num - 1,
                         pieceId: pieceToMove,
+                        userId: props.userId,
                     })
                 )
             } else {

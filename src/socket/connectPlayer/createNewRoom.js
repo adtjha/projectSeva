@@ -34,9 +34,11 @@ async function createNewRoom({
   await client.set(roomId, ".", JSON.stringify(room), "NX");
 
   await db
-    .collection(`channel/${channelId}/rooms`)
+    .collection("channel")
+    .doc(channelId)
+    .collection("rooms")
     .doc(roomId)
-    .set({ colors: ["green", "yellow", "blue"] });
+    .set({ colors: ["green", "yellow", "blue"] }, { merge: false });
 
   // -> send room id
   config.id = roomId;

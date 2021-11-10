@@ -1,17 +1,17 @@
-import { useCollectionOnce } from 'react-firebase-hooks/firestore';
-import { collection } from '@firebase/firestore';
-import { db } from '../../firebase';
-import { motion, AnimateSharedLayout } from 'framer-motion';
-import { useState } from 'react';
-import { useWindowScroll } from 'react-use';
-import { Loading } from '../Loading';
-import { Card } from "./Card";
+import { useCollectionOnce } from 'react-firebase-hooks/firestore'
+import { collection } from '@firebase/firestore'
+import { db } from '../../firebase'
+import { motion, AnimateSharedLayout } from 'framer-motion'
+import { useState } from 'react'
+import { useWindowScroll } from 'react-use'
+import { Loading } from '../Loading'
+import { Card } from './Card'
 
 export const Home = () => {
-    const { x, y } = useWindowScroll();
-    const query = collection(db, 'channel');
-    const [channels, loading, error] = useCollectionOnce(query);
-    const [selected, setSelected] = useState(null);
+    const { y } = useWindowScroll()
+    const query = collection(db, 'channel')
+    const [channels, loading, error] = useCollectionOnce(query)
+    const [selected, setSelected] = useState(null)
 
     return (
         <>
@@ -37,7 +37,8 @@ export const Home = () => {
                                             data={doc.data()}
                                             id={doc.id}
                                             isSelected={selected === doc.id}
-                                            setSelected={setSelected} />
+                                            setSelected={setSelected}
+                                        />
                                     ))}
                                     {console.log(channels)}
                                 </div>
@@ -46,13 +47,17 @@ export const Home = () => {
                                 initial={{ opacity: 0, scale: 0 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0 }}
-                                className={(y < 240 ? 'hidden' : 'fixed') +
-                                    ' bottom-8 right-8 w-12 h-12 p-2 rounded-full shadow-lg bg-blueGray-800 flex items-center justify-center cursor-pointer'}
-                                onClick={() => window.scrollTo({
-                                    top: 0,
-                                    left: 0,
-                                    behavior: 'smooth',
-                                })}
+                                className={
+                                    (y < 240 ? 'hidden' : 'fixed') +
+                                    ' bottom-8 right-8 w-12 h-12 p-2 rounded-full shadow-lg bg-blueGray-800 flex items-center justify-center cursor-pointer'
+                                }
+                                onClick={() =>
+                                    window.scrollTo({
+                                        top: 0,
+                                        left: 0,
+                                        behavior: 'smooth',
+                                    })
+                                }
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -65,7 +70,8 @@ export const Home = () => {
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
                                         strokeWidth={2}
-                                        d="M7 11l5-5m0 0l5 5m-5-5v12" />
+                                        d="M7 11l5-5m0 0l5 5m-5-5v12"
+                                    />
                                 </svg>
                             </motion.div>
                         </>
@@ -81,13 +87,12 @@ export const Home = () => {
                 </main>
             )}
         </>
-    );
-};
-
+    )
+}
 
 /**
  * GoTo URL : https://www.dedo.com/game?channel=72nWEeqmyKRtZjyotl4f&room=a2zf0
- * 
+ *
  * channel = 72nWEeqmyKRtZjyotl4f
  * room = a2zf0
  */

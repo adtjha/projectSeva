@@ -53,6 +53,7 @@ function movePiece(socket, io) {
         )({
           new_pos,
           gameId,
+          userId,
         })
           ? resolve()
           : reject();

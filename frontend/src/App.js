@@ -6,7 +6,6 @@ import {
     Redirect,
 } from 'react-router-dom'
 import LandingPage from './components/pages/LandingPage'
-import { Game } from './components/Game'
 import ChitFund from './components/pages/ChitFund'
 import Login from './components/pages/Login'
 import Signup from './components/pages/Signup'

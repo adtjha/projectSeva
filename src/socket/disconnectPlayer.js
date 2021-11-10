@@ -17,27 +17,9 @@ function disconnectPlayer(socket) {
 
     if (playerRoomId) {
       const room = JSON.parse(await client.get(playerRoomId));
-
       if (room.players.hasOwnProperty(userId)) {
-        // await db
-        //   .collection(`channel/${channelId}/rooms`)
-        //   .doc(playerRoomId)
-        //   .set(
-        //     { colors: FieldValue.arrayUnion(room.players[userId].color) },
-        //     { merge: true }
-        //   );
-
         room.players[userId].socketId = "";
-
-        // room.gameEnded &&
-        //   (await db.collection("players").doc(userId).delete());
-
-        // delete room.players[userId];
-        // if (Object.keys(room.players).length > 0) {
         await client.set(playerRoomId, ".", JSON.stringify(room), "XX");
-        // } else {
-        //   await client.del(playerRoomId);
-        // }
       }
     }
   };

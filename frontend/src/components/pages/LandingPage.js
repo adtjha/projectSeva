@@ -1,12 +1,10 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
-import { useInterval } from 'react-use'
 import Typewriter from 'typewriter-effect'
 import { ArrowRightIcon } from '@heroicons/react/solid'
 
 const LandingPage = () => {
-    const [color, setColor] = useState('black')
     const [who, setWho] = useState('Influencer')
     return (
         <div className="bg-blend-hard-light h-screen w-full grid grid-flow-row-dense">

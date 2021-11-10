@@ -1,5 +1,5 @@
 import { eventChannel, END } from 'redux-saga'
-import { game_end, new_config, update_current } from '../../user'
+import { game_end, update_current } from '../../user'
 import { roll_dice_res } from '../../dice'
 import { update_recieved } from '../../move'
 
@@ -8,15 +8,15 @@ export const suscribe = (socket) => {
     return eventChannel((emit) => {
         console.log('eventChannel')
 
-        socket.on('config_data', ({ fen, dice, data }) => {
-            emit(
-                new_config({
-                    fen,
-                    dice,
-                    data,
-                })
-            )
-        })
+        // socket.on('config_data', ({ fen, dice, data }) => {
+        //     emit(
+        //         new_config({
+        //             fen,
+        //             dice,
+        //             data,
+        //         })
+        //     )
+        // })
 
         socket.on('dice_rolled', ({ face }) => {
             console.info('dice rolled socket signal')
@@ -33,7 +33,7 @@ export const suscribe = (socket) => {
         })
 
         socket.on('game_end', (data) => {
-            emit(game_end({...data}))
+            emit(game_end({ ...data }))
         })
 
         socket.on('alert', (data) => {
