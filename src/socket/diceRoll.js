@@ -6,7 +6,7 @@ const { client } = require("../..");
 let i = 0;
 
 function diceRoll(socket, io) {
-  return async ({ gameId }) => {
+  return async ({ gameId, userId }) => {
     // console.log("roll dice on server");
     // const diceArray = [6, 4, 6, 3, 1, 2];
     // consoleSpacing(" " + i + " ");
@@ -24,8 +24,8 @@ function diceRoll(socket, io) {
 
     await client.set(gameId, ".", JSON.stringify(room), "XX");
 
-    const pieceOut = piecesOut(room.players[socket.id].pos);
-    const pieceOnFinal = piecesOnFinal(room.players[socket.id].pos);
+    const pieceOut = piecesOut(room.players[userId].pos);
+    const pieceOnFinal = piecesOnFinal(room.players[userId].pos);
 
     if (
       pieceOut === 0 &&
@@ -34,7 +34,7 @@ function diceRoll(socket, io) {
     ) {
       // console.log("No Piece Out and not a Six, switching player", face);
       setTimeout(
-        () => changeCurrentPlayer(socket, io)({ game_id: gameId }),
+        () => changeCurrentPlayer(socket, io)({ game_id: gameId, userId }),
         300
       );
       // () => changeCurrentPlayer(socket, io)({ game_id: gameId });
@@ -43,7 +43,10 @@ function diceRoll(socket, io) {
       (pieceOut === 0 && pieceOnFinal.length === 1)
     ) {
       // console.log("Single Piece Out, Auto Moving", face);
-      setTimeout(() => autoMovePlayerPiece(socket, io)({ gameId, face }), 300);
+      setTimeout(
+        () => autoMovePlayerPiece(socket, io)({ gameId, face, userId }),
+        300
+      );
       // () => autoMovePlayerPiece(socket, io)({ gameId, face });
     }
   };

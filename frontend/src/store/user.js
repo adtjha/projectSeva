@@ -79,9 +79,9 @@ export const update_current = ({ current }) => ({
     type: UPDATE,
     payload: { current },
 })
-export const connect_socket = (room) => ({
+export const connect_socket = ({ roomId, channelId, userId }) => ({
     type: CONNECT,
-    payload: room,
+    payload: { roomId, channelId, userId },
 })
 export const disconnect_socket = () => ({
     type: DISCONNECT,

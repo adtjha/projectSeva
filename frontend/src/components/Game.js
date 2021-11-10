@@ -4,30 +4,30 @@ import { useParams } from 'react-router'
 import { useEffectOnce } from 'react-use'
 import { connect_socket, getGameId } from '../store/user'
 import Board from './Game/Board'
-import { guid } from './Game/functions/guid'
 import { Choice } from './Choice'
 
 export const Game = ({ user }) => {
     const dispatch = useDispatch()
     const [room, setRoom] = useState('')
-    const { id } = useParams()
+    const { channelId } = useParams()
 
     useEffectOnce(() => {
-        console.log(id)
-        if (id !== undefined) {
-            dispatch(connect_socket(id))
-        } else {
-            const uid = guid()
-            setRoom(uid)
-        }
+        console.log(channelId)
     })
 
-    const handleSubmit = () => dispatch(connect_socket(room))
+    const handleSubmit = () =>
+        dispatch(
+            connect_socket({
+                channelId,
+                roomId: room || null,
+                userId: user.uid,
+            })
+        )
 
     const gameId = useSelector(getGameId)
 
     return gameId ? (
-        <Board />
+        <Board userId={user.uid} />
     ) : (
         <React.Fragment>
             {Choice({ user, room, setRoom, handleSubmit })}

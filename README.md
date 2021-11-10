@@ -8,6 +8,11 @@
 
 ---
 
+#### files, folders to exclude while searching
+```
+TODO.md,package-lock.json,build,node_modules/*,frontend/node_modules/*, frontend/package-lock.json, frontend/tailwind.config.js, package.json,  frontend/public,.git/*
+```
+
 #### Prize Pool Money - 1000
 
 #### Service Fee - 4% - 40

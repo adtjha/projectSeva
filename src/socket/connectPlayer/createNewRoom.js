@@ -2,7 +2,15 @@ const { guid } = require("../../guid");
 const { consoleSpacing, redPlayer } = require("../../constant");
 const { client, db } = require("../../..");
 
-async function createNewRoom(roomId, room, userId, socket, config, error) {
+async function createNewRoom({
+  channelId,
+  roomId,
+  room,
+  userId,
+  socket,
+  config,
+  error,
+}) {
   consoleSpacing("NEW ROOM CREATION");
   // create room to place socket.
   // create a room of 4
@@ -13,18 +21,20 @@ async function createNewRoom(roomId, room, userId, socket, config, error) {
     players: {},
     current: "",
     dice: 1,
+    gameEnded: false,
   };
 
   room.players[userId] = Object.assign({}, redPlayer);
+  room.players[userId].socketId = socket.id;
   room.current = "red";
 
-  socket.leave(userId);
+  socket.leave(`${socket.id}`);
   socket.join(roomId);
 
   await client.set(roomId, ".", JSON.stringify(room), "NX");
 
   await db
-    .collection("idsHaveSpace")
+    .collection(`channel/${channelId}/rooms`)
     .doc(roomId)
     .set({ colors: ["green", "yellow", "blue"] });
 

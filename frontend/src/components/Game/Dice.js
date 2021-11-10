@@ -25,7 +25,7 @@ const Dice = (props) => {
 
     const handleClick = () => {
         if (!hasRolled && isChance) {
-            dispatch(fetch_dice({ gameId, userColor }))
+            dispatch(fetch_dice({ gameId, userId: props.userId }))
         } else if (isChance) {
             console.log(
                 'PLAY MOVE, DICE ROLLED ONCE',

@@ -6,7 +6,7 @@ function changeCurrentPlayer(socket, io) {
     // consoleSpacing(`CHANGING PLAYER from ${rooms.get(game_id).current}`);
     const room = JSON.parse(await client.get(game_id));
 
-    const currentColor = room.players[socket.id].color;
+    const currentColor = room.players[userId].color;
     let availableColors = [],
       nextColor;
 

@@ -12,12 +12,10 @@ const { fitIntoDesiredRoom } = require("./fitIntoDesiredRoom");
  */
 
 function connectPlayer(socket, io) {
-  return async ({ room_id }) => {
+  return async ({ channelId, roomId, userId }) => {
     // if room empty -> fit user in room array -> send room id
     var config = { id: "", current: "", user: { id: "", color: "" } },
       room,
-      roomId = room_id,
-      userId = socket.id,
       idsHaveSpace = {},
       space,
       error = {};
@@ -25,46 +23,52 @@ function connectPlayer(socket, io) {
     if (!roomId) {
       // room id absent
       // Get first empty room
-      const snapshot = (await db.collection("idsHaveSpace").limit(1).get())
-        .docs;
+      const snapshot = await db
+        .collection(`channel/${channelId}/rooms`)
+        .where("colors", ">", 0)
+        .orderBy("colors", "asc")
+        .get();
 
-      if (snapshot.length > 0) {
-        console.log(snapshot);
-        space = snapshot[0].exists;
-        idsHaveSpace = { [snapshot[0].id]: snapshot[0].data()["colors"] };
+      if (snapshot.docs.length > 0) {
+        console.log(snapshot.docs);
+        space = snapshot.docs[0].exists;
+        idsHaveSpace = {
+          [snapshot.docs[0].id]: snapshot.docs[0].data()["colors"],
+        };
       } else {
         space = false;
       }
 
       if (space) {
-        ({ roomId, room, config, error } = await fitIntoDifferentRoom(
+        ({ roomId, room, config, error } = await fitIntoDifferentRoom({
+          channelId,
           roomId,
           idsHaveSpace,
           room,
           userId,
           socket,
           config,
-          error
-        ));
+          error,
+        }));
       } else {
-        ({ roomId, room, config, error } = await createNewRoom(
+        ({ roomId, room, config, error } = await createNewRoom({
           roomId,
           room,
           userId,
           socket,
           config,
-          error
-        ));
+          error,
+        }));
       }
     } else {
-      ({ room, config, error } = await fitIntoDesiredRoom(
+      ({ room, config, error } = await fitIntoDesiredRoom({
         room,
         roomId,
         userId,
         socket,
         config,
-        error
-      ));
+        error,
+      }));
       // room id is full
     }
     console.log(room);
@@ -72,10 +76,14 @@ function connectPlayer(socket, io) {
     if (Object.keys(error).length > 0) {
       socket.emit("error", error);
     } else {
-      await db
-        .collection("players")
-        .doc(userId)
-        .set({ room: roomId }, { merge: true });
+      console.log(userId);
+      db.collection("users")
+        .where("uid", "==", userId)
+        .get()
+        .then((query) => {
+          const user = query.docs[0];
+          user.ref.set({ room: roomId, socket: socket.id }, { merge: true });
+        });
 
       socket.emit("config_data", {
         data: config,
@@ -92,3 +100,12 @@ function connectPlayer(socket, io) {
 }
 
 exports.connectPlayer = connectPlayer;
+
+/**
+ * Get Empty Room from Channel
+ * (await db.collection("idsHaveSpace").where('channelId', '==', channelId).get()).collection('rooms').where('colors', )
+ *
+ * (await db.collection("idsHaveSpace").where('channelId', '==', channelId).get()).docs
+ *
+ *
+ */

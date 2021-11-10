@@ -7,15 +7,16 @@ const {
 } = require("../../constant");
 const { client, db, FieldValue } = require("../../..");
 
-async function fitIntoDifferentRoom(
+async function fitIntoDifferentRoom({
+  channelId,
   roomId,
   idsHaveSpace,
   room,
   userId,
   socket,
   config,
-  error
-) {
+  error,
+}) {
   consoleSpacing("FITTING INTO EMPTY ROOM");
   roomId = Object.keys(idsHaveSpace)[0];
   // room_data has empty rooms.
@@ -23,7 +24,7 @@ async function fitIntoDifferentRoom(
     color = idsHaveSpace[Object.keys(idsHaveSpace)[0]].pop();
 
   await db
-    .collection("idsHaveSpace")
+    .collection(`channel/${channelId}/rooms`)
     .doc(Object.keys(idsHaveSpace)[0])
     .update("colors", FieldValue.arrayRemove(color));
 
@@ -47,15 +48,12 @@ async function fitIntoDifferentRoom(
   console.log(room);
 
   room.players[userId] = Object.assign({}, player);
+  room.players[userId].socketId = socket.id;
 
   await client.set(roomId, ".", JSON.stringify(room), "XX");
 
-  socket.leave(userId);
+  socket.leave(socket.id);
   socket.join(roomId);
-
-  consoleSpacing("-");
-  console.log(room.players);
-  consoleSpacing("-");
 
   config.id = roomId;
   config.current = room.current;
@@ -64,7 +62,7 @@ async function fitIntoDifferentRoom(
 
   if (idsHaveSpace[Object.keys(idsHaveSpace)[0]].length === 0) {
     await db
-      .collection("idsHaveSpace")
+      .collection(`channel/${channelId}/rooms`)
       .doc(Object.keys(idsHaveSpace)[0])
       .delete();
   }

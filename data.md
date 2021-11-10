@@ -26,8 +26,8 @@
         },
     }
 
-
 ## IdsHaveSpace
+
 ```
     channel {
         id,
@@ -40,6 +40,7 @@
 ```
 
 ## User - Firestore
+
 ```
     user {
         authProvider,
@@ -51,17 +52,14 @@
 ```
 
 ## Room - Redis
+
 ```
-    rooom {
-        id,
-        channelId,
-        users [],
-        userCount,
-        game {
-            colors [],
-            dice,
-            chance,
-        },
+    room {
+        id: "",
+        channelId: "",
+        players: {},
+        current: "",
+        dice: 1,
         createdAt,
     }
 ```

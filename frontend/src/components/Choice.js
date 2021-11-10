@@ -24,7 +24,7 @@ export const Choice = ({ user, room, setRoom, handleSubmit }) => {
                     <div className="w-full flex flex-col">
                         <input
                             className="mx-6 p-2 text-center rounded-2xl border-2 border-blueGray-400"
-                            placeholder={room}
+                            placeholder="anNik"
                             onChange={(e) => setRoom(e.target.value)}
                         />
                         <button

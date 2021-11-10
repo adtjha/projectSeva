@@ -8,24 +8,28 @@ const redPlayer = {
   color: "red",
   pos: ["r1", "r2", "r3", "r4"],
   stream: "",
+  socketId: '',
 };
 
 const greenPlayer = {
   color: "green",
   pos: ["g1", "g2", "g3", "g4"],
   stream: "",
+  socketId: "",
 };
 
 const yellowPlayer = {
   color: "yellow",
   pos: ["y1", "y2", "y3", "y4"],
   stream: "",
+  socketId: "",
 };
 
 const bluePlayer = {
   color: "blue",
   pos: ["b1", "b2", "b3", "b4"],
   stream: "",
+  socketId: "",
 };
 
 const roomDefault = {

@@ -2,9 +2,8 @@ const { client } = require("../..");
 const { otherPLayerPosArray, newArr } = require("../constant");
 
 function resetPiece(socket, io) {
-  return async ({ new_pos, gameId }) => {
+  return async ({ new_pos, gameId, userId }) => {
     const room = JSON.parse(await client.get(gameId));
-    const userId = socket.id;
     const color = room.players[userId].color;
 
     // get other player pos

@@ -3,9 +3,8 @@ const { rooms } = require("../constant");
 const { movePiece } = require("./movePiece");
 
 function autoMovePlayerPiece(socket, io) {
-  return async ({ gameId, face }) => {
+  return async ({ gameId, face, userId }) => {
     const room = JSON.parse(await client.get(gameId));
-    const userId = socket.id;
     const player = room.players[userId];
 
     // auto move

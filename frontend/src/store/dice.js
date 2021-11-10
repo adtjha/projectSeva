@@ -50,9 +50,9 @@ export const set_showing = (state) => ({
     type: SHOWING,
     payload: state,
 })
-export const fetch_dice = ({ gameId, userColor }) => ({
+export const fetch_dice = ({ gameId, userId }) => ({
     type: FETCH_DICE,
-    payload: { gameId, userColor },
+    payload: { gameId, userId },
 })
 
 // export const roll_dice_req = ({ gameId }) => ({

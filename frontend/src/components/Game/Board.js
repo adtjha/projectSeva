@@ -9,8 +9,6 @@ import { getDice } from '../../store/dice'
 import { getGameId, getGameStatus } from '../../store/user'
 import { Notification } from './Notification'
 import Constants from '../../Constants'
-import { randomGender } from './functions/randomGender'
-import { guid } from './functions/guid'
 
 const Board = (props) => {
     const mounted = useRef(true)
@@ -34,26 +32,26 @@ const Board = (props) => {
         }
     }, [dispatch, gameId, mounted])
 
-    const handleShare = () => {
-        const link = `${Constants.WEB_APP_URL}/game/${gameId}`
-        const shareData = {
-            title: 'Dedo',
-            text: 'Play and Donate money to Charity. Join the game using this link. \n',
-            url: new URL(link),
-        }
-        if (!navigator.canShare) {
-            navigator.clipboard.writeText(link).then(
-                () => {
-                    console.log('Saved to Clipboard')
-                },
-                () => {
-                    console.log('Unable to save to Clipboard')
-                }
-            )
-        } else {
-            navigator.share(shareData)
-        }
-    }
+    // const handleShare = () => {
+    //     const link = `${Constants.WEB_APP_URL}/game/${gameId}`
+    //     const shareData = {
+    //         title: 'Dedo',
+    //         text: 'Play and Donate money to Charity. Join the game using this link. \n',
+    //         url: new URL(link),
+    //     }
+    //     if (!navigator.canShare) {
+    //         navigator.clipboard.writeText(link).then(
+    //             () => {
+    //                 console.log('Saved to Clipboard')
+    //             },
+    //             () => {
+    //                 console.log('Unable to save to Clipboard')
+    //             }
+    //         )
+    //     } else {
+    //         navigator.share(shareData)
+    //     }
+    // }
 
     return (
         <div
@@ -112,7 +110,7 @@ const Board = (props) => {
                             <VideoChat />
                         </div>
                     </div>
-                    <Dice num={data.dice} />
+                    <Dice num={data.dice} userId={props.userId} />
                 </div>
 
                 {hasGameEnded ? (

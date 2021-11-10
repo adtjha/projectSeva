@@ -1,11 +1,6 @@
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '../../firebase'
-import {
-    Switch,
-    Route,
-    useHistory,
-    useRouteMatch,
-} from 'react-router-dom'
+import { Switch, Route, useHistory, useRouteMatch } from 'react-router-dom'
 import { Game } from '../Game'
 import { Loading } from '../Loading'
 import { Nav } from '../Nav'
@@ -35,10 +30,7 @@ const Profile = () => {
                 <Route path="/fund">
                     <Fund user={user} />
                 </Route>
-                <Route exact path="/game">
-                    <Game user={user} key={1} />
-                </Route>
-                <Route path="/game/:id">
+                <Route exact path="/game/:channelId">
                     <Game user={user} key={1} />
                 </Route>
             </Switch>

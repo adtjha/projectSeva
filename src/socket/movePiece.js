@@ -4,9 +4,8 @@ const { newPos, rooms, consoleSpacing, newArr } = require("../constant");
 const { client } = require("../..");
 
 function movePiece(socket, io) {
-  return async ({ dice, position, gameId, index, pieceId }) => {
+  return async ({ dice, position, gameId, index, pieceId, userId }) => {
     const room = JSON.parse(await client.get(gameId));
-    const userId = socket.id;
     const player = room.players[userId];
     const color = player.color;
 
@@ -62,7 +61,7 @@ function movePiece(socket, io) {
         () => {
           if (dice !== 6) {
             setTimeout(() => {
-              changeCurrentPlayer(socket, io)({ game_id: gameId });
+              changeCurrentPlayer(socket, io)({ game_id: gameId, userId });
             }, 1000);
           }
         }

@@ -202,7 +202,7 @@ export const Card = ({ isSelected, data, setSelected, id }) => {
                                 </div>
                             </div>
                             <div className="w-full hover:bg-blueGray-100 rounded-lg p-2 flex flex-col md:flex-row items-center justify-between">
-                                <Link to={`/game?channel=${id}`}>
+                                <Link to={`/game/${id}`}>
                                     <motion.button
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.98 }}
