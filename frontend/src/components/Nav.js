@@ -6,6 +6,7 @@ import { useMedia } from 'react-use'
 import { useState } from 'react'
 import { LogoutIcon } from '@heroicons/react/outline'
 import { Link } from 'react-router-dom'
+import { BASE_API } from '../Constants'
 
 const loginMenu = [
     { name: 'home', href: '/' },

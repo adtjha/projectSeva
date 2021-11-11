@@ -6,7 +6,12 @@ import Dice from './Dice'
 import React, { useEffect, useRef } from 'react'
 import { getBlue, getGreen, getRed, getYellow } from '../../store/move'
 import { getDice } from '../../store/dice'
-import { getGameId, getGameStatus } from '../../store/user'
+import {
+    getColor,
+    getGameCurrentPlayer,
+    getGameId,
+    getGameStatus,
+} from '../../store/user'
 import { Notification } from './Notification'
 
 const Board = (props) => {
@@ -24,12 +29,22 @@ const Board = (props) => {
     }
     const pos = [...create2Darray(data)]
     const gameId = useSelector(getGameId)
+    const userColor = useSelector(getColor)
+    const currentColor = useSelector(getGameCurrentPlayer)
+
+    const isChance = userColor === currentColor
 
     useEffect(() => {
         return () => {
             mounted.current = false
         }
     }, [dispatch, gameId, mounted])
+
+    useEffect(() => {
+        console.log(
+            `----------------------Chance : ${currentColor}----------------------`
+        )
+    }, [isChance, currentColor])
 
     // const handleShare = () => {
     //     const link = `${Constants.WEB_APP_URL}/game/${gameId}`
@@ -96,9 +111,6 @@ const Board = (props) => {
                     />
                 </div>
             </div> */}
-            {console.log(
-                '----------------------UPDATING BOARD----------------------'
-            )}
             <div className="w-full ml-4 grid justify-items-center justify-center">
                 <Notification message="Game Started." />
                 <div className="justify-around justify-items-center items-end w-full lg:w-192 h-148 lg:h-auto m-auto grid grid-flow-row-dense lg:grid-flow-col-dense">

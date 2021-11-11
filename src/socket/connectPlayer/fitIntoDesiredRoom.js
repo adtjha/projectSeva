@@ -35,7 +35,10 @@ async function fitIntoDesiredRoom({
   if (Object.keys(room.players).find((e) => e == userId)) {
     room.players[userId].socketId = socket.id;
 
-    await client.set(roomId, ".", room, "XX");
+    client
+      .set(roomId, ".", JSON.stringify(room), "XX")
+      .then(console.log)
+      .catch(console.error);
 
     socket.leave(userId);
     socket.join(roomId);

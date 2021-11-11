@@ -17,18 +17,30 @@ function connectPlayer(socket, io) {
     var config = { id: "", current: "", user: { id: "", color: "" } },
       room,
       idsHaveSpace = {},
-      space,
+      space = false,
       error = {};
 
-    if (!roomId) {
+    const userSnap = await db
+      .collection("users")
+      .where("uid", "==", userId)
+      .get();
+    const user = userSnap.docs[0].data();
+    roomId = user?.room;
+    console.log(roomId);
+
+    if (!roomId && roomId !== undefined) {
       // room id absent
       // Get first empty room
       const snapshot = await db
         .collection("channel")
         .doc(channelId)
         .collection("rooms")
-        .where("colors", ">", 0)
-        .orderBy("colors", "asc")
+        .where("colors", "array-contains-any", [
+          "red",
+          "green",
+          "yellow",
+          "blue",
+        ])
         .get();
 
       if (snapshot.docs.length > 0) {

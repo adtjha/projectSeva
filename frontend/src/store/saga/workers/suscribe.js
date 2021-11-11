@@ -1,5 +1,5 @@
 import { eventChannel, END } from 'redux-saga'
-import { game_end, update_current } from '../../user'
+import { disconnect_socket, game_end, update_current } from '../../user'
 import { roll_dice_res } from '../../dice'
 import { update_recieved } from '../../move'
 
@@ -30,10 +30,10 @@ export const suscribe = (socket) => {
             emit()
         })
 
-        // socket.on('disconnect', (reason) => {
-        //     console.log(`Socket disconnected because: ${reason}`)
-        //     emit(disconnect_socket())
-        // })
+        socket.on('disconnect', (reason) => {
+            alert(`Socket disconnected because: ${reason}`)
+            emit(disconnect_socket())
+        })
 
         return () => {
             emit(END)

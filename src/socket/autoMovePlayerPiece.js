@@ -18,7 +18,7 @@ function autoMovePlayerPiece(socket, io) {
       }
     });
 
-    const name = player.color + (index + 1);
+    const name = player.color[0] + (index + 1);
 
     await client.set(gameId, ".", JSON.stringify(room), "XX");
 

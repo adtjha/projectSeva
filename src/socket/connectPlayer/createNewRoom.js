@@ -38,7 +38,7 @@ async function createNewRoom({
     .doc(channelId)
     .collection("rooms")
     .doc(roomId)
-    .set({ colors: ["green", "yellow", "blue"] }, { merge: false });
+    .set({ colors: ["green", "yellow", "blue"], space: 3 }, { merge: false });
 
   // -> send room id
   config.id = roomId;

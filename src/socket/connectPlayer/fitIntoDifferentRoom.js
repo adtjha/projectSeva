@@ -28,7 +28,7 @@ async function fitIntoDifferentRoom({
     .doc(channelId)
     .collection("rooms")
     .doc(Object.keys(idsHaveSpace)[0])
-    .update("colors", FieldValue.arrayRemove(color));
+    .update({ colors: FieldValue.arrayRemove(color), space: FieldValue.increment(-1)});
 
   switch (color) {
     case "red":

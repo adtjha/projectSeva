@@ -97,16 +97,20 @@ app.delete("/api/channel", deleteChannel);
 ╚═════╝░╚═════╝░  ╚═╝░░╚═╝╚═╝░░░░░╚═╝░░░╚═════╝░
  */
 
-// app.get("/db", async (req, res) => {
-//   const channelId = "MrXQ5AU337YjWyvp1MTW";
-//   const snapshot = await db
-//     .collection(`channel/${channelId}/rooms`)
-//     .orderBy("colors", "asc")
-//     .get();
+app.get("/db", async (req, res) => {
+  const channelId = "72nWEeqmyKRtZjyotl4f";
+  const snapshot = await db
+    .collection("channel")
+    .doc(channelId)
+    .collection("rooms")
+    .where("colors", "array-contains-any", ["red", "green", "yellow", "blue"])
+    .orderBy("space", "asc")
+    .get();
 
-//   snapshot.docs.forEach((doc) => {
-//     console.log(doc.id, "=>", doc.data());
-//   });
+  snapshot.docs.forEach((doc) => {
+    console.log(doc.id, "=>", doc.data());
+    doc.ref.delete();
+  });
 
-//   res.json(snapshot.docs);
-// });
+  res.json(snapshot.docs);
+});

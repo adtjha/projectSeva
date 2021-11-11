@@ -9,11 +9,14 @@ function disconnectPlayer(socket) {
       .where("socket", "==", socket.id)
       .get()
       .then((query) => {
-        const user = query.docs[0];
-        playerRoomId = user.data().room;
-        userId = user.data().uid;
-        user.ref.update({ socket: "" });
-      });
+        if (query.docs.length > 0) {
+          const user = query.docs[0];
+          playerRoomId = user.data().room;
+          userId = user.data().uid;
+          user.ref.update({ socket: "" });
+        }
+      })
+      .catch((e) => console.error(e));
 
     if (playerRoomId) {
       const room = JSON.parse(await client.get(playerRoomId));

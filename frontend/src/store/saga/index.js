@@ -1,7 +1,14 @@
-import { fork, cancel, spawn, takeLatest, cancelled } from 'redux-saga/effects'
+import {
+    fork,
+    cancel,
+    spawn,
+    takeLatest,
+    cancelled,
+    put,
+} from 'redux-saga/effects'
 import { read, setInitialState } from './workers/read'
 import { socketWorker } from './watcher/worker'
-import { CONNECT, DISCONNECT } from '../user'
+import { CONNECT, DISCONNECT, set_config } from '../user'
 import Constants from '../../Constants'
 import { io } from 'socket.io-client'
 import { END, eventChannel } from '@redux-saga/core'
@@ -13,9 +20,9 @@ const connectSocket = function* (socket, action) {
             emit({ ...res })
         })
 
-         return () => {
-             emit(END)
-         }
+        return () => {
+            emit(END)
+        }
     })
 
     try {
@@ -38,6 +45,14 @@ export default function* rootSaga() {
     yield takeLatest(
         DISCONNECT,
         function* () {
+            yield put(
+                set_config({
+                    id: '',
+                    game_id: '',
+                    current: '',
+                    color: '',
+                })
+            )
             yield cancel(task)
             yield cancel(socketListens)
         },
