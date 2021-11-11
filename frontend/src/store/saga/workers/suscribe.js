@@ -8,16 +8,6 @@ export const suscribe = (socket) => {
     return eventChannel((emit) => {
         console.log('eventChannel')
 
-        // socket.on('config_data', ({ fen, dice, data }) => {
-        //     emit(
-        //         new_config({
-        //             fen,
-        //             dice,
-        //             data,
-        //         })
-        //     )
-        // })
-
         socket.on('dice_rolled', ({ face }) => {
             console.info('dice rolled socket signal')
             emit(roll_dice_res({ face }))
