@@ -3,46 +3,10 @@ const express = require("express");
 const app = express();
 
 // const path = require("path");
-
-require("dotenv").config();
-
+const { Server } = require("socket.io");
 const process = require("process");
 
-const port = process.env.PORT || 8888;
-
-app.use(express.static("frontend/build"));
-
-const server = app.listen(port, () => {
-  console.log(`Server started at ${port}.`);
-});
-
-app.get("/", (req, res) => {
-  console.log("Hello World!");
-});
-
-// app.get("/*", (req, res) => {
-//   res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
-// });
-
-/**
-░██████╗░█████╗░░█████╗░██╗░░██╗███████╗████████╗  
-██╔════╝██╔══██╗██╔══██╗██║░██╔╝██╔════╝╚══██╔══╝  
-╚█████╗░██║░░██║██║░░╚═╝█████═╝░█████╗░░░░░██║░░░  
-░╚═══██╗██║░░██║██║░░██╗██╔═██╗░██╔══╝░░░░░██║░░░  
-██████╔╝╚█████╔╝╚█████╔╝██║░╚██╗███████╗░░░██║░░░  
-╚═════╝░░╚════╝░░╚════╝░╚═╝░░╚═╝╚══════╝░░░╚═╝░░░  
-
-░█████╗░░█████╗░███╗░░██╗███████╗██╗░██████╗░
-██╔══██╗██╔══██╗████╗░██║██╔════╝██║██╔════╝░
-██║░░╚═╝██║░░██║██╔██╗██║█████╗░░██║██║░░██╗░
-██║░░██╗██║░░██║██║╚████║██╔══╝░░██║██║░░╚██╗
-╚█████╔╝╚█████╔╝██║░╚███║██║░░░░░██║╚██████╔╝
-░╚════╝░░╚════╝░╚═╝░░╚══╝╚═╝░░░░░╚═╝░╚═════╝░
-*/
-
-const { Server } = require("socket.io");
-const io = new Server(server, { cors: { origin: "*" } });
-require("./src/socket")(io);
+require("dotenv").config();
 
 /**
 
@@ -99,6 +63,41 @@ const FieldValue = admin.firestore.FieldValue;
 
 exports.db = db;
 exports.FieldValue = FieldValue;
+
+const port = process.env.PORT || 8888;
+
+app.use(express.static("frontend/build"));
+
+const server = app.listen(port, () => {
+  console.log(`Server started at ${port}.`);
+});
+
+app.get("/", (req, res) => {
+  console.log("Hello World!");
+});
+
+// app.get("/*", (req, res) => {
+//   res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
+// });
+
+/**
+░██████╗░█████╗░░█████╗░██╗░░██╗███████╗████████╗  
+██╔════╝██╔══██╗██╔══██╗██║░██╔╝██╔════╝╚══██╔══╝  
+╚█████╗░██║░░██║██║░░╚═╝█████═╝░█████╗░░░░░██║░░░  
+░╚═══██╗██║░░██║██║░░██╗██╔═██╗░██╔══╝░░░░░██║░░░  
+██████╔╝╚█████╔╝╚█████╔╝██║░╚██╗███████╗░░░██║░░░  
+╚═════╝░░╚════╝░░╚════╝░╚═╝░░╚═╝╚══════╝░░░╚═╝░░░  
+
+░█████╗░░█████╗░███╗░░██╗███████╗██╗░██████╗░
+██╔══██╗██╔══██╗████╗░██║██╔════╝██║██╔════╝░
+██║░░╚═╝██║░░██║██╔██╗██║█████╗░░██║██║░░██╗░
+██║░░██╗██║░░██║██║╚████║██╔══╝░░██║██║░░╚██╗
+╚█████╔╝╚█████╔╝██║░╚███║██║░░░░░██║╚██████╔╝
+░╚════╝░░╚════╝░╚═╝░░╚══╝╚═╝░░░░░╚═╝░╚═════╝░
+*/
+
+const io = new Server(server, { cors: { origin: "*" } });
+require("./src/socket")(io);
 
 /**
 ░█████╗░██╗░░██╗░█████╗░███╗░░██╗███╗░░██╗███████╗██╗░░░░░  ░█████╗░██████╗░██╗██╗░██████╗
@@ -169,4 +168,3 @@ app.get("/db", async (req, res) => {
 ╚█████╔╝╚█████╔╝██║░╚███║██║░░░░░██║╚██████╔╝
 ░╚════╝░░╚════╝░╚═╝░░╚══╝╚═╝░░░░░╚═╝░╚═════╝░
  */
-
