@@ -1,67 +1,36 @@
-
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-    connect_socket,
-    getGameId,
-    getGameStatus,
-} from 'store/user'
-import Board from './Board'
-import { GUID } from './functions/randomUid'
+import { useParams } from 'react-router'
+import { useEffectOnce } from 'react-use'
+import { connect_socket, getGameId } from '../store/user'
+import Board from './Game/Board'
+import { Choice } from './Choice'
 
-export const Game = () => {
+export const Game = ({ user }) => {
     const dispatch = useDispatch()
     const [room, setRoom] = useState('')
+    const { channelId } = useParams()
 
-    useEffect(() => {
-        setRoom(GUID)
-    }, [setRoom])
+    useEffectOnce(() => {
+        console.log(channelId)
+    })
 
-    const handleSubmit = () => dispatch(connect_socket(room))
+    const handleSubmit = () =>
+        dispatch(
+            connect_socket({
+                channelId,
+                roomId: room || null,
+                userId: user.uid,
+            })
+        )
 
     const gameId = useSelector(getGameId)
-    const hasGameEnded = useSelector(getGameStatus)
 
-    return !hasGameEnded && gameId ? (
-        <Board />
+    return gameId ? (
+        <Board userId={user.uid} />
     ) : (
         <React.Fragment>
-            <div
-                className=" flex flex-col content-center"
-                style={{ width: '100vw', height: '100vh', margin: 'auto' }}
-            >
-                <div className="w-max h-max m-auto p-4 flex flex-col shadow-2xl rounded-2xl bg-blueGray-400">
-                    <h1 className="font-semibold m-auto py-4">
-                        Type Room ID below 👇
-                    </h1>
-                    <div className="flex flex-col">
-                        <input
-                            className="mx-8 p-2 text-center rounded-2xl"
-                            placeholder={room}
-                            onChange={(e) => setRoom(e.target.value)}
-                        />
-                        <button
-                            type="submit"
-                            className="my-6 mx-auto w-36 h-12 bg-blueGray-800 text-blueGray-200 py-2 px-2 rounded"
-                            onClick={handleSubmit}
-                        >
-                            Join Room
-                        </button>
-                    </div>
-                </div>
-                <div className="w-full text-center text-4xl opacity-20">
-                    - OR -
-                </div>
-                <div className="w-max h-max m-auto p-4 flex flex-col">
-                    <button
-                        type="submit"
-                        className="m-auto w-36 h-12 bg-blueGray-800 text-blueGray-200 py-2 px-2 rounded"
-                        onClick={handleSubmit}
-                    >
-                        Play Random
-                    </button>
-                </div>
-            </div>
+            {Choice({ user, room, setRoom, handleSubmit })}
         </React.Fragment>
     )
 }

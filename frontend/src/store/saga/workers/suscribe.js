@@ -1,23 +1,12 @@
 import { eventChannel, END } from 'redux-saga'
-import { set_config, update_current } from 'store/user'
-import { roll_dice_res } from 'store/dice'
-import { auto_move, update_arr, update_recieved } from 'store/move'
+import { disconnect_socket, game_end, update_current } from '../../user'
+import { roll_dice_res } from '../../dice'
+import { update_recieved } from '../../move'
 
 export const suscribe = (socket) => {
     console.log('suscribe')
     return eventChannel((emit) => {
         console.log('eventChannel')
-
-        socket.on('config_data', (data) => {
-            emit(
-                set_config({
-                    id: data.user.id,
-                    game_id: data.id,
-                    current: data.current,
-                    color: data.user.color,
-                })
-            )
-        })
 
         socket.on('dice_rolled', ({ face }) => {
             console.info('dice rolled socket signal')
@@ -33,14 +22,18 @@ export const suscribe = (socket) => {
             emit(update_recieved({ ...data }))
         })
 
+        socket.on('game_end', (data) => {
+            emit(game_end({ ...data }))
+        })
+
         socket.on('alert', (data) => {
             emit()
         })
 
-        // socket.on('disconnect', (reason) => {
-        //     console.log(`Socket disconnected because: ${reason}`)
-        //     emit(disconnect_socket())
-        // })
+        socket.on('disconnect', (reason) => {
+            alert(`Socket disconnected because: ${reason}`)
+            emit(disconnect_socket())
+        })
 
         return () => {
             emit(END)

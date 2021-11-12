@@ -1,5 +1,5 @@
 import { put, delay } from 'redux-saga/effects'
-import { set_dice, set_rolled, set_showing } from 'store/dice'
+import { set_dice, set_rolled, set_showing } from '../../dice'
 
 // roll dice request
 export const onRollDice = function* (socket, action) {
@@ -24,5 +24,13 @@ export const onDiceRolled = function* (action) {
         yield put(set_showing(true))
     } catch (e) {
         console.log(e)
+    }
+}
+
+export const unrollDice = function* () {
+    try {
+        yield put(set_rolled(false))
+    } catch (e) {
+        console.error(e)
     }
 }

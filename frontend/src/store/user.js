@@ -1,10 +1,15 @@
 const initialState = {
+    name: '',
+    email: '',
+    uid: '',
+    photoURL: '',
     color: '',
     id: '',
     game_id: '',
     current: '',
     ended: false,
-    alert: '',
+    winners: [],
+    alert: {},
 }
 
 export function usersReducer(state = initialState, action) {
@@ -19,8 +24,20 @@ export function usersReducer(state = initialState, action) {
             }
         case UPDATE:
             return { ...state, current: action.payload.current }
-        case ALERT:
-            return { ...state, alert: action.payload }
+        case GAME_END:
+            return {
+                ...state,
+                ended: action.payload.end,
+                winners: [...action.payload.winners],
+            }
+        case 'USER_LOGIN':
+            return {
+                ...state,
+                name: action.payload.name,
+                email: action.payload.email,
+                uid: action.payload.uid,
+                photoURL: action.payload.photoURL,
+            }
         default:
             return state
     }
@@ -40,9 +57,9 @@ export const SET_CONFIG = 'set config'
 export const UPDATE = 'update'
 export const CONNECT = 'connect'
 export const DISCONNECT = 'disconnect'
-export const CONFIG = 'config'
+// export const CONFIG = 'config'
 export const NEXT = 'next'
-export const ALERT = 'alert'
+export const GAME_END = 'game ended'
 
 // action creators
 export const set_piece_out = (state) => ({
@@ -62,20 +79,20 @@ export const update_current = ({ current }) => ({
     type: UPDATE,
     payload: { current },
 })
-export const connect_socket = (room) => ({
+export const connect_socket = ({ roomId, channelId, userId }) => ({
     type: CONNECT,
-    payload: room,
+    payload: { roomId, channelId, userId },
 })
 export const disconnect_socket = () => ({
     type: DISCONNECT,
 })
-export const set_config_request = () => ({
-    type: CONFIG,
-})
 export const next_player = () => ({
     type: NEXT,
 })
-export const alert_player = () => ({
-    type: ALERT,
-    
+// export const new_config = (payload) => ({
+//     type: CONFIG,
+//     payload: payload,
+// })
+export const game_end = () => ({
+    type: GAME_END,
 })

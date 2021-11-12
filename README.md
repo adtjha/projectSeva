@@ -1,22 +1,3 @@
-# Project Seva
-
-- Play games with friends using money,
-- Winner donates the lot.
-
-# Tech Stack
-
-1. Node + Express
-2. React + Redux + Tailwind CSS
-3. Socket.io
-
-## Frontend
-
-All the game Ui is handled by react, game data by redux.
-
-## Backend
-
-This takes care of the backend.
-
 # THINGS TO REMEBER BEFORE DEPLOY
 
 - index.js
@@ -26,6 +7,11 @@ This takes care of the backend.
   Uncomment BASE_API
 
 ---
+
+#### files, folders to exclude while searching
+```
+TODO.md,package-lock.json,build,node_modules/*,frontend/node_modules/*, frontend/package-lock.json, frontend/tailwind.config.js, package.json,  frontend/public,.git/*
+```
 
 #### Prize Pool Money - 1000
 
