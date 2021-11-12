@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { getGameCurrentPlayer } from '../../../store/user'
+import { OtherPlayerVideo } from './OtherPlayerVideo'
+import { PlayerVideo } from './PlayerVideo'
+
+const getCurentVideo = (current, color) => {
+    current === color ? <PlayerVideo /> : <OtherPlayerVideo />
+}
 
 export const VideoChat = () => {
     const [current, setCurrent] = useState('')
@@ -80,7 +86,9 @@ export const VideoChat = () => {
                     className={
                         current === 'red' ? redClassName + effect : redClassName
                     }
-                ></div>
+                >
+                    {getCurentVideo(current, 'red')}
+                </div>
                 <div
                     className={`col-start-1 col-end-2 row-start-6 row-end-7 p-0.5 ${cellStyle}`}
                 >
@@ -99,7 +107,9 @@ export const VideoChat = () => {
                             ? greenClassName + effect
                             : greenClassName
                     }
-                ></div>
+                >
+                    {getCurentVideo(current, 'green')}
+                </div>
                 <div
                     className={`col-start-10 col-end-11 row-start-1 row-end-2 ${cellStyle}`}
                 >
@@ -118,7 +128,9 @@ export const VideoChat = () => {
                             ? yellowClassName + effect
                             : yellowClassName
                     }
-                ></div>
+                >
+                    {getCurentVideo(current, 'yellow')}
+                </div>
                 <div
                     className={`col-start-6 col-end-7 row-start-10 row-end-11 ${cellStyle}`}
                 >
@@ -137,7 +149,9 @@ export const VideoChat = () => {
                             ? blueClassName + effect
                             : blueClassName
                     }
-                ></div>
+                >
+                    {getCurentVideo(current, 'blue')}
+                </div>
                 <div
                     className={`col-start-10 col-end-11 row-start-10 row-end-11 ${cellStyle}`}
                 >
