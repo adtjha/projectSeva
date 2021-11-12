@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "prettier": {},
   "scripts": {
+    "format": "prettier --write \"*.js\"",
     "start": "node index.js",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend",
     "dev": "concurrently \"nodemon node index.js\" \"cd frontend && npm start\"",
@@ -25,5 +27,8 @@
   "engines": {
     "node": "16.4.2",
     "npm": "7.18.1"
+  },
+  "devDependencies": {
+    "prettier": "^2.4.1"
   }
 }

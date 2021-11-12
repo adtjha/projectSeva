@@ -1,5 +1,5 @@
-const { client, db, FieldValue } = require("../..");
-const { rooms } = require("../constant");
+const { client, db, FieldValue } = require("../../..");
+const { rooms } = require("../../constant");
 
 function disconnectPlayer(socket) {
   return async () => {

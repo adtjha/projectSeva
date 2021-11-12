@@ -1,5 +1,5 @@
-const { generateFEN, roomDefault } = require("../../constant");
-const { db } = require("../../..");
+const { generateFEN, roomDefault } = require("../../../constant");
+const { db } = require("../../../..");
 const { createNewRoom } = require("./createNewRoom");
 const { fitIntoDifferentRoom } = require("./fitIntoDifferentRoom");
 const { fitIntoDesiredRoom } = require("./fitIntoDesiredRoom");

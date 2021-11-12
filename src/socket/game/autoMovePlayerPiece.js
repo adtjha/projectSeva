@@ -1,5 +1,5 @@
-const { client } = require("../..");
-const { rooms } = require("../constant");
+const { client } = require("../../..");
+const { rooms } = require("../../constant");
 const { movePiece } = require("./movePiece");
 
 function autoMovePlayerPiece(socket, io) {

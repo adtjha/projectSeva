@@ -1,6 +1,6 @@
-const { guid } = require("../../guid");
-const { consoleSpacing, redPlayer } = require("../../constant");
-const { client, db } = require("../../..");
+const { guid } = require("../../../guid");
+const { consoleSpacing, redPlayer } = require("../../../constant");
+const { client, db } = require("../../../..");
 
 async function createNewRoom({
   channelId,

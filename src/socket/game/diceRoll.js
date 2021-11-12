@@ -1,7 +1,7 @@
 const { changeCurrentPlayer } = require("./changeCurrentPlayer");
 const { autoMovePlayerPiece } = require("./autoMovePlayerPiece");
-const { piecesOut, piecesOnFinal } = require("../constant");
-const { client } = require("../..");
+const { piecesOut, piecesOnFinal } = require("../../constant");
+const { client } = require("../../..");
 
 let i = 0;
 

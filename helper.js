@@ -8,4 +8,3 @@ exports.verifyContents = ({ channel }) => {
     });
   }
 };
-

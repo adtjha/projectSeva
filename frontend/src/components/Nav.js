@@ -9,16 +9,14 @@ import { Link } from 'react-router-dom'
 import { BASE_API } from '../Constants'
 
 const loginMenu = [
-    { name: 'home', href: '/' },
-    { name: 'funds', href: '/fund' },
+    { name: 'home', href: '/', key: 456 },
+    { name: 'funds', href: '/fund', key: 869 },
 ]
 
 export const Nav = ({ user }) => {
     const isLg = useMedia('(min-width: 768px)', false)
     const [open, setOpen] = useState(false)
     const history = useHistory()
-
-    console.log(user)
 
     const logoutUser = () => {
         logout()
@@ -63,7 +61,10 @@ export const Nav = ({ user }) => {
                     <>
                         <div className="max-w-lg flex flex-col flex-grow md:flex-row justify-evenly items-center">
                             {loginMenu.map((e) => (
-                                <div className="py-1 px-2 flex flex-row items-center cursor-pointer">
+                                <div
+                                    key={e.key}
+                                    className="py-1 px-2 flex flex-row items-center cursor-pointer"
+                                >
                                     <h1 className="px-2 text-lg text-blueGray-500 hover:text-blueGray-800 capitalize">
                                         <Link to={`${e.href}`}>{e.name}</Link>
                                     </h1>

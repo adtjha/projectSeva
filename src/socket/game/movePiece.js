@@ -1,7 +1,7 @@
 const { resetPiece } = require("./resetPiece");
 const { changeCurrentPlayer } = require("./changeCurrentPlayer");
-const { newPos, rooms, consoleSpacing, newArr } = require("../constant");
-const { client } = require("../..");
+const { newPos, rooms, consoleSpacing, newArr } = require("../../constant");
+const { client } = require("../../..");
 
 function movePiece(socket, io) {
   return async ({ dice, position, gameId, index, pieceId, userId }) => {

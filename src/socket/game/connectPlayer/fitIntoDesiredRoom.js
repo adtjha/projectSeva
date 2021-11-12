@@ -4,8 +4,8 @@ const {
   greenPlayer,
   yellowPlayer,
   bluePlayer,
-} = require("../../constant");
-const { client, db } = require("../../..");
+} = require("../../../constant");
+const { client, db } = require("../../../..");
 
 async function fitIntoDesiredRoom({
   room,

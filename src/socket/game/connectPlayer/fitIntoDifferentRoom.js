@@ -4,8 +4,8 @@ const {
   greenPlayer,
   yellowPlayer,
   bluePlayer,
-} = require("../../constant");
-const { client, db, FieldValue } = require("../../..");
+} = require("../../../constant");
+const { client, db, FieldValue } = require("../../../..");
 
 async function fitIntoDifferentRoom({
   channelId,
