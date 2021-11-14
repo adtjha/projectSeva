@@ -1,4 +1,3 @@
-
 const { autoMovePlayerPiece } = require("./game/autoMovePlayerPiece");
 const { changeCurrentPlayer } = require("./game/changeCurrentPlayer");
 const { connectPlayer } = require("./game/connectPlayer");
@@ -25,28 +24,5 @@ module.exports = (io) => {
     socket.on("end_game", endGame(socket, io));
 
     socket.on("disconnect", disconnectPlayer(socket));
-    
-    console.log(socket.id);
-    socket.emit("connection-success", {
-      socketId: socket.id,
-    });
-    
-    socket.on("disconnect", () => {});
-    
-    socket.on("createRoom", () => {});
-    
-    socket.on("createWebRtcTransport", () => {});
-    
-    socket.on("transport-connect", () => {});
-    
-    socket.on("transport-produce", () => {});
-    
-    socket.on("transport-recv-connect", () => {});
-    
-    socket.on("consume", () => {});
-    
-    socket.on("consumer-resume", () => {});
   });
 };
-
-
