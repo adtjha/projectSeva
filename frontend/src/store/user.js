@@ -59,6 +59,7 @@ export const CONNECT = 'connect'
 export const DISCONNECT = 'disconnect'
 export const NEXT = 'next'
 export const GAME_END = 'game ended'
+export const USER_LOGIN = 'user logged in'
 
 // action creators
 export const set_piece_out = (state) => ({
@@ -90,4 +91,13 @@ export const next_player = () => ({
 })
 export const game_end = () => ({
     type: GAME_END,
+})
+export const login = ({ name, email, uid, photoURL }) => ({
+    type: USER_LOGIN,
+    payload: {
+        name,
+        email,
+        uid,
+        photoURL,
+    },
 })

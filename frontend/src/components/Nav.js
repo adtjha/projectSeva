@@ -7,6 +7,8 @@ import { useState } from 'react'
 import { LogoutIcon } from '@heroicons/react/outline'
 import { Link } from 'react-router-dom'
 import { BASE_API } from '../Constants'
+import { useDispatch } from 'react-redux'
+import { login } from '../store/user'
 
 const loginMenu = [
     { name: 'home', href: '/', key: 456 },
@@ -17,10 +19,12 @@ export const Nav = ({ user }) => {
     const isLg = useMedia('(min-width: 768px)', false)
     const [open, setOpen] = useState(false)
     const history = useHistory()
+    const dispatch = useDispatch()
 
     const logoutUser = () => {
         logout()
             .then((e) => {
+                dispatch(login({ name: '', email: '', uid: '', photoURL: '' }))
                 history.replace('/')
             })
             .catch((e) => alert(e))

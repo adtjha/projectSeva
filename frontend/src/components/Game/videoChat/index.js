@@ -5,7 +5,11 @@ import { OtherPlayerVideo } from './OtherPlayerVideo'
 import { PlayerVideo } from './PlayerVideo'
 
 const getCurentVideo = (current, color) => {
-    current === color ? <PlayerVideo /> : <OtherPlayerVideo />
+    current === color ? (
+        <PlayerVideo color={color} current={current} />
+    ) : (
+        <OtherPlayerVideo color={color} current={current} />
+    )
 }
 
 export const VideoChat = () => {
