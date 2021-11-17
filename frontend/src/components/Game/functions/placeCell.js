@@ -1,4 +1,4 @@
-import Constants from '../../../Constants'
+import * as Constants from '../../../Constants'
 import _ from 'lodash'
 
 export default function replaceCell(color, board) {

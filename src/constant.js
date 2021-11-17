@@ -8,7 +8,7 @@ const redPlayer = {
   color: "red",
   pos: ["r1", "r2", "r3", "r4"],
   stream: "",
-  socketId: '',
+  socketId: "",
 };
 
 const greenPlayer = {
@@ -213,6 +213,23 @@ const otherPLayerPosArray = (pos, color) => {
   return otherPLayerPos;
 };
 
+const mediaCodecs = [
+  {
+    kind: "audio",
+    mimeType: "audio/opus",
+    clockRate: 48000,
+    channels: 2,
+  },
+  {
+    kind: "video",
+    mimeType: "video/VP8",
+    clockRate: 90000,
+    parameters: {
+      "x-google-start-bitrate": 1000,
+    },
+  },
+];
+
 const error_codes = {
   200: "Can't play this move. Only legal moves allowed.",
 };
@@ -236,3 +253,4 @@ exports.otherPLayerPosArray = otherPLayerPosArray;
 exports.error_codes = error_codes;
 exports.generateFEN = generateFEN;
 exports.piecesOnFinal = piecesOnFinal;
+exports.mediaCodecs = mediaCodecs;

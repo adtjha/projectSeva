@@ -28,7 +28,10 @@ async function fitIntoDifferentRoom({
     .doc(channelId)
     .collection("rooms")
     .doc(Object.keys(idsHaveSpace)[0])
-    .update({ colors: FieldValue.arrayRemove(color), space: FieldValue.increment(-1)});
+    .update({
+      colors: FieldValue.arrayRemove(color),
+      space: FieldValue.increment(-1),
+    });
 
   switch (color) {
     case "red":
@@ -51,6 +54,7 @@ async function fitIntoDifferentRoom({
 
   room.players[userId] = Object.assign({}, player);
   room.players[userId].socketId = socket.id;
+  room.router ??= {};
 
   await client.set(roomId, ".", JSON.stringify(room), "XX");
 
@@ -61,6 +65,7 @@ async function fitIntoDifferentRoom({
   config.current = room.current;
   config.user.id = userId;
   config.user.color = room.players[userId].color;
+  config.rtpCapabilities = room.router.rtpCapabilities;
 
   if (idsHaveSpace[Object.keys(idsHaveSpace)[0]].length === 0) {
     await db
@@ -70,6 +75,8 @@ async function fitIntoDifferentRoom({
       .doc(Object.keys(idsHaveSpace)[0])
       .delete();
   }
+
+  console.log("FITTING INTO EMPTY ROOM DONE...");
 
   return { roomId, room, config, error };
 }

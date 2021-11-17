@@ -1,9 +1,10 @@
 import extractObject from '../../../components/Game/functions/extractObject'
-import { call, put, takeLatest } from 'redux-saga/effects'
+import { call, put, takeLatest, select } from 'redux-saga/effects'
 import { set_dice } from '../../dice'
 import { set_players } from '../../move'
-import { set_config } from '../../user'
+import { create_device, getRtpCapabilities, set_config } from '../../user'
 import { suscribe } from './suscribe'
+import { Device } from 'mediasoup-client'
 
 // Worker
 
@@ -26,6 +27,7 @@ export function* setInitialState({ fen, dice, data }) {
                 game_id: data.id,
                 current: data.current,
                 color: data.user.color,
+                rtpCapabilities: { ...data.rtpCapabilities },
             })
         )
     }
@@ -37,6 +39,12 @@ export function* setInitialState({ fen, dice, data }) {
     if (fen) {
         yield put(set_players({ red, green, yellow, blue }))
     }
+
+    // Mediasoup Config
+    let device = new Device()
+    const rtp = yield select(getRtpCapabilities)
+    yield device.load({ routerRtpCapabilities: { ...rtp } })
+    yield put(create_device(device))
 
     return
 }

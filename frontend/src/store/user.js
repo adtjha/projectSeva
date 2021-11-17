@@ -10,6 +10,8 @@ const initialState = {
     ended: false,
     winners: [],
     alert: {},
+    rtpCapabilities: {},
+    device: {},
 }
 
 export function usersReducer(state = initialState, action) {
@@ -21,6 +23,7 @@ export function usersReducer(state = initialState, action) {
                 color: action.payload.color,
                 game_id: action.payload.game_id,
                 current: action.payload.current,
+                rtpCapabilities: action.payload.rtpCapabilities,
             }
         case UPDATE:
             return { ...state, current: action.payload.current }
@@ -30,13 +33,18 @@ export function usersReducer(state = initialState, action) {
                 ended: action.payload.end,
                 winners: [...action.payload.winners],
             }
-        case 'USER_LOGIN':
+        case USER_LOGIN:
             return {
                 ...state,
                 name: action.payload.name,
                 email: action.payload.email,
                 uid: action.payload.uid,
                 photoURL: action.payload.photoURL,
+            }
+        case SET_DEVICE:
+            return {
+                ...state,
+                device: action.payload,
             }
         default:
             return state
@@ -45,10 +53,12 @@ export function usersReducer(state = initialState, action) {
 
 // selectors
 export const getColor = (state) => state.user.color
-export const getUserId = (state) => state.user.id
+export const getUserId = (state) => state.user.uid
 export const getGameId = (state) => state.user.game_id
 export const getGameStatus = (state) => state.user.ended
 export const getGameCurrentPlayer = (state) => state.user.current
+export const getRtpCapabilities = (state) => state.user.rtpCapabilities
+export const getDevice = (state) => state.user.device
 
 // action types
 export const PIECE = 'piece'
@@ -60,6 +70,7 @@ export const DISCONNECT = 'disconnect'
 export const NEXT = 'next'
 export const GAME_END = 'game ended'
 export const USER_LOGIN = 'user logged in'
+export const SET_DEVICE = 'set device'
 
 // action creators
 export const set_piece_out = (state) => ({
@@ -100,4 +111,8 @@ export const login = ({ name, email, uid, photoURL }) => ({
         uid,
         photoURL,
     },
+})
+export const create_device = (device) => ({
+    type: SET_DEVICE,
+    payload: { ...device },
 })

@@ -15,6 +15,7 @@ async function fitIntoDesiredRoom({
   config,
   error,
 }) {
+  console.log("FITTING INTO DESIRED ROOM");
   room = JSON.parse(await client.get(roomId));
 
   // if (!room) {
@@ -32,6 +33,12 @@ async function fitIntoDesiredRoom({
   //   }
   // }
 
+  if (!Object.keys(room.router) > 0 && room.router.id === undefined) {
+    room.router = await worker.createRouter({ mediaCodecs });
+  }
+
+  console.log(`Router ID: ${room.router.id}`);
+
   if (Object.keys(room.players).find((e) => e == userId)) {
     room.players[userId].socketId = socket.id;
 
@@ -47,6 +54,7 @@ async function fitIntoDesiredRoom({
     config.current = room.current;
     config.user.id = userId;
     config.user.color = room.players[userId].color;
+    config.rtpCapabilities = { ...room.router.rtpCapabilities };
   } else {
     if (Object.keys(room.players).length < 4) {
       consoleSpacing("ROOM ID PRESENT : FITTING");
@@ -86,6 +94,7 @@ async function fitIntoDesiredRoom({
       config.current = room.current;
       config.user.id = userId;
       config.user.color = room.players[userId].color;
+      config.rtpCapabilities = { ...room.router.rtpCapabilities };
     } else {
       consoleSpacing("ROOM ID PRESENT : NO SPACE");
       error = {

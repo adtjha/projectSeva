@@ -9,7 +9,7 @@ import {
 import { read, setInitialState } from './workers/read'
 import { socketWorker } from './watcher/worker'
 import { CONNECT, DISCONNECT, set_config } from '../user'
-import Constants from '../../Constants'
+import * as Constants from '../../Constants'
 import { io } from 'socket.io-client'
 import { END, eventChannel } from '@redux-saga/core'
 

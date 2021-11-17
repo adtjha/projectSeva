@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const Choice = ({ user, room, setRoom, handleSubmit }) => {
+export const Choice = ({ user, room, setRoom, handleSubmit, channelId }) => {
     return (
         <div className="w-full h-full flex flex-col items-center justify-center">
             <div className="w-5/6 h-16 items-center justify-center my-4 mx-auto flex flex-row">
@@ -11,9 +11,7 @@ export const Choice = ({ user, room, setRoom, handleSubmit }) => {
                     >
                         Channel
                     </div>
-                    <div className="text-lg font-bold ">
-                        72nWEeqmyKRtZjyotl4f
-                    </div>
+                    <div className="text-lg font-bold ">{channelId}</div>
                 </div>
             </div>
             <div className="w-full md:w-100 h-full flex flex-wrap items-center justify-center p-4 rounded-2xl border-2 border-dashed border-blueGray-400 ">

@@ -1,5 +1,5 @@
 const { guid } = require("../../../guid");
-const { consoleSpacing, redPlayer } = require("../../../constant");
+const { consoleSpacing, redPlayer, mediaCodecs } = require("../../../constant");
 const { client, db } = require("../../../..");
 
 async function createNewRoom({
@@ -19,10 +19,14 @@ async function createNewRoom({
   // -> Push into room into rooms array
   room = {
     players: {},
+    router: {},
     current: "",
     dice: 1,
     gameEnded: false,
   };
+
+  room.router = await worker.createRouter({ mediaCodecs });
+  console.log(`Router ID: ${room.router.id}`);
 
   room.players[userId] = Object.assign({}, redPlayer);
   room.players[userId].socketId = socket.id;
@@ -45,6 +49,7 @@ async function createNewRoom({
   config.user.id = userId;
   config.user.color = "red";
   config.current = "red";
+  config.rtpCapabilities = room.router.rtpCapabilities;
   return { roomId, room, config, error };
 }
 exports.createNewRoom = createNewRoom;

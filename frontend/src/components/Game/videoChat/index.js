@@ -1,46 +1,113 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { getGameCurrentPlayer } from '../../../store/user'
+import {
+    redClassName,
+    greenClassName,
+    blueClassName,
+    yellowClassName,
+    iconStyle,
+    cellStyle,
+    BASE_API,
+} from '../../../Constants'
+import {
+    getDevice,
+    getGameCurrentPlayer,
+    getGameId,
+    getRtpCapabilities,
+    getUserId,
+} from '../../../store/user'
 import { OtherPlayerVideo } from './OtherPlayerVideo'
 import { PlayerVideo } from './PlayerVideo'
-
-const getCurentVideo = (current, color) => {
-    current === color ? (
-        <PlayerVideo color={color} current={current} />
-    ) : (
-        <OtherPlayerVideo color={color} current={current} />
-    )
-}
+import { Device } from 'mediasoup-client'
 
 export const VideoChat = () => {
     const [current, setCurrent] = useState('')
+    // const [device, setDevice] = useState(null)
+    // const gameId = useSelector(getGameId)
+    // const userId = useSelector(getUserId)
+    // const [params, setParams] = useState({
+    //     encodings: [
+    //         {
+    //             rid: 'r0',
+    //             maxBitrate: 100000,
+    //             scalabilityMode: 'S1T3',
+    //         },
+    //         {
+    //             rid: 'r1',
+    //             maxBitrate: 300000,
+    //             scalabilityMode: 'S1T3',
+    //         },
+    //         {
+    //             rid: 'r2',
+    //             maxBitrate: 900000,
+    //             scalabilityMode: 'S1T3',
+    //         },
+    //     ],
+    //     codecOptions: {
+    //         videoGoogleStartBitrate: 1000,
+    //     },
+    // })
+    // const [rtpCapabilities, setRtpCapabilities] = useState(null)
+
+    const getCurentVideo = (current, color) => {
+        // return current === color ? (
+        //     <PlayerVideo
+        //         color={color}
+        //         device={device}
+        //         params={params}
+        //         setParams={setParams}
+        //         getRtpCapabilities={getRtpCapabilities}
+        //     />
+        // ) : (
+        //     <OtherPlayerVideo
+        //         color={color}
+        //         device={device}
+        //         params={params}
+        //         setParams={setParams}
+        //         getRtpCapabilities={getRtpCapabilities}
+        //     />
+        // )
+        return ''
+    }
+
+    // const createDevice = useCallback(() => {
+    //     setDevice(new Device())
+    //     device
+    //         .load({ routerRtpCapabilities: rtpCapabilities })
+    //         .then((e) => console.log('device loaded'))
+    // }, [device, rtpCapabilities])
+
+    // const getRtpCapabilities = useCallback(async () => {
+    //     const res = await fetch(`${BASE_API}/mediasoup/getRtp`, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify({
+    //             userId,
+    //             roomId: gameId,
+    //         }),
+    //     })
+    //     console.log('SETTING RTP Capability:', { ...res.json })
+    //     setRtpCapabilities(res.json)
+    //     // createDevice()
+    // }, [gameId, userId])
 
     const currentPlayer = useSelector(getGameCurrentPlayer)
-
-    const redClassName =
-        'col-start-1 col-end-7 row-start-1 row-end-6 bg-red-200 rounded-2xl overflow-hidden shadow-md border-2 border-double border-red-400'
-    const greenClassName =
-        'col-start-11 col-end-16 row-start-1 row-end-7  bg-green-200 rounded-2xl overflow-hidden shadow-md border-2 border-double border-green-400'
-    const yellowClassName =
-        'col-start-1 col-end-6 row-start-10 row-end-16 bg-yellow-200 rounded-2xl overflow-hidden shadow-md border-2 border-double border-yellow-400'
-    const blueClassName =
-        'col-start-10 col-end-16 row-start-11 row-end-16  bg-blue-200 rounded-2xl overflow-hidden shadow-md border-2 border-double border-blue-400'
+    const rtp = useSelector(getRtpCapabilities)
+    const device = useSelector(getDevice)
 
     const effect = ' animate-wiggle'
 
     useEffect(() => {
         setCurrent(currentPlayer)
+        rtp && console.log(rtp)
+        device && console.log(device)
 
         return () => {
             setCurrent('')
         }
-    }, [setCurrent, currentPlayer])
-
-    const iconStyle =
-        'h-4 lg:h-6 w-4 lg:w-6 stroke-current text-gray-400 m-auto'
-
-    const cellStyle =
-        ' w-5 h-5 shadow-md lg:w-8 lg:h-8 lg:p-1 text-center shadow-none rounded flex justify-center items-center flex-wrap opacity-40'
+    }, [currentPlayer, device, rtp])
 
     const videoIcon = (
         <svg

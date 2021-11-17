@@ -53,6 +53,8 @@ function connectPlayer(socket, io) {
         space = false;
       }
 
+      console.log(space);
+
       if (space) {
         ({ roomId, room, config, error } = await fitIntoDifferentRoom({
           channelId,
@@ -113,6 +115,8 @@ function connectPlayer(socket, io) {
         fen: generateFEN(room.players),
       });
     }
+
+    console.log("CONNECT PLAYER DONE...");
   };
 }
 
