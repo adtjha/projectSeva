@@ -5,10 +5,7 @@
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#faebd7" />
-    <meta
-      name="description"
-      content="Apna Paisa Dedo"
-    />
+    <meta name="description" content="Apna Paisa Dedo" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/apple-touch-icon.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
@@ -44,4 +41,10 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
+  <script>
+    window.localStorage.setItem(
+      "debug",
+      "mediasoup-client:WARN* mediasoup-client:ERROR*"
+    );
+  </script>
 </html>

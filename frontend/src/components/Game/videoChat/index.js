@@ -22,76 +22,15 @@ import { Device } from 'mediasoup-client'
 
 export const VideoChat = () => {
     const [current, setCurrent] = useState('')
-    // const [device, setDevice] = useState(null)
-    // const gameId = useSelector(getGameId)
-    // const userId = useSelector(getUserId)
-    // const [params, setParams] = useState({
-    //     encodings: [
-    //         {
-    //             rid: 'r0',
-    //             maxBitrate: 100000,
-    //             scalabilityMode: 'S1T3',
-    //         },
-    //         {
-    //             rid: 'r1',
-    //             maxBitrate: 300000,
-    //             scalabilityMode: 'S1T3',
-    //         },
-    //         {
-    //             rid: 'r2',
-    //             maxBitrate: 900000,
-    //             scalabilityMode: 'S1T3',
-    //         },
-    //     ],
-    //     codecOptions: {
-    //         videoGoogleStartBitrate: 1000,
-    //     },
-    // })
-    // const [rtpCapabilities, setRtpCapabilities] = useState(null)
 
     const getCurentVideo = (current, color) => {
-        // return current === color ? (
-        //     <PlayerVideo
-        //         color={color}
-        //         device={device}
-        //         params={params}
-        //         setParams={setParams}
-        //         getRtpCapabilities={getRtpCapabilities}
-        //     />
-        // ) : (
-        //     <OtherPlayerVideo
-        //         color={color}
-        //         device={device}
-        //         params={params}
-        //         setParams={setParams}
-        //         getRtpCapabilities={getRtpCapabilities}
-        //     />
-        // )
-        return ''
+        return current === color ? (
+            <PlayerVideo color={color} />
+        ) : (
+            // <OtherPlayerVideo color={color} />
+            ''
+        )
     }
-
-    // const createDevice = useCallback(() => {
-    //     setDevice(new Device())
-    //     device
-    //         .load({ routerRtpCapabilities: rtpCapabilities })
-    //         .then((e) => console.log('device loaded'))
-    // }, [device, rtpCapabilities])
-
-    // const getRtpCapabilities = useCallback(async () => {
-    //     const res = await fetch(`${BASE_API}/mediasoup/getRtp`, {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify({
-    //             userId,
-    //             roomId: gameId,
-    //         }),
-    //     })
-    //     console.log('SETTING RTP Capability:', { ...res.json })
-    //     setRtpCapabilities(res.json)
-    //     // createDevice()
-    // }, [gameId, userId])
 
     const currentPlayer = useSelector(getGameCurrentPlayer)
     const rtp = useSelector(getRtpCapabilities)

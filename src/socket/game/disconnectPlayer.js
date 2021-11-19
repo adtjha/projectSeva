@@ -18,12 +18,15 @@ function disconnectPlayer(socket) {
       })
       .catch((e) => console.error(e));
 
+    // if (playerRoomId) {
+    //   const room = JSON.parse(await client.get(playerRoomId));
+    //   if (room.players.hasOwnProperty(userId)) {
+    //     room.players[userId].socketId = "";
+    //     await client.set(playerRoomId, ".", JSON.stringify(room), "XX");
+    //   }
+    // }
     if (playerRoomId) {
-      const room = JSON.parse(await client.get(playerRoomId));
-      if (room.players.hasOwnProperty(userId)) {
-        room.players[userId].socketId = "";
-        await client.set(playerRoomId, ".", JSON.stringify(room), "XX");
-      }
+      await client.del(playerRoomId, ".");
     }
   };
 }

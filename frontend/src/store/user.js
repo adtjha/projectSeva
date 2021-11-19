@@ -10,8 +10,35 @@ const initialState = {
     ended: false,
     winners: [],
     alert: {},
+    params: {
+        encodings: [
+            {
+                rid: 'r0',
+                maxBitrate: 100000,
+                scalabilityMode: 'S1T3',
+            },
+            {
+                rid: 'r1',
+                maxBitrate: 300000,
+                scalabilityMode: 'S1T3',
+            },
+            {
+                rid: 'r2',
+                maxBitrate: 900000,
+                scalabilityMode: 'S1T3',
+            },
+        ],
+        codecOptions: {
+            videoGoogleStartBitrate: 1000,
+        },
+    },
     rtpCapabilities: {},
     device: {},
+    producerTransport: {},
+    consumerTransports: [],
+    producer: {},
+    consumer: {},
+    isProducer: false,
 }
 
 export function usersReducer(state = initialState, action) {
@@ -46,6 +73,15 @@ export function usersReducer(state = initialState, action) {
                 ...state,
                 device: action.payload,
             }
+        case SET_PARAMS:
+            console.log({
+                ...state,
+                params: { ...action.payload, ...state.params },
+            })
+            return {
+                ...state,
+                params: { ...action.payload, ...state.params },
+            }
         default:
             return state
     }
@@ -59,6 +95,7 @@ export const getGameStatus = (state) => state.user.ended
 export const getGameCurrentPlayer = (state) => state.user.current
 export const getRtpCapabilities = (state) => state.user.rtpCapabilities
 export const getDevice = (state) => state.user.device
+export const getParams = (state) => state.user.params
 
 // action types
 export const PIECE = 'piece'
@@ -71,6 +108,9 @@ export const NEXT = 'next'
 export const GAME_END = 'game ended'
 export const USER_LOGIN = 'user logged in'
 export const SET_DEVICE = 'set device'
+export const SET_PARAMS = 'set params'
+export const CREATE_SEND_TRANSPORT = 'creating send transport'
+export const CONNECT_SEND_TRANSPORT = 'connect send transport'
 
 // action creators
 export const set_piece_out = (state) => ({
@@ -115,4 +155,15 @@ export const login = ({ name, email, uid, photoURL }) => ({
 export const create_device = (device) => ({
     type: SET_DEVICE,
     payload: { ...device },
+})
+export const update_params = ({ track }) => ({
+    type: SET_PARAMS,
+    payload: { track },
+})
+export const createSendTransportAction = (data) => ({
+    type: CREATE_SEND_TRANSPORT,
+    payload: { ...data },
+})
+export const connectSendTransportAction = () => ({
+    type: CONNECT_SEND_TRANSPORT,
 })

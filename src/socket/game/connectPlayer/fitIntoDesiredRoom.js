@@ -6,6 +6,7 @@ const {
   bluePlayer,
 } = require("../../../constant");
 const { client, db } = require("../../../..");
+const { checkRouter } = require("../../video/checkRouter");
 
 async function fitIntoDesiredRoom({
   room,
@@ -33,11 +34,18 @@ async function fitIntoDesiredRoom({
   //   }
   // }
 
-  if (!Object.keys(room.router) > 0 && room.router.id === undefined) {
-    room.router = await worker.createRouter({ mediaCodecs });
-  }
+  // if (!Object.keys(room.router) > 0 && room.router.id === undefined) {
+  //   room.router = await worker.createRouter({ mediaCodecs });
+  // }
 
-  console.log(`Router ID: ${room.router.id}`);
+  let transportParams;
+  console.log(room.router.id);
+  ({ room, transportParams } = await checkRouter(
+    room,
+    userId,
+    transportParams
+  ));
+  console.log(transportParams);
 
   if (Object.keys(room.players).find((e) => e == userId)) {
     room.players[userId].socketId = socket.id;
@@ -55,6 +63,7 @@ async function fitIntoDesiredRoom({
     config.user.id = userId;
     config.user.color = room.players[userId].color;
     config.rtpCapabilities = { ...room.router.rtpCapabilities };
+    config.transportParams = transportParams;
   } else {
     if (Object.keys(room.players).length < 4) {
       consoleSpacing("ROOM ID PRESENT : FITTING");
@@ -95,6 +104,7 @@ async function fitIntoDesiredRoom({
       config.user.id = userId;
       config.user.color = room.players[userId].color;
       config.rtpCapabilities = { ...room.router.rtpCapabilities };
+      config.transportParams = transportParams;
     } else {
       consoleSpacing("ROOM ID PRESENT : NO SPACE");
       error = {

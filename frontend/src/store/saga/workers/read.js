@@ -2,7 +2,12 @@ import extractObject from '../../../components/Game/functions/extractObject'
 import { call, put, takeLatest, select } from 'redux-saga/effects'
 import { set_dice } from '../../dice'
 import { set_players } from '../../move'
-import { create_device, getRtpCapabilities, set_config } from '../../user'
+import {
+    create_device,
+    getRtpCapabilities,
+    set_config,
+    update_params,
+} from '../../user'
 import { suscribe } from './suscribe'
 import { Device } from 'mediasoup-client'
 
@@ -40,11 +45,25 @@ export function* setInitialState({ fen, dice, data }) {
         yield put(set_players({ red, green, yellow, blue }))
     }
 
+    console.log(data)
+
     // Mediasoup Config
     let device = new Device()
     const rtp = yield select(getRtpCapabilities)
     yield device.load({ routerRtpCapabilities: { ...rtp } })
     yield put(create_device(device))
+
+    if (data.transportParams.params.error) {
+        console.log(data.transportParams.params.error)
+        return
+    }
+
+    yield put(update_params(data.transportParams.params))
+    const producerTransport = device.createSendTransport(
+        data.transportParams.params
+    )
+
+    console.log(producerTransport)
 
     return
 }

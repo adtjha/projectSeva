@@ -6,6 +6,7 @@ const {
   bluePlayer,
 } = require("../../../constant");
 const { client, db, FieldValue } = require("../../../..");
+const { checkRouter } = require("../../video/checkRouter");
 
 async function fitIntoDifferentRoom({
   channelId,
@@ -50,11 +51,15 @@ async function fitIntoDifferentRoom({
 
   room = JSON.parse(await client.get(roomId));
 
-  console.log(room);
+  let transportParams;
+  ({ room, transportParams } = await checkRouter(
+    room,
+    userId,
+    transportParams
+  ));
 
   room.players[userId] = Object.assign({}, player);
   room.players[userId].socketId = socket.id;
-  room.router ??= {};
 
   await client.set(roomId, ".", JSON.stringify(room), "XX");
 
@@ -66,6 +71,7 @@ async function fitIntoDifferentRoom({
   config.user.id = userId;
   config.user.color = room.players[userId].color;
   config.rtpCapabilities = room.router.rtpCapabilities;
+  config.transportParams = transportParams;
 
   if (idsHaveSpace[Object.keys(idsHaveSpace)[0]].length === 0) {
     await db

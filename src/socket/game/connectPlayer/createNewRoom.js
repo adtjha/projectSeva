@@ -1,6 +1,9 @@
 const { guid } = require("../../../guid");
 const { consoleSpacing, redPlayer, mediaCodecs } = require("../../../constant");
 const { client, db } = require("../../../..");
+const { addTransport } = require("../../video/addTransport");
+const { createWebRtcTransport } = require("../../video/createWebRtcTransport");
+const { checkRouter } = require("../../video/checkRouter");
 
 async function createNewRoom({
   channelId,
@@ -25,15 +28,19 @@ async function createNewRoom({
     gameEnded: false,
   };
 
-  room.router = await worker.createRouter({ mediaCodecs });
-  console.log(`Router ID: ${room.router.id}`);
-
   room.players[userId] = Object.assign({}, redPlayer);
   room.players[userId].socketId = socket.id;
   room.current = "red";
 
   socket.leave(`${socket.id}`);
   socket.join(roomId);
+
+  let transportParams;
+  ({ room, transportParams } = await checkRouter(
+    room,
+    userId,
+    transportParams
+  ));
 
   await client.set(roomId, ".", JSON.stringify(room), "NX");
 
@@ -50,6 +57,7 @@ async function createNewRoom({
   config.user.color = "red";
   config.current = "red";
   config.rtpCapabilities = room.router.rtpCapabilities;
+  config.transportParams = transportParams;
   return { roomId, room, config, error };
 }
 exports.createNewRoom = createNewRoom;
