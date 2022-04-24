@@ -1,7 +1,7 @@
 const { changeCurrentPlayer } = require("./changeCurrentPlayer");
 const { autoMovePlayerPiece } = require("./autoMovePlayerPiece");
-const { piecesOut, piecesOnFinal } = require("../constant");
-const { client } = require("../..");
+const { piecesOut, piecesOnFinal } = require("../../constant");
+const { client } = require("../../..");
 
 let i = 0;
 
@@ -12,6 +12,8 @@ function diceRoll(socket, io) {
     // consoleSpacing(" " + i + " ");
     // const face = i > diceArray.length - 1 ? Math.ceil(Math.random() * 6) : diceArray[i++];
     // const face = 6;
+    console.log("DICE ROLL");
+
     const room = JSON.parse(await client.get(gameId));
 
     const face = Math.ceil(Math.random() * 6);
@@ -49,6 +51,8 @@ function diceRoll(socket, io) {
       );
       // () => autoMovePlayerPiece(socket, io)({ gameId, face });
     }
+
+    console.log("DICE ROLL DONE");
   };
 }
 exports.diceRoll = diceRoll;

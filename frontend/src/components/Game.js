@@ -30,7 +30,7 @@ export const Game = ({ user }) => {
         <Board userId={user.uid} />
     ) : (
         <React.Fragment>
-            {Choice({ user, room, setRoom, handleSubmit })}
+            {Choice({ user, room, setRoom, handleSubmit, channelId })}
         </React.Fragment>
     )
 }

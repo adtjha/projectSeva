@@ -6,6 +6,7 @@ import { ReactComponent as XIcon } from '../../images/icons/x.svg'
 import { signInWithGoogle } from '../../firebase'
 import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 
 const UserId = ({ isPhone, setIsPhone, phone, setPhone, email, setEmail }) => {
     return isPhone ? (
@@ -154,10 +155,12 @@ const LoginForm = ({ open, setOpen, layout_id }) => {
 const Login = () => {
     const [open, setOpen] = useState(false)
     const history = useHistory()
+    const dispatch = useDispatch()
 
     const login = () => {
         signInWithGoogle()
-            .then((e) => {
+            .then((user) => {
+                dispatch(login({...user}))
                 history.replace('/')
             })
             .catch((e) => alert(e))

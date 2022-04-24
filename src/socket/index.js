@@ -1,25 +1,12 @@
-const { v4: uuidv4 } = require("uuid");
-const { autoMovePlayerPiece } = require("./autoMovePlayerPiece");
-const { changeCurrentPlayer } = require("./changeCurrentPlayer");
-const {
-  consoleSpacing,
-  rooms,
-  roomDefault,
-  players,
-  newArr,
-  newPos,
-  piecesOut,
-  otherPLayerPosArray,
-  isSafe,
-  error_codes,
-  piecesOnFinal,
-} = require("../constant");
-const { connectPlayer } = require("./connectPlayer");
-const { diceRoll } = require("./diceRoll");
-const { disconnectPlayer } = require("./disconnectPlayer");
-const { movePiece } = require("./movePiece");
-const { resetPiece } = require("./resetPiece");
-const { endGame } = require("./endGame");
+const { autoMovePlayerPiece } = require("./game/autoMovePlayerPiece");
+const { changeCurrentPlayer } = require("./game/changeCurrentPlayer");
+const { connectPlayer } = require("./game/connectPlayer");
+const { diceRoll } = require("./game/diceRoll");
+const { disconnectPlayer } = require("./game/disconnectPlayer");
+const { movePiece } = require("./game/movePiece");
+const { resetPiece } = require("./game/resetPiece");
+const { endGame } = require("./game/endGame");
+const { createSendTransport } = require("./video/createSendTransport");
 
 module.exports = (io) => {
   io.on("connection", (socket) => {
@@ -38,7 +25,19 @@ module.exports = (io) => {
     socket.on("end_game", endGame(socket, io));
 
     socket.on("disconnect", disconnectPlayer(socket));
+
+    socket.on("createWebRtcTransport", createSendTransport(socket, io));
+
+    socket.on("test2", (callback) => {
+      console.log("TEST 2");
+      setTimeout(() => {
+        callback({ value: "test3 to run" });
+      }, 5000);
+    });
+
+    socket.on("test3", (callback) => {
+      console.log("TEST 3");
+      callback({ value: "all tests ran" });
+    });
   });
 };
-
-

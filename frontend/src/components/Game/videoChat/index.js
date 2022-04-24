@@ -1,36 +1,52 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { getGameCurrentPlayer } from '../../../store/user'
+import {
+    redClassName,
+    greenClassName,
+    blueClassName,
+    yellowClassName,
+    iconStyle,
+    cellStyle,
+    BASE_API,
+} from '../../../Constants'
+import {
+    getDevice,
+    getGameCurrentPlayer,
+    getGameId,
+    getRtpCapabilities,
+    getUserId,
+} from '../../../store/user'
+import { OtherPlayerVideo } from './OtherPlayerVideo'
+import { PlayerVideo } from './PlayerVideo'
+import { Device } from 'mediasoup-client'
 
 export const VideoChat = () => {
     const [current, setCurrent] = useState('')
 
-    const currentPlayer = useSelector(getGameCurrentPlayer)
+    const getCurentVideo = (current, color) => {
+        return current === color ? (
+            <PlayerVideo color={color} />
+        ) : (
+            // <OtherPlayerVideo color={color} />
+            ''
+        )
+    }
 
-    const redClassName =
-        'col-start-1 col-end-7 row-start-1 row-end-6 bg-red-200 rounded-2xl overflow-hidden shadow-md border-2 border-double border-red-400'
-    const greenClassName =
-        'col-start-11 col-end-16 row-start-1 row-end-7  bg-green-200 rounded-2xl overflow-hidden shadow-md border-2 border-double border-green-400'
-    const yellowClassName =
-        'col-start-1 col-end-6 row-start-10 row-end-16 bg-yellow-200 rounded-2xl overflow-hidden shadow-md border-2 border-double border-yellow-400'
-    const blueClassName =
-        'col-start-10 col-end-16 row-start-11 row-end-16  bg-blue-200 rounded-2xl overflow-hidden shadow-md border-2 border-double border-blue-400'
+    const currentPlayer = useSelector(getGameCurrentPlayer)
+    const rtp = useSelector(getRtpCapabilities)
+    const device = useSelector(getDevice)
 
     const effect = ' animate-wiggle'
 
     useEffect(() => {
         setCurrent(currentPlayer)
+        rtp && console.log(rtp)
+        device && console.log(device)
 
         return () => {
             setCurrent('')
         }
-    }, [setCurrent, currentPlayer])
-
-    const iconStyle =
-        'h-4 lg:h-6 w-4 lg:w-6 stroke-current text-gray-400 m-auto'
-
-    const cellStyle =
-        ' w-5 h-5 shadow-md lg:w-8 lg:h-8 lg:p-1 text-center shadow-none rounded flex justify-center items-center flex-wrap opacity-40'
+    }, [currentPlayer, device, rtp])
 
     const videoIcon = (
         <svg
@@ -80,7 +96,9 @@ export const VideoChat = () => {
                     className={
                         current === 'red' ? redClassName + effect : redClassName
                     }
-                ></div>
+                >
+                    {getCurentVideo(current, 'red')}
+                </div>
                 <div
                     className={`col-start-1 col-end-2 row-start-6 row-end-7 p-0.5 ${cellStyle}`}
                 >
@@ -99,7 +117,9 @@ export const VideoChat = () => {
                             ? greenClassName + effect
                             : greenClassName
                     }
-                ></div>
+                >
+                    {getCurentVideo(current, 'green')}
+                </div>
                 <div
                     className={`col-start-10 col-end-11 row-start-1 row-end-2 ${cellStyle}`}
                 >
@@ -118,7 +138,9 @@ export const VideoChat = () => {
                             ? yellowClassName + effect
                             : yellowClassName
                     }
-                ></div>
+                >
+                    {getCurentVideo(current, 'yellow')}
+                </div>
                 <div
                     className={`col-start-6 col-end-7 row-start-10 row-end-11 ${cellStyle}`}
                 >
@@ -137,7 +159,9 @@ export const VideoChat = () => {
                             ? blueClassName + effect
                             : blueClassName
                     }
-                ></div>
+                >
+                    {getCurentVideo(current, 'blue')}
+                </div>
                 <div
                     className={`col-start-10 col-end-11 row-start-10 row-end-11 ${cellStyle}`}
                 >

@@ -1,5 +1,5 @@
-const { generateFEN, roomDefault } = require("../../constant");
-const { db } = require("../../..");
+const { generateFEN, roomDefault } = require("../../../constant");
+const { db } = require("../../../..");
 const { createNewRoom } = require("./createNewRoom");
 const { fitIntoDifferentRoom } = require("./fitIntoDifferentRoom");
 const { fitIntoDesiredRoom } = require("./fitIntoDesiredRoom");
@@ -52,6 +52,8 @@ function connectPlayer(socket, io) {
       } else {
         space = false;
       }
+
+      console.log(space);
 
       if (space) {
         ({ roomId, room, config, error } = await fitIntoDifferentRoom({
@@ -113,6 +115,8 @@ function connectPlayer(socket, io) {
         fen: generateFEN(room.players),
       });
     }
+
+    console.log("CONNECT PLAYER DONE...");
   };
 }
 

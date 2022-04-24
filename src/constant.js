@@ -8,7 +8,10 @@ const redPlayer = {
   color: "red",
   pos: ["r1", "r2", "r3", "r4"],
   stream: "",
-  socketId: '',
+  socketId: "",
+  transport: {},
+  producer: {},
+  consumer: {},
 };
 
 const greenPlayer = {
@@ -16,6 +19,9 @@ const greenPlayer = {
   pos: ["g1", "g2", "g3", "g4"],
   stream: "",
   socketId: "",
+  transport: {},
+  producer: {},
+  consumer: {},
 };
 
 const yellowPlayer = {
@@ -23,6 +29,9 @@ const yellowPlayer = {
   pos: ["y1", "y2", "y3", "y4"],
   stream: "",
   socketId: "",
+  transport: {},
+  producer: {},
+  consumer: {},
 };
 
 const bluePlayer = {
@@ -30,6 +39,9 @@ const bluePlayer = {
   pos: ["b1", "b2", "b3", "b4"],
   stream: "",
   socketId: "",
+  transport: {},
+  producer: {},
+  consumer: {},
 };
 
 const roomDefault = {
@@ -213,6 +225,35 @@ const otherPLayerPosArray = (pos, color) => {
   return otherPLayerPos;
 };
 
+const mediaCodecs = [
+  {
+    kind: "audio",
+    mimeType: "audio/opus",
+    clockRate: 48000,
+    channels: 2,
+  },
+  {
+    kind: "video",
+    mimeType: "video/VP8",
+    clockRate: 90000,
+    parameters: {
+      "x-google-start-bitrate": 1000,
+    },
+  },
+];
+
+const webRtcTransport_options = {
+  listenIps: [
+    {
+      ip: "0.0.0.0", // replace with relevant IP address
+      announcedIp: "10.0.0.115",
+    },
+  ],
+  enableUdp: true,
+  enableTcp: true,
+  preferUdp: true,
+};
+
 const error_codes = {
   200: "Can't play this move. Only legal moves allowed.",
 };
@@ -236,3 +277,5 @@ exports.otherPLayerPosArray = otherPLayerPosArray;
 exports.error_codes = error_codes;
 exports.generateFEN = generateFEN;
 exports.piecesOnFinal = piecesOnFinal;
+exports.mediaCodecs = mediaCodecs;
+exports.webRtcTransport_options = webRtcTransport_options;

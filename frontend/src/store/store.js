@@ -5,6 +5,7 @@ import { diceReducer } from './dice'
 import { movesReducer } from './move'
 import { usersReducer } from './user'
 import rootSaga from './saga'
+import { playersReducer } from './playersReducer'
 
 /**
  * Redux Store, essential to store frontend data.
@@ -17,8 +18,11 @@ export const store = createStore(
         move: movesReducer,
         dice: diceReducer,
         user: usersReducer,
+        otherPlayers: playersReducer,
     }),
     composeWithDevTools(applyMiddleware(sagaMiddleware))
 )
 
 sagaMiddleware.run(rootSaga)
+
+

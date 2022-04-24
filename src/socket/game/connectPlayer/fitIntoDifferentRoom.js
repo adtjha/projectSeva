@@ -4,8 +4,9 @@ const {
   greenPlayer,
   yellowPlayer,
   bluePlayer,
-} = require("../../constant");
-const { client, db, FieldValue } = require("../../..");
+} = require("../../../constant");
+const { client, db, FieldValue } = require("../../../..");
+const { checkRouter } = require("../../video/checkRouter");
 
 async function fitIntoDifferentRoom({
   channelId,
@@ -28,7 +29,10 @@ async function fitIntoDifferentRoom({
     .doc(channelId)
     .collection("rooms")
     .doc(Object.keys(idsHaveSpace)[0])
-    .update({ colors: FieldValue.arrayRemove(color), space: FieldValue.increment(-1)});
+    .update({
+      colors: FieldValue.arrayRemove(color),
+      space: FieldValue.increment(-1),
+    });
 
   switch (color) {
     case "red":
@@ -47,7 +51,12 @@ async function fitIntoDifferentRoom({
 
   room = JSON.parse(await client.get(roomId));
 
-  console.log(room);
+  let transportParams;
+  ({ room, transportParams } = await checkRouter(
+    room,
+    userId,
+    transportParams
+  ));
 
   room.players[userId] = Object.assign({}, player);
   room.players[userId].socketId = socket.id;
@@ -61,6 +70,8 @@ async function fitIntoDifferentRoom({
   config.current = room.current;
   config.user.id = userId;
   config.user.color = room.players[userId].color;
+  config.rtpCapabilities = room.router.rtpCapabilities;
+  config.transportParams = transportParams;
 
   if (idsHaveSpace[Object.keys(idsHaveSpace)[0]].length === 0) {
     await db
@@ -70,6 +81,8 @@ async function fitIntoDifferentRoom({
       .doc(Object.keys(idsHaveSpace)[0])
       .delete();
   }
+
+  console.log("FITTING INTO EMPTY ROOM DONE...");
 
   return { roomId, room, config, error };
 }

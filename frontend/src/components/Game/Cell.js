@@ -2,7 +2,7 @@ import React from 'react'
 import Piece from './Piece'
 import { getColor, getGameId, getGameCurrentPlayer } from '../../store/user'
 import { getDice, rolled } from '../../store/dice'
-import Constants from '../../Constants'
+import { cellsNotToDraw, colorNames } from '../../Constants'
 import { useDispatch, useSelector } from 'react-redux'
 import { move_piece } from '../../store/move'
 
@@ -50,7 +50,7 @@ const Cell = (props) => {
         styles += ' flex justify-center items-center flex-wrap '
     }
     if (styles) {
-        Constants.cellsNotToDraw.forEach((e) => {
+        cellsNotToDraw.forEach((e) => {
             if (props.data.id === e) {
                 styles = undefined
             }
@@ -67,7 +67,7 @@ const Cell = (props) => {
         pieceToMove = pieces[~~(pieces.length * Math.random())]
 
         if (pieceToMove) {
-            const color = Constants.colorNames[pieceToMove.split('')[0]]
+            const color = colorNames[pieceToMove.split('')[0]]
             const num = pieceToMove.split('')[1]
 
             if (color === userColor && isChance && hasRolled) {

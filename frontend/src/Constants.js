@@ -348,7 +348,21 @@ const xy = (arr, e) => {
     return [pos % 15, Math.ceil(pos / 15) - 1]
 }
 
-const Constants = {
+const redClassName =
+    'col-start-1 col-end-7 row-start-1 row-end-6 bg-red-200 rounded-2xl overflow-hidden shadow-md border-2 border-double border-red-400'
+const greenClassName =
+    'col-start-11 col-end-16 row-start-1 row-end-7  bg-green-200 rounded-2xl overflow-hidden shadow-md border-2 border-double border-green-400'
+const yellowClassName =
+    'col-start-1 col-end-6 row-start-10 row-end-16 bg-yellow-200 rounded-2xl overflow-hidden shadow-md border-2 border-double border-yellow-400'
+const blueClassName =
+    'col-start-10 col-end-16 row-start-11 row-end-16  bg-blue-200 rounded-2xl overflow-hidden shadow-md border-2 border-double border-blue-400'
+
+const iconStyle = 'h-4 lg:h-6 w-4 lg:w-6 stroke-current text-gray-400 m-auto'
+
+const cellStyle =
+    ' w-5 h-5 shadow-md lg:w-8 lg:h-8 lg:p-1 text-center shadow-none rounded flex justify-center items-center flex-wrap opacity-40'
+
+export {
     DEFAULT_BOARD_LAYOUT,
     DEFAULT_CELL_LAYOUT,
     LOCATION_BOARD_LAYOUT,
@@ -392,6 +406,10 @@ const Constants = {
     xy,
     BASE_API,
     WEB_APP_URL,
+    redClassName,
+    greenClassName,
+    yellowClassName,
+    blueClassName,
+    iconStyle,
+    cellStyle,
 }
-
-export default Constants

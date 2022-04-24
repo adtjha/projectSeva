@@ -1,5 +1,5 @@
-const { client } = require("../..");
-const { rooms } = require("../constant");
+const { client } = require("../../..");
+const { rooms } = require("../../constant");
 
 function changeCurrentPlayer(socket, io) {
   return async ({ game_id, userId }) => {

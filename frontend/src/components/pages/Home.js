@@ -34,13 +34,13 @@ export const Home = () => {
                                 <div className="relative w-full h-full flex flex-col flex-wrap md:flex-row justify-around items-center p-4">
                                     {channels.docs.map((doc) => (
                                         <Card
+                                            key={doc.id}
                                             data={doc.data()}
                                             id={doc.id}
                                             isSelected={selected === doc.id}
                                             setSelected={setSelected}
                                         />
                                     ))}
-                                    {console.log(channels)}
                                 </div>
                             </AnimateSharedLayout>
                             <motion.div

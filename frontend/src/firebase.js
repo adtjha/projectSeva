@@ -15,6 +15,7 @@ import {
     getDocs,
     where,
 } from 'firebase/firestore'
+import { useDispatch } from 'react-redux'
 
 const firebaseConfig = {
     apiKey: 'AIzaSyDp-mjeR9fXLYrpurAWxTEptQuglRU-QRY',
@@ -45,9 +46,18 @@ const signInWithGoogle = async () => {
                 name: user.displayName,
                 authProvider: 'google',
                 email: user.email,
-                avatar: user.photoURL ? user.photoURL : `${randomGender()}/${guid()}`,
-                phone: user.phoneNumber
+                photoURL: user.photoURL
+                    ? user.photoURL
+                    : `${randomGender()}/${guid()}`,
+                phone: user.phoneNumber,
             })
+        } else {
+            return {
+                uid: user.uid,
+                name: user.displayName,
+                photoURL: user.photoURL,
+                email: user.email,
+            }
         }
     } catch (err) {
         console.error(err)
